@@ -9,7 +9,7 @@ Das Portal zeigt Form.io-Formulare, Online-Services und Downloads. Petite Vue st
 | Datei | Aufgabe |
 | --- | --- |
 | `index.html` | Oberfläche, externe Bibliotheken und Einstieg in JavaScript |
-| `config.json` | Texte, Formularliste, Links, Sichtbarkeit und Logout-Konfiguration |
+| `/webhook/portal-config` | Liefert Texte, Formularliste, Links, Sichtbarkeit und Logout-Konfiguration als JSON |
 | `js/main.js` | Globale Funktionen für Form.io und Start des Portals |
 | `js/state.js` | Zustand, Loginstatus, Navigation, Meldungen und Formularverarbeitung |
 | `js/api.js` | Netzwerkaufrufe und Response-Logging |
@@ -39,7 +39,7 @@ Die Einstiegsskripte, lokalen Modulimporte und der Konfigurationsabruf tragen ei
 }
 ```
 
-`active: false` blendet einen Eintrag aus der Auswahl aus. Ohne Person gilt `gast`; bei einer Person wird `statusGruppe` normalisiert, standardmäßig `mitglied`. Trainer erhalten zusätzlich die Gruppe `mitglied`. `sichtbarkeit` darf ein String oder Array sein; ohne Wert gilt `alle`.
+`active: false` blendet einen Eintrag aus der Auswahl aus. Ohne Person gilt `gast`; bei einer Person wird `statusGruppe` auf `gast`, `alle`, `trainer` oder `mitglied` begrenzt. `sichtbarkeit` darf ein String oder Array sein; ohne Wert gilt `alle`.
 
 Die Sichtbarkeit wird beim Öffnen und beim initialen URL-Aufruf geprüft. Der aktuelle Browser-History-Handler prüft sie nicht erneut. Direkte Öffnungswege prüfen `active` nicht zusätzlich. Diese Filter ersetzen keine Backend-Berechtigungsprüfung.
 
@@ -191,7 +191,7 @@ Der Reset betrifft dieses Panel einschließlich seiner untergeordneten Komponent
 }
 ```
 
-Dieser Abschnitt steht in `config.json`. Pfad und Methode haben für alte Konfigurationen weiterhin die bisherigen Rückfallwerte. Der Request sendet Cookies, aber keinen Body. Backend und HTTP-Methode müssen zueinander passen.
+Dieser Abschnitt wird über `/webhook/portal-config` geliefert. Pfad und Methode haben weiterhin die bisherigen Rückfallwerte. Der Request sendet Cookies, aber keinen Body. Backend und HTTP-Methode müssen zueinander passen.
 
 ```json
 {

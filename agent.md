@@ -4,7 +4,7 @@ Stand: 20.09.2026, Version `20260920-storno-3`. Die vollständige Funktionsbesch
 
 ## Architektur und Stil
 
-`main.js` veröffentlicht globale Funktionen und startet Petite Vue. `state.js` steuert Zustand und Oberfläche; `api.js` enthält Netzwerkaufrufe und Logging ohne Zugriff auf den State. `formio.js` erstellt und zerstört Formularinstanzen. `navigation.js` steuert URL und History. Die Konfiguration liegt in `config.json`; CSS wird über `css/main.css` eingebunden, `responsive.css` zuletzt.
+`main.js` veröffentlicht globale Funktionen und startet Petite Vue. `state.js` steuert Zustand und Oberfläche; `api.js` enthält Netzwerkaufrufe und Logging ohne Zugriff auf den State. `formio.js` erstellt und zerstört Formularinstanzen. `navigation.js` steuert URL und History. Die Konfiguration wird über `/webhook/portal-config` geladen; CSS wird über `css/main.css` eingebunden, `responsive.css` zuletzt.
 
 Deutsche Namen und Modulgrenzen erhalten. Neue Aufrufe kompakt schreiben, keine unnötigen Zeilenumbrüche oder beiläufigen Umformatierungen. Formularspezifische Resets bleiben im Form.io-Button.
 

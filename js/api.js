@@ -23,7 +23,13 @@ export function loggeResponse(label, response, body) {
 }
 
 export async function ladeConfigDaten(url) {
-  const response = await fetch(url, { cache: "no-store" });
+  const response = await fetch(url, {
+    credentials: "include",
+    cache: "no-store",
+    headers: {
+      "Accept": "application/json"
+    }
+  });
 
   if (!response.ok) {
     throw new Error(`Konfiguration konnte nicht geladen werden (${response.status}).`);

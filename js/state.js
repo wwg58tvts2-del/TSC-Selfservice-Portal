@@ -77,7 +77,7 @@ export const state = reactive({
     try {
       this.config =
         await ladeConfigDaten(
-          "config.json?v=20260920-storno-3"
+          "/webhook/portal-config"
         );
 
       document.title =
