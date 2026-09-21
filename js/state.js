@@ -74,11 +74,14 @@ export const state = reactive({
 
 
   async ladeConfig() {
+    console.log("[Serviceportal] ladeConfig() gestartet");
     try {
       this.config =
         await ladeConfigDaten(
           "/webhook/portal-config"
         );
+
+      console.log("[Serviceportal] Konfiguration im State übernommen");
 
       document.title =
         this.config.page?.title ||
@@ -120,6 +123,8 @@ export const state = reactive({
 
       this.warnung =
         "Die Formulare konnten nicht geladen werden. Bitte versuche es später erneut.";
+    } finally {
+      console.log("[Serviceportal] ladeConfig() beendet");
     }
   },
 

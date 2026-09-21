@@ -23,19 +23,66 @@ export function loggeResponse(label, response, body) {
 }
 
 export async function ladeConfigDaten(url) {
-  const response = await fetch(url, {
-    credentials: "include",
-    cache: "no-store",
-    headers: {
-      "Accept": "application/json"
-    }
-  });
+  const start = performance.now();
+  console.group(`[Serviceportal] Konfiguration laden: ${url}`);
+  console.log("Request gestartet");
+  console.log("Methode:", "GET");
+  console.log("Credentials:", "include (Cookies werden nicht geloggt)");
+  console.log("Cache:", "no-store");
+
+  let response;
+  try {
+    response = await fetch(url, {
+      credentials: "include",
+      cache: "no-store",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+  } catch (error) {
+    console.error("Netzwerkfehler beim Laden der Konfiguration:", error);
+    console.groupEnd();
+    throw error;
+  }
+
+  const contentType = response.headers.get("content-type") || "";
+  let result;
+  try {
+    result = contentType.includes("application/json")
+      ? await response.json()
+      : await response.text();
+  } catch (error) {
+    console.error("Antwort konnte nicht als JSON/Text gelesen werden:", error);
+    console.groupEnd();
+    throw error;
+  }
+
+  console.log("Antwort erhalten nach:", `${Math.round(performance.now() - start)} ms`);
+  console.log("HTTP-Status:", response.status, response.statusText);
+  console.log("Content-Type:", contentType || "nicht gesetzt");
+  loggeResponse(url, response, result);
 
   if (!response.ok) {
+    console.error("Konfiguration konnte nicht geladen werden.");
+    console.groupEnd();
     throw new Error(`Konfiguration konnte nicht geladen werden (${response.status}).`);
   }
 
-  return response.json();
+  if (!result || typeof result !== "object") {
+    console.error("Konfiguration ist kein gültiges JSON-Objekt.");
+    console.groupEnd();
+    throw new Error("Die Konfiguration hat kein gültiges JSON-Objekt geliefert.");
+  }
+
+  console.log("JSON-Schlüssel:", Object.keys(result));
+  console.log("Formulare:", Array.isArray(result.forms?.items) ? result.forms.items.length : 0);
+  console.log("Online-Services:", Array.isArray(result.onlineServices?.items) ? result.onlineServices.items.length : 0);
+  console.log("Downloads:", Array.isArray(result.downloads?.items) ? result.downloads.items.length : 0);
+  console.log("Footer-Links:", Array.isArray(result.footer) ? result.footer.length : 0);
+  console.log("Konfiguration erfolgreich verarbeitet.");
+  console.groupEnd();
+
+  return result;
 }
 
 export async function holeMemberStatus() {
