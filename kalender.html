@@ -224,6 +224,8 @@
                 altersstufe,
                 bereich: gruppe.hp_kat,
                 gruppenId: String(gruppe.gruid),
+                eintragIndex: index,
+                kwRegel: gruppe.gzfld05 || "",
                 recurring: true
               });
             });
@@ -347,7 +349,8 @@
               while (datum < endDatum) {
                 if (
                   datum.getDay() === wochentag &&
-                  !this.istGruppenterminAusgenommen(event, datum)
+                  !this.istGruppenterminAusgenommen(event, datum) &&
+                  this.istTerminInKalenderwoche(event, datum)
                 ) {
                   const datumText = this.datumAlsIso(datum);
                   sichtbareEvents.push({
@@ -400,6 +403,40 @@
           );
 
           return storniert || inFerien;
+        },
+
+        istTerminInKalenderwoche(event, datum) {
+          const regel = String(event.kwRegel || "").toLowerCase();
+          if (!regel) {
+            return true;
+          }
+
+          const match = regel.match(/erster eintrag ist (gerade|ungerade) kw/);
+          if (!match) {
+            console.warn("[Kalender] Unbekannte KW-Regel, Termin wird angezeigt:", event.kwRegel);
+            return true;
+          }
+
+          const ersteWocheIstGerade = match[1] === "gerade";
+          const eintragSollGeradeSein = event.eintragIndex === 0
+            ? ersteWocheIstGerade
+            : !ersteWocheIstGerade;
+
+          return this.kalenderwocheIstGerade(datum) === eintragSollGeradeSein;
+        },
+
+        kalenderwocheIstGerade(datum) {
+          const utcDatum = new Date(Date.UTC(
+            datum.getFullYear(),
+            datum.getMonth(),
+            datum.getDate()
+          ));
+          const wochentag = utcDatum.getUTCDay() || 7;
+          utcDatum.setUTCDate(utcDatum.getUTCDate() + 4 - wochentag);
+          const jahresanfang = new Date(Date.UTC(utcDatum.getUTCFullYear(), 0, 1));
+          const kalenderwoche = Math.ceil((((utcDatum - jahresanfang) / 86400000) + 1) / 7);
+
+          return kalenderwoche % 2 === 0;
         },
 
         datumAlsIso(datum) {
