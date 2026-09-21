@@ -1,0 +1,59 @@
+.msgbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.msgbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.msgbox-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  padding: 28px;
+  background: var(--paper);
+  border-radius: 12px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+  font-family: inherit;
+}
+
+.msgbox-title {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.msgbox-content {
+  margin-bottom: 24px;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.msgbox-close-btn {
+  width: 100%;
+  padding: 11px 18px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--club-red);
+  border: 1px solid var(--club-red);
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.msgbox-close-btn:hover,
+.msgbox-close-btn:focus-visible {
+  background: var(--club-red-dark);
+  border-color: var(--club-red-dark);
+}

@@ -1,0 +1,26 @@
+.site-footer {
+  width: 100%;
+  margin-top: 64px;
+  padding: 18px max(20px, calc((100% - 1040px) / 2));
+  background: var(--paper);
+  border-top: 5px solid var(--club-red);
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 18px;
+}
+
+.footer-link {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+  color: var(--club-red);
+  text-decoration: underline;
+}

@@ -1,0 +1,10 @@
+/* Reihenfolge ist relevant: responsive.css muss zuletzt kommen, um Medienabfragen zu überschreiben */
+@import url("base.css");
+@import url("header.css");
+@import url("sections.css");
+@import url("cards.css");
+@import url("modal.css");
+@import url("footer.css");
+@import url("msgbox.css");
+@import url("loader.css");
+@import url("responsive.css");

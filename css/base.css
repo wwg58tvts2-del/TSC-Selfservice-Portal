@@ -1,0 +1,33 @@
+:root {
+  --club-red: #8e0000;
+  --club-red-dark: #620000;
+  --club-red-soft: #f8eaea;
+  --ink: #171717;
+  --muted: #6b6b6b;
+  --line: #dedad7;
+  --paper: #ffffff;
+  --page: #f5f3f1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[v-cloak] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--ink);
+  background: var(--page);
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+#app {
+  width: 100%;
+  max-width: 1080px;
+  padding: 0 20px;
+  margin: 0 auto 56px;
+}

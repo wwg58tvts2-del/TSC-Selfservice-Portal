@@ -1,0 +1,17 @@
+#form-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+#back-button {
+  color: var(--club-red-dark);
+  border-color: var(--club-red);
+  border-radius: 999px;
+}
+
+#back-button:hover,
+#back-button:focus-visible {
+  color: #ffffff;
+  background: var(--club-red);
+  border-color: var(--club-red);
+}

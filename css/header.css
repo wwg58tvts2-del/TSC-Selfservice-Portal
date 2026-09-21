@@ -1,0 +1,73 @@
+.site-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 128px;
+  margin: 0 0 52px;
+  padding: 18px max(20px, calc((100% - 1040px) / 2));
+  background: var(--paper);
+  border-bottom: 5px solid var(--club-red);
+}
+
+.site-logo {
+  width: min(310px, 44vw);
+  max-height: 92px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.header-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-left: auto;
+  padding-left: 32px;
+  text-align: right;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-left: 18px;
+}
+
+.header-caption {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.header-login-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: var(--club-red);
+  border: 1px solid var(--club-red);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.header-login-button:hover,
+.header-login-button:focus-visible {
+  background: var(--club-red-dark);
+  border-color: var(--club-red-dark);
+  transform: translateY(-1px);
+}
+
+.member-logout-button {
+  background: var(--club-red-dark);
+  border-color: var(--club-red-dark);
+}
+
+.member-logout-button:hover,
+.member-logout-button:focus-visible {
+  background: #430000;
+  border-color: #430000;
+}

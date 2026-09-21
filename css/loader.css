@@ -1,0 +1,46 @@
+.lade-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.lade-box {
+  width: 100%;
+  max-width: 340px;
+  padding: 28px;
+  text-align: center;
+  background: var(--paper);
+  border-radius: 12px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+  font-family: inherit;
+}
+
+.lade-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 18px;
+  border: 4px solid #e5e5e5;
+  border-top-color: #333333;
+  border-radius: 50%;
+  animation: lade-spin 0.8s linear infinite;
+}
+
+.lade-text {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+@keyframes lade-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
