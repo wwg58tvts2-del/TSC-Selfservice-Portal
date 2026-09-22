@@ -75,6 +75,7 @@
           <p class="calendar-detail-time">{{ selectedEvent.start }} - {{ selectedEvent.end }}</p>
           <dl>
             <div v-if="selectedEvent.beschreibung"><dt>Beschreibung</dt><dd>{{ selectedEvent.beschreibung }}</dd></div>
+            <div v-if="selectedEvent.notiz"><dt>Notiz</dt><dd>{{ selectedEvent.notiz }}</dd></div>
             <div v-if="selectedEvent.saal"><dt>Saal</dt><dd>{{ selectedEvent.saal }}</dd></div>
             <div v-if="selectedEvent.trainer"><dt>Trainer*in</dt><dd>{{ selectedEvent.trainer }}</dd></div>
             <div v-if="selectedEvent.niveau"><dt>Leistungsniveau</dt><dd>{{ selectedEvent.niveau }}</dd></div>
@@ -176,41 +177,15 @@
             const termine = Array.isArray(gruppe.gruzar) ? gruppe.gruzar : [];
             termine.forEach((termin, index) => {
               const wochentag = Number(termin.wotag);
-              const beschreibungszeilen = String(gruppe.grutxt || "")
-                .replace(/\r/g, "")
-                .split("\n")
-                .map((zeile) => zeile.trim())
-                .filter(Boolean);
-              const beschreibungsdetails = {
-                leistungsniveau: ""
-              };
-              const freieBeschreibungszeilen = [];
-              let ausstehendesDetail = "";
-              beschreibungszeilen.forEach((zeile) => {
-                const detail = zeile.match(/^Leistungsniveau:\s*(.*)$/i);
-                if (detail) {
-                  ausstehendesDetail = "leistungsniveau";
-                  beschreibungsdetails.leistungsniveau = detail[1];
-                  if (detail[1]) {
-                    ausstehendesDetail = "";
-                  }
-                  return;
-                }
-                if (ausstehendesDetail) {
-                  beschreibungsdetails[ausstehendesDetail] = zeile;
-                  ausstehendesDetail = "";
-                  return;
-                }
-                freieBeschreibungszeilen.push(zeile);
-              });
-              const leistungsniveau = gruppe.hp_leiststufe || beschreibungsdetails.leistungsniveau || "";
+              const leistungsniveau = gruppe.hp_leiststufe || gruppe.gzfld03 || "";
               const altersstufe = gruppe.hp_altersstufe || "";
               const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
-              const freieBeschreibung = freieBeschreibungszeilen.join("\n");
+              const freieBeschreibung = String(gruppe.grutxt || "").trim();
               events.push({
                 terminId: `gruppe-${gruppe.gruid}-${index}`,
                 titel: gruppe.grubez || "Training",
                 beschreibung: freieBeschreibung,
+                notiz: String(gruppe.notiz || "").trim(),
                 saal: { name: termin.ortbez || termin.ortkb || "" },
                 trainer: gruppe.trnameall
                   ? [{ name: gruppe.trnameall }]
@@ -380,6 +355,7 @@
                 }),
             extendedProps: {
               beschreibung: event.beschreibung,
+              notiz: event.notiz || "",
               trainer: (event.trainer || []).map((person) => person.name).join(", "),
               saal: event.saal?.name || "",
               niveau: event.leistungsniveau || event.leistung || "",

@@ -8,12 +8,14 @@ Der Kalender verwendet aus jedem Objekt in `gruppen` nur die folgenden Felder.
 | --- | --- |
 | `gruid` | Eindeutige Gruppen-ID für die interne Termin-ID und die Zuordnung des Gruppentermins. |
 | `grubez` | Name beziehungsweise Titel der Trainingsgruppe. Wenn leer, wird `Training` verwendet. |
-| `grutxt` | Beschreibung der Gruppe. Daraus wird das `Leistungsniveau` als Fallback gelesen. |
+| `grutxt` | Beschreibung der Gruppe. Wird nicht für die Leistungsstufe verwendet. |
+| `notiz` | Zusätzliche Notiz zum Gruppentermin. Wird in der Detailansicht als `Notiz` angezeigt. |
 | `trnameall` | Name der Trainerin oder des Trainers. |
 | `inaktiv` | Wenn exakt `true`, wird die gesamte Gruppe nicht angezeigt. |
-| `hp_leiststufe` | Primäre Quelle für das Leistungsniveau. |
+| `hp_leiststufe` | Primäre Quelle für die Leistungsstufe. |
 | `hp_altersstufe` | Altersgruppe des Trainings. Dieses Feld wird direkt verwendet. |
 | `hp_kat` | Primäre Quelle für den Bereich beziehungsweise die Kategorie des Trainings. |
+| `gzfld03` | Fallback für die Leistungsstufe, wenn `hp_leiststufe` leer ist. |
 | `gzfld05` | Steuert bei mehreren Einträgen den Wechsel zwischen geraden und ungeraden Kalenderwochen. |
 | `kursvon` | Frühestes Datum, an dem die Gruppentermine angezeigt werden. Der Tag ist eingeschlossen. |
 | `kursbis` | Letztes Datum, an dem die Gruppentermine angezeigt werden. Der Tag ist eingeschlossen. |
@@ -33,18 +35,18 @@ Jeder Eintrag in `gruzar` erzeugt einen eigenen Gruppentermin.
 
 ## Sonderverarbeitung von Gruppenfeldern
 
+### Leistungsstufe
+
+Die Leistungsstufe wird ausschließlich aus diesen Feldern gelesen:
+
+1. `hp_leiststufe`
+2. `gzfld03`, wenn `hp_leiststufe` leer ist
+
+`grutxt` wird dafür nicht verwendet.
+
 ### `grutxt`
 
-Diese Angabe wird aus `grutxt` als eigener Wert gelesen:
-
-```text
-Leistungsniveau: Einsteiger & Fortgeschrittene
-```
-
-- `Leistungsniveau:` wird als Leistungsniveau angezeigt.
-- Der Wert darf direkt hinter dem Doppelpunkt oder in der nächsten Zeile stehen.
-- Andere Textzeilen bleiben die Beschreibung.
-- Wenn `hp_leiststufe` leer ist, wird der Wert aus `grutxt` hinter `Leistungsniveau:` als Fallback verwendet.
+Der Inhalt von `grutxt` wird als Beschreibung des Gruppentermins angezeigt.
 
 ### `gzfld05`
 

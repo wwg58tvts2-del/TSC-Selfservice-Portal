@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Trainingsplan | Tanzsportclub Dortmund</title>
+  <link rel="icon" type="image/png" href="img/Logo_ohne_Noten_quadratisch_transparenter_Hintergrund-1.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/trainingsplan.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.min.css">
+</head>
+<body>
+  <header class="site-header">
+    <img class="site-logo" src="img/Logo_ohne_Noten_transparenter_Hintergrund-1.png" alt="Tanzsportclub Dortmund">
+    <div class="header-copy">
+      <span class="header-kicker">Tanzsportclub Dortmund</span>
+      <span class="header-caption">Trainingsplan</span>
+    </div>
+  </header>
+
+  <main id="training-app" v-scope="TrainingPlanApp()" @vue:mounted="load">
+    <a class="btn btn-outline-secondary training-back" href="index.html">
+      <i class="bi bi-arrow-left" aria-hidden="true"></i>
+      Zurück zum Portal
+    </a>
+
+    <section class="training-intro">
+      <p class="section-kicker">Orientierung</p>
+      <h1>Trainingsplan</h1>
+      <p class="section-intro">Welche Gruppen gibt es, für wen sind sie geeignet und auf welchem Niveau wird trainiert?</p>
+    </section>
+
+    <div v-if="loading" class="lade-overlay" role="status" aria-live="polite">
+      <div class="lade-box">
+        <div class="lade-spinner" aria-hidden="true"></div>
+        <div class="lade-text">Trainingsplan wird geladen ...</div>
+      </div>
+    </div>
+    <div v-if="error" class="calendar-state calendar-error" role="alert">{{ error }}</div>
+
+    <div v-if="!loading && !error" class="training-content">
+      <section class="training-summary" aria-label="Zusammenfassung">
+        <div><strong>{{ gruppen.length }}</strong><span>Gruppen</span></div>
+        <div><strong>{{ bereiche.length }}</strong><span>Bereiche</span></div>
+        <div><strong>{{ leistungsstufen.length }}</strong><span>Leistungsstufen</span></div>
+      </section>
+
+      <section class="training-filters" aria-label="Trainingsplan filtern">
+        <label class="training-search">
+          <span class="visually-hidden">Gruppen suchen</span>
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <input v-model="search" type="search" placeholder="Gruppe suchen ...">
+        </label>
+        <label>
+          <span>Bereich</span>
+          <select v-model="bereichFilter">
+            <option value="alle">Alle Bereiche</option>
+            <option v-for="bereich in bereiche" :key="bereich" :value="bereich">{{ bereich }}</option>
+          </select>
+        </label>
+        <label>
+          <span>Leistungsstufe</span>
+          <select v-model="stufeFilter">
+            <option value="alle">Alle Stufen</option>
+            <option v-for="stufe in leistungsstufen" :key="stufe" :value="stufe">{{ stufe }}</option>
+          </select>
+        </label>
+        <label>
+          <span>Altersgruppe</span>
+          <select v-model="altersFilter">
+            <option value="alle">Alle Altersgruppen</option>
+            <option v-for="alter in altersgruppen" :key="alter" :value="alter">{{ alter }}</option>
+          </select>
+        </label>
+      </section>
+
+      <p v-if="!gefilterteGruppen.length" class="calendar-state">Keine passenden Gruppen gefunden.</p>
+      <section v-else class="training-list" aria-label="Trainingsgruppen">
+        <article v-for="gruppe in gefilterteGruppen" :key="gruppe.id" class="training-card">
+          <div class="training-card-heading">
+            <div>
+              <p v-if="gruppe.bereich" class="training-card-eyebrow">{{ gruppe.bereich }}</p>
+              <h2>{{ gruppe.name }}</h2>
+            </div>
+            <span v-if="gruppe.stufe" class="training-badge">{{ gruppe.stufe }}</span>
+          </div>
+          <p v-if="gruppe.beschreibung" class="training-description">{{ gruppe.beschreibung }}</p>
+          <p v-if="gruppe.notiz" class="training-note"><i class="bi bi-info-circle" aria-hidden="true"></i>{{ gruppe.notiz }}</p>
+          <dl class="training-details">
+            <div v-if="gruppe.alter"><dt>Alter</dt><dd>{{ gruppe.alter }}</dd></div>
+            <div v-if="gruppe.trainer"><dt>Trainer*in</dt><dd>{{ gruppe.trainer }}</dd></div>
+          </dl>
+          <div v-if="gruppe.termine.length" class="training-times">
+            <p>Trainingszeiten</p>
+            <ul>
+              <li v-for="termin in gruppe.termine" :key="termin.id">
+                <strong>{{ termin.tag }}</strong>
+                <span>{{ termin.start }} - {{ termin.ende }}</span>
+                <span v-if="termin.saal">{{ termin.saal }}</span>
+              </li>
+            </ul>
+          </div>
+        </article>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <nav class="footer-links" aria-label="Rechtliches">
+      <a class="footer-link" href="https://tanzsportclub-dortmund.de" target="_blank" rel="noopener noreferrer">Homepage</a>
+      <a class="footer-link" href="https://tanzsportclub-dortmund.de/index.php/verein/Impressum" target="_blank" rel="noopener noreferrer">Impressum</a>
+      <a class="footer-link" href="https://tanzsportclub-dortmund.de/formulare/Datenschutz.pdf" target="_blank" rel="noopener noreferrer">Datenschutz</a>
+    </nav>
+  </footer>
+
+  <script type="module">
+    import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
+
+    const kalenderUrl = "/webhook/kalender";
+    const tage = ["", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+
+    function TrainingPlanApp() {
+      return reactive({
+        loading: true,
+        error: "",
+        gruppen: [],
+        search: "",
+        bereichFilter: "alle",
+        stufeFilter: "alle",
+        altersFilter: "alle",
+
+        async load() {
+          try {
+            const response = await fetch(kalenderUrl, {
+              credentials: "include",
+              cache: "no-store",
+              headers: { Accept: "application/json" }
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const daten = Array.isArray(result)
+              ? result.reduce((acc, item) => ({ ...acc, ...(item || {}) }), {})
+              : (result || {});
+            this.gruppen = (Array.isArray(daten.gruppen) ? daten.gruppen : [])
+              .filter((gruppe) => gruppe.inaktiv !== true)
+              .map((gruppe) => this.normalisiereGruppe(gruppe));
+          } catch (error) {
+            console.error("[Trainingsplan] Laden fehlgeschlagen:", error);
+            this.error = "Der Trainingsplan konnte nicht geladen werden. Bitte später erneut versuchen.";
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        normalisiereGruppe(gruppe) {
+          const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
+          const stufe = gruppe.hp_leiststufe || gruppe.gzfld03 || "";
+          return {
+            id: String(gruppe.gruid),
+            name: gruppe.grubez || "Training",
+            bereich: String(bereich).trim(),
+            stufe: String(stufe).trim(),
+            alter: String(gruppe.hp_altersstufe || "").trim(),
+            trainer: String(gruppe.trnameall || "").trim(),
+            beschreibung: String(gruppe.grutxt || "").trim(),
+            notiz: String(gruppe.notiz || "").trim(),
+            termine: (Array.isArray(gruppe.gruzar) ? gruppe.gruzar : []).map((termin, index) => ({
+              id: `${gruppe.gruid}-${index}`,
+              tag: tage[Number(termin.wotag)] || "",
+              start: String(termin.startzeit || "").slice(0, 5),
+              ende: String(termin.endzeit || "").slice(0, 5),
+              saal: termin.ortbez || termin.ortkb || ""
+            }))
+          };
+        },
+
+        get bereiche() {
+          return this.eindeutigeWerte("bereich");
+        },
+
+        get leistungsstufen() {
+          return this.eindeutigeWerte("stufe");
+        },
+
+        get altersgruppen() {
+          return this.eindeutigeWerte("alter");
+        },
+
+        eindeutigeWerte(feld) {
+          return [...new Set(this.gruppen.map((gruppe) => gruppe[feld]).filter(Boolean))].sort((a, b) => a.localeCompare(b, "de"));
+        },
+
+        get gefilterteGruppen() {
+          const suchtext = this.search.trim().toLowerCase();
+          return this.gruppen.filter((gruppe) => {
+            const passtSuche = !suchtext || [gruppe.name, gruppe.bereich, gruppe.stufe, gruppe.alter, gruppe.trainer, gruppe.beschreibung, gruppe.notiz]
+              .join(" ").toLowerCase().includes(suchtext);
+            return passtSuche &&
+              (this.bereichFilter === "alle" || gruppe.bereich === this.bereichFilter) &&
+              (this.stufeFilter === "alle" || gruppe.stufe === this.stufeFilter) &&
+              (this.altersFilter === "alle" || gruppe.alter === this.altersFilter);
+          });
+        }
+      });
+    }
+
+    createApp({ TrainingPlanApp }).mount("#training-app");
+  </script>
+</body>
+</html>

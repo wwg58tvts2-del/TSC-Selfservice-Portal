@@ -1,0 +1,270 @@
+#training-app {
+  width: 100%;
+  max-width: 1080px;
+  padding: 0 20px;
+  margin: 0 auto 56px;
+}
+
+.training-back {
+  margin-top: 28px;
+}
+
+.training-intro {
+  max-width: 900px;
+  margin: 46px auto 0;
+}
+
+.training-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  max-width: 900px;
+  margin: 38px auto 0;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.training-summary div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 18px 20px;
+  background: var(--paper);
+}
+
+.training-summary strong {
+  color: var(--club-red);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.9rem;
+  font-weight: 400;
+}
+
+.training-summary span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.training-filters {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.5fr) repeat(3, minmax(150px, 1fr));
+  gap: 14px;
+  max-width: 1080px;
+  margin: 34px auto 0;
+  padding: 18px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.training-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.training-filters input,
+.training-filters select {
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 400;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.training-search {
+  position: relative;
+  justify-content: flex-end;
+}
+
+.training-search i {
+  position: absolute;
+  bottom: 12px;
+  left: 11px;
+  color: var(--club-red);
+}
+
+.training-search input {
+  padding-left: 34px;
+}
+
+.training-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  max-width: 1080px;
+  margin: 28px auto 0;
+}
+
+.training-card {
+  min-width: 0;
+  padding: 22px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--club-red);
+  box-shadow: 0 6px 18px rgb(35 20 15 / 7%);
+}
+
+.training-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.training-card-eyebrow {
+  margin: 0 0 5px;
+  color: var(--club-red);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.training-card h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.training-badge {
+  flex: 0 0 auto;
+  padding: 5px 8px;
+  color: var(--club-red-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--club-red-soft);
+  border: 1px solid rgb(142 0 0 / 18%);
+}
+
+.training-description {
+  margin: 15px 0 0;
+  color: var(--muted);
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.training-note {
+  display: flex;
+  gap: 8px;
+  margin: 15px 0 0;
+  padding: 10px 12px;
+  color: var(--club-red-dark);
+  line-height: 1.45;
+  background: var(--club-red-soft);
+  border-left: 3px solid var(--club-red);
+  white-space: pre-line;
+}
+
+.training-note i {
+  flex: 0 0 auto;
+  margin-top: 3px;
+}
+
+.training-details {
+  margin: 18px 0 0;
+}
+
+.training-details div {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 12px;
+  padding: 7px 0;
+  border-top: 1px solid var(--line);
+}
+
+.training-details dt {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.training-details dd {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.training-times {
+  margin-top: 18px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+
+.training-times > p {
+  margin: 0 0 8px;
+  color: var(--club-red);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.training-times ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.training-times li {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.training-times li strong {
+  color: var(--ink);
+}
+
+.training-times li span:last-child {
+  color: var(--club-red);
+  text-align: right;
+}
+
+@media (max-width: 850px) {
+  .training-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .training-search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 650px) {
+  #training-app {
+    padding: 0 10px;
+  }
+
+  .training-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .training-filters,
+  .training-list {
+    grid-template-columns: 1fr;
+  }
+
+  .training-times li {
+    grid-template-columns: 86px 1fr;
+  }
+
+  .training-times li span:last-child {
+    grid-column: 2;
+    text-align: left;
+  }
+}
