@@ -143,7 +143,7 @@
 
         normalisiereGruppe(gruppe) {
           const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
-          const stufe = String(gruppe.hp_leiststufe || "").trim();
+          const stufe = String(gruppe.hp_leiststufe || gruppe.gzfld03 || "").trim();
           return {
             id: String(gruppe.gruid),
             name: gruppe.grubez || "Training",

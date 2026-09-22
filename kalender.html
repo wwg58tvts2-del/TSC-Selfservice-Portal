@@ -177,7 +177,7 @@
             const termine = Array.isArray(gruppe.gruzar) ? gruppe.gruzar : [];
             termine.forEach((termin, index) => {
               const wochentag = Number(termin.wotag);
-              const leistungsniveau = String(gruppe.hp_leiststufe || "").trim();
+              const leistungsniveau = String(gruppe.hp_leiststufe || gruppe.gzfld03 || "").trim();
               const altersstufe = gruppe.hp_altersstufe || "";
               const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
               const freieBeschreibung = String(gruppe.grutxt || "").trim();

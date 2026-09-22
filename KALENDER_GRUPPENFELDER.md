@@ -15,7 +15,7 @@ Der Kalender verwendet aus jedem Objekt in `gruppen` nur die folgenden Felder.
 | `hp_leiststufe` | Primäre Quelle für die Leistungsstufe. |
 | `hp_altersstufe` | Altersgruppe des Trainings. Dieses Feld wird direkt verwendet. |
 | `hp_kat` | Primäre Quelle für den Bereich beziehungsweise die Kategorie des Trainings. |
-| `gzfld03` | Wird für die Leistungsstufe nicht verwendet. |
+| `gzfld03` | Zusatzfeld für die Leistungsstufe; wird verwendet, wenn `hp_leiststufe` leer ist. |
 | `gzfld05` | Steuert bei mehreren Einträgen den Wechsel zwischen geraden und ungeraden Kalenderwochen. |
 | `kursvon` | Frühestes Datum, an dem die Gruppentermine angezeigt werden. Der Tag ist eingeschlossen. |
 | `kursbis` | Letztes Datum, an dem die Gruppentermine angezeigt werden. Der Tag ist eingeschlossen. |
@@ -37,7 +37,37 @@ Jeder Eintrag in `gruzar` erzeugt einen eigenen Gruppentermin.
 
 ### Leistungsstufe
 
-Die Leistungsstufe wird ausschließlich aus `hp_leiststufe` gelesen. Wenn das Feld leer ist, wird keine Leistungsstufe angezeigt. `gzfld03` und `grutxt` werden dafür nicht verwendet.
+Die Leistungsstufe wird in dieser Reihenfolge gelesen:
+
+1. `hp_leiststufe`
+2. `gzfld03`, wenn `hp_leiststufe` leer ist
+
+`grutxt` wird dafür nicht verwendet.
+
+## Zuordnung MGVO-Oberfläche zu JSON
+
+| Bezeichnung in der MGVO-Oberfläche | JSON-Feld | Verwendung im Kalender |
+| --- | --- | --- |
+| Altersstufe (HP) | `hp_altersstufe` | Altersgruppe |
+| Leistungsstufe (HP) | `hp_leiststufe` | Primäre Leistungsstufe |
+| Kategorie (HP) | `hp_kat` | Primärer Bereich |
+| Zusatzfeld 1: Faktor (%) für Trainerkosten | `gzfld01` | Nicht verwendet |
+| Zusatzfeld 2: Berechnung | `gzfld02` | Nicht verwendet |
+| Zusatzfeld 3: Leistungsstufe | `gzfld03` | Fallback für die Leistungsstufe |
+| Zusatzfeld 4: Altersklasse | `gzfld04` | Nicht verwendet |
+| Zusatzfeld 5: Kalenderwoche | `gzfld05` | Gerade/ungerade Kalenderwoche |
+| Zusatzfeld 6: Trainingseinheiten | `gzfld06` | Nicht verwendet |
+| Zusatzfeld 7: Zielgruppe | `gzfld07` | Nicht verwendet |
+| Zusatzfeld 8: Ausblenden im | `gzfld08` | Nicht verwendet |
+
+Für die Leistungsstufe gilt daher:
+
+```text
+1. hp_leiststufe (Leistungsstufe (HP))
+2. gzfld03 (Zusatzfeld 3: Leistungsstufe), wenn hp_leiststufe leer ist
+```
+
+`grutxt` wird nicht als Leistungsstufe interpretiert.
 
 ### `grutxt`
 
