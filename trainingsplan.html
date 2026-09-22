@@ -42,12 +42,6 @@
     <div v-if="error" class="calendar-state calendar-error" role="alert">{{ error }}</div>
 
     <div v-if="!loading && !error" class="training-content">
-      <section class="training-summary" aria-label="Zusammenfassung">
-        <div><strong>{{ gruppen.length }}</strong><span>Gruppen</span></div>
-        <div><strong>{{ bereiche.length }}</strong><span>Bereiche</span></div>
-        <div><strong>{{ leistungsstufen.length }}</strong><span>Leistungsstufen</span></div>
-      </section>
-
       <section class="training-filters" aria-label="Trainingsplan filtern">
         <label class="training-search">
           <span class="visually-hidden">Gruppen suchen</span>
@@ -167,10 +161,6 @@
               saal: termin.ortbez || termin.ortkb || ""
             }))
           };
-        },
-
-        get bereiche() {
-          return this.eindeutigeWerte("bereich");
         },
 
         get tageFilter() {

@@ -6,7 +6,17 @@
 }
 
 .training-back {
+  color: var(--club-red-dark);
+  border-color: var(--club-red);
   margin-top: 28px;
+  border-radius: 999px;
+}
+
+.training-back:hover,
+.training-back:focus-visible {
+  color: #ffffff;
+  background: var(--club-red);
+  border-color: var(--club-red);
 }
 
 .training-intro {
