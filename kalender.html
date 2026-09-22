@@ -53,16 +53,19 @@
     <div v-if="!loading && !error && !events.length" class="calendar-state">Es wurden keine aktiven Termine gefunden.</div>
     <div>
       <div v-if="!loading && !error && events.length" class="calendar-tools">
-        <label for="hall-filter">Saal anzeigen</label>
-        <select id="hall-filter" v-model="hallFilter" @change="filterCalendar()">
-          <option value="alle">Alle Säle</option>
-          <option v-for="hall in halls" :key="hall.id" :value="hall.id">{{ hall.name }}</option>
-        </select>
-        <div class="calendar-legend" aria-label="Saalfarben">
-          <span v-for="hall in halls" :key="hall.id" class="calendar-legend-item">
+        <span class="calendar-tools-label">Saal anzeigen</span>
+        <div class="calendar-legend" aria-label="Säle filtern">
+          <button
+            v-for="hall in halls"
+            :key="hall.id"
+            type="button"
+            class="calendar-legend-item"
+            :class="{ 'is-active': hallFilter === hall.id }"
+            @click="setHallFilter(hall.id)"
+          >
             <i class="calendar-color-dot" :style="{ backgroundColor: hall.color }" aria-hidden="true"></i>
             {{ hall.name }}
-          </span>
+          </button>
         </div>
       </div>
 
@@ -358,6 +361,12 @@
         filterCalendar() {
           this.selectedEvent = null;
           this.renderCalendar();
+        },
+
+        setHallFilter(filter) {
+          this.hallFilter = this.hallFilter === filter ? "alle" : filter;
+          console.log("[Kalender] Saalfilter geändert:", filter);
+          this.filterCalendar();
         },
 
         erstelleSichtbareKalenderEvents(fetchInfo) {

@@ -117,18 +117,9 @@
   margin: 42px auto 0;
 }
 
-.calendar-tools label {
+.calendar-tools-label {
   color: var(--muted);
   font-weight: 700;
-}
-
-.calendar-tools select {
-  min-width: 150px;
-  padding: 8px 10px;
-  color: var(--ink);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 4px;
 }
 
 .calendar-legend {
@@ -142,13 +133,54 @@
 .calendar-legend-item {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 7px;
+  padding: 5px 8px;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.86rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.48;
+}
+
+.calendar-legend-item.is-active {
+  color: var(--ink);
+  background: var(--paper);
+  border-color: var(--line);
+  opacity: 1;
+}
+
+.calendar-legend-item:hover,
+.calendar-legend-item:focus-visible {
+  color: var(--ink);
+  opacity: 1;
+  outline: 2px solid var(--club-red-soft);
+  outline-offset: 1px;
+}
+
+.calendar-legend-item.is-active .calendar-color-dot {
+  width: 13px;
+  height: 13px;
+}
+
+.calendar-legend-item:not(.is-active) .calendar-color-dot {
+  opacity: 0.55;
 }
 
 .calendar-color-dot {
   width: 10px;
   height: 10px;
+  flex: 0 0 auto;
   border-radius: 50%;
+}
+
+/* Keep the clickable legend items aligned as one compact control row. */
+.calendar-legend-item {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
 }
 
 .calendar-event-modal {
