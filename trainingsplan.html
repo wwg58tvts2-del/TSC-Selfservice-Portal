@@ -105,7 +105,6 @@
     import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
     const kalenderUrl = "/webhook/kalender";
-    const tage = ["", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
 
     function TrainingPlanApp() {
       return reactive({
@@ -210,7 +209,7 @@
           const stufe = String(gruppe.hp_leiststufe || gruppe.gzfld03 || gruppentext.leistungsstufe || "").trim();
           const normalisierteGruppe = {
             id: String(gruppe.gruid),
-            name: gruppe.grubez || "Training",
+            name: gruppe.gruppenname || "Training",
             bereich: String(bereich).trim(),
             stufe: String(stufe).trim(),
             alter: String(gruppe.hp_altersstufe || gruppentext.altersgruppe || "").trim(),
@@ -219,7 +218,7 @@
             notiz: String(gruppe.notiz || "").trim(),
             termine: (Array.isArray(gruppe.gruzar) ? gruppe.gruzar : []).map((termin, index) => ({
               id: `${gruppe.gruid}-${index}`,
-              tag: tage[Number(termin.wotag)] || "",
+              tag: termin.wochentag || "",
               start: String(termin.startzeit || "").slice(0, 5),
               ende: String(termin.endzeit || "").slice(0, 5),
               saal: termin.ortbez || termin.ortkb || ""

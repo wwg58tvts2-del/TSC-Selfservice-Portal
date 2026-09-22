@@ -7,7 +7,8 @@ Der Kalender verwendet aus jedem Objekt in `gruppen` nur die folgenden Felder.
 | Feld | Verwendung |
 | --- | --- |
 | `gruid` | Eindeutige Gruppen-ID für die interne Termin-ID und die Zuordnung des Gruppentermins. |
-| `grubez` | Name beziehungsweise Titel der Trainingsgruppe. Wenn leer, wird `Training` verwendet. |
+| `grubez` | Originalwert aus MGVO. Wird für die sichtbare Bezeichnung nicht mehr verwendet. |
+| `gruppenname` | Normalisierte sichtbare Bezeichnung der Trainingsgruppe. Wird für die Anzeige verwendet. |
 | `grutxt` | Beschreibung der Gruppe. Enthält bei manchen Gruppen zusätzlich beschriftete Werte für Leistungsstufe und Altersgruppe. |
 | `notiz` | Zusätzliche Notiz zum Gruppentermin. Wird in der Detailansicht als `Notiz` angezeigt. |
 | `trnameall` | Name der Trainerin oder des Trainers. |
@@ -27,7 +28,8 @@ Jeder Eintrag in `gruzar` erzeugt einen eigenen Gruppentermin.
 
 | Feld | Verwendung |
 | --- | --- |
-| `wotag` | Wochentag des Termins. `1` = Montag bis `7` = Sonntag. |
+| `wotag` | Originalwert aus MGVO. Wird intern für die Kalenderlogik verwendet; die Anzeige nutzt `wochentag`. |
+| `wochentag` | Normalisierte ausgeschriebene Wochentagsbezeichnung für die Anzeige. Wird bevorzugt vor der Umwandlung von `wotag` verwendet. |
 | `startzeit` | Startzeit des Termins, zum Beispiel `18:00:00`. |
 | `endzeit` | Endzeit des Termins, zum Beispiel `19:15:00`. |
 | `ortbez` | Name des Saals. Wenn leer, wird `ortkb` verwendet. |

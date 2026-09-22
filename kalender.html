@@ -206,7 +206,7 @@
               const freieBeschreibung = gruppentext.beschreibung;
               events.push({
                 terminId: `gruppe-${gruppe.gruid}-${index}`,
-                titel: gruppe.grubez || "Training",
+                titel: gruppe.gruppenname || "Training",
                 beschreibung: freieBeschreibung,
                 notiz: String(gruppe.notiz || "").trim(),
                 saal: { name: termin.ortbez || termin.ortkb || "" },
@@ -228,6 +228,23 @@
               });
             });
           });
+
+          const reservierungen = Array.isArray(daten?.reservierungen)
+            ? daten.reservierungen
+            : [];
+          reservierungen.forEach((reservierung) => {
+            events.push({
+              terminId: `reservierung-${reservierung.id}`,
+              titel: reservierung.titel || "Reservierung",
+              beschreibung: reservierung.beschreibung || "",
+              saal: { name: reservierung.saal || "" },
+              von: reservierung.von,
+              bis: reservierung.bis,
+              reservation: true
+            });
+          });
+
+          return events;
 
         },
 
@@ -262,23 +279,6 @@
           });
 
           return { leistungsstufe, altersgruppe, beschreibung: freieZeilen.join("\n") };
-
-          const reservierungen = Array.isArray(daten?.reservierungen)
-            ? daten.reservierungen
-            : [];
-          reservierungen.forEach((reservierung) => {
-            events.push({
-              terminId: `reservierung-${reservierung.id}`,
-              titel: reservierung.titel || "Reservierung",
-              beschreibung: reservierung.beschreibung || "",
-              saal: { name: reservierung.saal || "" },
-                von: reservierung.von,
-              bis: reservierung.bis,
-              reservation: true
-            });
-          });
-
-          return events;
         },
 
         renderCalendar() {
