@@ -110,9 +110,10 @@
 
 .calendar-tools {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-direction: column;
   flex-wrap: wrap;
-  gap: 12px 16px;
+  gap: 8px;
   max-width: 1080px;
   margin: 42px auto 0;
 }
@@ -126,6 +127,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px 14px;
+  width: 100%;
   color: var(--muted);
   font-size: 0.86rem;
 }

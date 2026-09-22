@@ -53,14 +53,14 @@
     <div v-if="!loading && !error && !events.length" class="calendar-state">Es wurden keine aktiven Termine gefunden.</div>
     <div>
       <div v-if="!loading && !error && events.length" class="calendar-tools">
-        <span class="calendar-tools-label">Saal anzeigen</span>
-        <div class="calendar-legend" aria-label="Säle filtern">
+        <span class="calendar-tools-label">Säle</span>
+        <div class="calendar-legend" aria-label="Säle ein- oder ausblenden">
           <button
             v-for="hall in halls"
             :key="hall.id"
             type="button"
             class="calendar-legend-item"
-            :class="{ 'is-active': hallFilter === hall.id }"
+            :class="{ 'is-active': selectedHalls.includes(hall.id) }"
             @click="setHallFilter(hall.id)"
           >
             <i class="calendar-color-dot" :style="{ backgroundColor: hall.color }" aria-hidden="true"></i>
@@ -110,7 +110,7 @@
         error: "",
         config: null,
         events: [],
-        hallFilter: "alle",
+        selectedHalls: [],
         selectedEvent: null,
         calendarInstance: null,
         ferienUndStornos: {
@@ -129,6 +129,7 @@
           console.log("[Kalender] load() gestartet");
           try {
             this.config = await this.ladeKonfiguration();
+            this.selectedHalls = this.halls.map((hall) => hall.id);
             console.log("[Kalender] fetch() an", kalenderUrl);
             const response = await fetch(kalenderUrl, {
               method: "GET",
@@ -364,8 +365,10 @@
         },
 
         setHallFilter(filter) {
-          this.hallFilter = this.hallFilter === filter ? "alle" : filter;
-          console.log("[Kalender] Saalfilter geändert:", filter);
+          this.selectedHalls = this.selectedHalls.includes(filter)
+            ? this.selectedHalls.filter((hallId) => hallId !== filter)
+            : [...this.selectedHalls, filter];
+          console.log("[Kalender] Säle geändert:", this.selectedHalls);
           this.filterCalendar();
         },
 
@@ -375,7 +378,7 @@
           const endDatum = new Date(fetchInfo.end);
 
           this.events
-            .filter((event) => this.hallFilter === "alle" || this.getHallId(event) === this.hallFilter)
+            .filter((event) => this.selectedHalls.includes(this.getHallId(event)))
             .forEach((event) => {
               if (!event.recurring) {
                 sichtbareEvents.push(this.erstelleFullCalendarEvent(event));
