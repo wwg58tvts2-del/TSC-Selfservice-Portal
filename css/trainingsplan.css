@@ -20,9 +20,6 @@
 }
 
 .training-intro {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
   max-width: 900px;
   margin: 46px auto 0;
 }
