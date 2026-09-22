@@ -68,7 +68,7 @@
 .training-filters label {
   display: flex;
   flex-direction: column;
-  flex: 1 1 0;
+  flex: 1 1 0% !important;
   min-width: 0;
   gap: 6px;
   color: var(--muted);
@@ -257,7 +257,7 @@
 
   .training-filters > label,
   .training-list {
-    flex-basis: 100%;
+    flex: 0 0 100% !important;
   }
 
   .training-list {
