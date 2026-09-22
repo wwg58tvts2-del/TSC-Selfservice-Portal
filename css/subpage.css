@@ -1,0 +1,9 @@
+.subpage-back {
+  display: inline-block;
+  margin-top: 28px;
+}
+
+.subpage-intro {
+  max-width: 900px;
+  margin: 46px auto 0;
+}

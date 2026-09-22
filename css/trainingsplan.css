@@ -8,7 +8,6 @@
 .training-back {
   color: var(--club-red-dark);
   border-color: var(--club-red);
-  margin-top: 28px;
   border-radius: 999px;
 }
 
@@ -17,11 +16,6 @@
   color: #ffffff;
   background: var(--club-red);
   border-color: var(--club-red);
-}
-
-.training-intro {
-  max-width: 900px;
-  margin: 46px auto 0;
 }
 
 .training-filters {
