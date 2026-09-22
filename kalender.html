@@ -226,6 +226,8 @@
                 gruppenId: String(gruppe.gruid),
                 eintragIndex: index,
                 kwRegel: gruppe.gzfld05 || "",
+                kursvon: gruppe.kursvon || "",
+                kursbis: gruppe.kursbis || "",
                 recurring: true
               });
             });
@@ -349,6 +351,7 @@
               while (datum < endDatum) {
                 if (
                   datum.getDay() === wochentag &&
+                  this.istTerminInnerhalbKurszeit(event, datum) &&
                   !this.istGruppenterminAusgenommen(event, datum) &&
                   this.istTerminInKalenderwoche(event, datum)
                 ) {
@@ -403,6 +406,17 @@
           );
 
           return storniert || inFerien;
+        },
+
+        istTerminInnerhalbKurszeit(event, datum) {
+          const datumText = this.datumAlsIso(datum);
+          const kursvon = String(event.kursvon || "").slice(0, 10);
+          const kursbis = String(event.kursbis || "").slice(0, 10);
+          const hatKursbeginn = kursvon && kursvon !== "0000-00-00";
+          const hatKursende = kursbis && kursbis !== "0000-00-00";
+
+          return (!hatKursbeginn || datumText >= kursvon) &&
+            (!hatKursende || datumText <= kursbis);
         },
 
         istTerminInKalenderwoche(event, datum) {
