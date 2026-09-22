@@ -69,7 +69,7 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 0;
-  width: 100%;
+  min-width: 0;
   gap: 6px;
   color: var(--muted);
   font-size: 0.82rem;
@@ -244,12 +244,6 @@
 .training-times li span:last-child {
   color: var(--club-red);
   text-align: right;
-}
-
-@media (max-width: 850px) {
-  .training-filters > label {
-    flex-basis: calc(50% - 0.75rem);
-  }
 }
 
 @media (max-width: 650px) {
