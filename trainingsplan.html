@@ -31,7 +31,6 @@
     <section class="training-intro">
       <p class="section-kicker">Orientierung</p>
       <h1>Trainingsplan</h1>
-      <p class="section-intro">Welche Gruppen gibt es, für wen sind sie geeignet und auf welchem Niveau wird trainiert?</p>
     </section>
 
     <div v-if="loading" class="lade-overlay" role="status" aria-live="polite">
@@ -56,24 +55,17 @@
           <input v-model="search" type="search" placeholder="Gruppe suchen ...">
         </label>
         <label>
-          <span>Bereich</span>
-          <select v-model="bereichFilter">
-            <option value="alle">Alle Bereiche</option>
-            <option v-for="bereich in bereiche" :key="bereich" :value="bereich">{{ bereich }}</option>
+          <span>Tag</span>
+          <select v-model="tagFilter">
+            <option value="alle">Alle Tage</option>
+            <option v-for="tag in tageFilter" :key="tag" :value="tag">{{ tag }}</option>
           </select>
         </label>
         <label>
-          <span>Leistungsstufe</span>
-          <select v-model="stufeFilter">
-            <option value="alle">Alle Stufen</option>
-            <option v-for="stufe in leistungsstufen" :key="stufe" :value="stufe">{{ stufe }}</option>
-          </select>
-        </label>
-        <label>
-          <span>Altersgruppe</span>
-          <select v-model="altersFilter">
-            <option value="alle">Alle Altersgruppen</option>
-            <option v-for="alter in altersgruppen" :key="alter" :value="alter">{{ alter }}</option>
+          <span>Trainer*in</span>
+          <select v-model="trainerFilter">
+            <option value="alle">Alle Trainer*innen</option>
+            <option v-for="trainer in trainerNamen" :key="trainer" :value="trainer">{{ trainer }}</option>
           </select>
         </label>
       </section>
@@ -129,9 +121,8 @@
         error: "",
         gruppen: [],
         search: "",
-        bereichFilter: "alle",
-        stufeFilter: "alle",
-        altersFilter: "alle",
+        tagFilter: "alle",
+        trainerFilter: "alle",
 
         async load() {
           try {
@@ -182,12 +173,12 @@
           return this.eindeutigeWerte("bereich");
         },
 
-        get leistungsstufen() {
-          return this.eindeutigeWerte("stufe");
+        get tageFilter() {
+          return [...new Set(this.gruppen.flatMap((gruppe) => gruppe.termine.map((termin) => termin.tag).filter(Boolean)))];
         },
 
-        get altersgruppen() {
-          return this.eindeutigeWerte("alter");
+        get trainerNamen() {
+          return this.eindeutigeWerte("trainer");
         },
 
         eindeutigeWerte(feld) {
@@ -199,10 +190,10 @@
           return this.gruppen.filter((gruppe) => {
             const passtSuche = !suchtext || [gruppe.name, gruppe.bereich, gruppe.stufe, gruppe.alter, gruppe.trainer, gruppe.beschreibung, gruppe.notiz]
               .join(" ").toLowerCase().includes(suchtext);
+            const passtTag = this.tagFilter === "alle" || gruppe.termine.some((termin) => termin.tag === this.tagFilter);
             return passtSuche &&
-              (this.bereichFilter === "alle" || gruppe.bereich === this.bereichFilter) &&
-              (this.stufeFilter === "alle" || gruppe.stufe === this.stufeFilter) &&
-              (this.altersFilter === "alle" || gruppe.alter === this.altersFilter);
+              passtTag &&
+              (this.trainerFilter === "alle" || gruppe.trainer === this.trainerFilter);
           });
         }
       });
