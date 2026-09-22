@@ -3,6 +3,11 @@
   margin: 0 auto;
 }
 
+#body-section {
+  max-width: 900px;
+  margin: 46px auto 0;
+}
+
 h1 {
   margin: 9px 0 12px;
   font-family: Georgia, "Times New Roman", serif;
