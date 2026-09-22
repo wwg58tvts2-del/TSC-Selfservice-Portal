@@ -1,0 +1,73 @@
+# Vom Kalender verwendete Gruppenfelder
+
+Der Kalender verwendet aus jedem Objekt in `gruppen` nur die folgenden Felder.
+
+## Felder aus `gruppen`
+
+| Feld | Verwendung |
+| --- | --- |
+| `gruid` | Eindeutige Gruppen-ID für die interne Termin-ID und die Zuordnung des Gruppentermins. |
+| `grubez` | Name beziehungsweise Titel der Trainingsgruppe. Wenn leer, wird `Training` verwendet. |
+| `grutxt` | Beschreibung der Gruppe. Daraus wird das `Leistungsniveau` als Fallback gelesen. |
+| `trnameall` | Name der Trainerin oder des Trainers. |
+| `inaktiv` | Wenn exakt `true`, wird die gesamte Gruppe nicht angezeigt. |
+| `hp_leiststufe` | Primäre Quelle für das Leistungsniveau. |
+| `hp_altersstufe` | Altersgruppe des Trainings. Dieses Feld wird direkt verwendet. |
+| `hp_kat` | Primäre Quelle für den Bereich beziehungsweise die Kategorie des Trainings. |
+| `gzfld05` | Steuert bei mehreren Einträgen den Wechsel zwischen geraden und ungeraden Kalenderwochen. |
+| `kursvon` | Frühestes Datum, an dem die Gruppentermine angezeigt werden. Der Tag ist eingeschlossen. |
+| `kursbis` | Letztes Datum, an dem die Gruppentermine angezeigt werden. Der Tag ist eingeschlossen. |
+| `kbez` | Fallback für den Bereich, wenn `hp_kat` leer ist. Ein führendes `Training ` wird dabei entfernt. |
+
+## Felder aus `gruppen[].gruzar`
+
+Jeder Eintrag in `gruzar` erzeugt einen eigenen Gruppentermin.
+
+| Feld | Verwendung |
+| --- | --- |
+| `wotag` | Wochentag des Termins. `1` = Montag bis `7` = Sonntag. |
+| `startzeit` | Startzeit des Termins, zum Beispiel `18:00:00`. |
+| `endzeit` | Endzeit des Termins, zum Beispiel `19:15:00`. |
+| `ortbez` | Name des Saals. Wenn leer, wird `ortkb` verwendet. |
+| `ortkb` | Alternative beziehungsweise kurze Saalbezeichnung. |
+
+## Sonderverarbeitung von Gruppenfeldern
+
+### `grutxt`
+
+Diese Angabe wird aus `grutxt` als eigener Wert gelesen:
+
+```text
+Leistungsniveau: Einsteiger & Fortgeschrittene
+```
+
+- `Leistungsniveau:` wird als Leistungsniveau angezeigt.
+- Der Wert darf direkt hinter dem Doppelpunkt oder in der nächsten Zeile stehen.
+- Andere Textzeilen bleiben die Beschreibung.
+- Wenn `hp_leiststufe` leer ist, wird der Wert aus `grutxt` hinter `Leistungsniveau:` als Fallback verwendet.
+
+### `gzfld05`
+
+Mögliche Werte:
+
+```text
+Erster Eintrag ist gerade KW
+Erster Eintrag ist ungerade KW
+```
+
+- Leer: Alle `gruzar`-Einträge werden jede Woche angezeigt.
+- `Erster Eintrag ist gerade KW`: Der erste Eintrag wird in geraden Kalenderwochen, der zweite in ungeraden Kalenderwochen angezeigt.
+- `Erster Eintrag ist ungerade KW`: Der erste Eintrag wird in ungeraden Kalenderwochen, der zweite in geraden Kalenderwochen angezeigt.
+
+### `kursvon` und `kursbis`
+
+Die Datumsgrenzen gelten einschließlich beider Tage.
+
+```json
+{
+  "kursvon": "2026-09-07",
+  "kursbis": "2026-09-21"
+}
+```
+
+Der Gruppentermin wird am 07., 14. und 21. September angezeigt. Leere Werte und `"0000-00-00"` bedeuten, dass keine entsprechende Grenze gesetzt ist.

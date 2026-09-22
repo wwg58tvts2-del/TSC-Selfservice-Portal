@@ -182,19 +182,16 @@
                 .map((zeile) => zeile.trim())
                 .filter(Boolean);
               const beschreibungsdetails = {
-                leistungsniveau: "",
-                altersstufe: ""
+                leistungsniveau: ""
               };
               const freieBeschreibungszeilen = [];
               let ausstehendesDetail = "";
               beschreibungszeilen.forEach((zeile) => {
-                const detail = zeile.match(/^(Leistungsniveau|Altersgruppe):\s*(.*)$/i);
+                const detail = zeile.match(/^Leistungsniveau:\s*(.*)$/i);
                 if (detail) {
-                  ausstehendesDetail = detail[1].toLowerCase() === "altersgruppe"
-                    ? "altersstufe"
-                    : "leistungsniveau";
-                  beschreibungsdetails[ausstehendesDetail] = detail[2];
-                  if (detail[2]) {
+                  ausstehendesDetail = "leistungsniveau";
+                  beschreibungsdetails.leistungsniveau = detail[1];
+                  if (detail[1]) {
                     ausstehendesDetail = "";
                   }
                   return;
@@ -206,8 +203,9 @@
                 }
                 freieBeschreibungszeilen.push(zeile);
               });
-              const leistungsniveau = beschreibungsdetails.leistungsniveau || gruppe.hp_leiststufe || "";
-              const altersstufe = beschreibungsdetails.altersstufe || gruppe.hp_altersstufe || "";
+              const leistungsniveau = gruppe.hp_leiststufe || beschreibungsdetails.leistungsniveau || "";
+              const altersstufe = gruppe.hp_altersstufe || "";
+              const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
               const freieBeschreibung = freieBeschreibungszeilen.join("\n");
               events.push({
                 terminId: `gruppe-${gruppe.gruid}-${index}`,
@@ -222,7 +220,7 @@
                 endzeit: termin.endzeit,
                 leistungsniveau,
                 altersstufe,
-                bereich: gruppe.hp_kat,
+                bereich,
                 gruppenId: String(gruppe.gruid),
                 eintragIndex: index,
                 kwRegel: gruppe.gzfld05 || "",
