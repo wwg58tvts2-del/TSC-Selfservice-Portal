@@ -23,7 +23,7 @@
   </header>
 
   <main id="training-app" v-scope="TrainingPlanApp()" @vue:mounted="load">
-    <a class="btn btn-outline-secondary training-back" href="index.html">
+    <a id="back-button" class="btn btn-outline-secondary training-back" href="index.html">
       <i class="bi bi-arrow-left" aria-hidden="true"></i>
       Zurück zum Portal
     </a>
@@ -46,18 +46,18 @@
         <label class="training-search">
           <span class="visually-hidden">Gruppen suchen</span>
           <i class="bi bi-search" aria-hidden="true"></i>
-          <input v-model="search" type="search" placeholder="Gruppe suchen ...">
+          <input v-model="search" @input="logFilterChange('Suche', search)" type="search" placeholder="Gruppe suchen ...">
         </label>
         <label>
           <span>Tag</span>
-          <select v-model="tagFilter">
+          <select v-model="tagFilter" @change="logFilterChange('Tag', tagFilter)">
             <option value="alle">Alle Tage</option>
             <option v-for="tag in tageFilter" :key="tag" :value="tag">{{ tag }}</option>
           </select>
         </label>
         <label>
           <span>Trainer*in</span>
-          <select v-model="trainerFilter">
+          <select v-model="trainerFilter" @change="logFilterChange('Trainer*in', trainerFilter)">
             <option value="alle">Alle Trainer*innen</option>
             <option v-for="trainer in trainerNamen" :key="trainer" :value="trainer">{{ trainer }}</option>
           </select>
@@ -119,32 +119,74 @@
         trainerFilter: "alle",
 
         async load() {
+          const start = performance.now();
+          console.group(`[Trainingsplan] Daten laden: ${kalenderUrl}`);
+          console.log("Ladevorgang gestartet");
+          console.log("Methode:", "GET");
+          console.log("Credentials:", "include (Cookies werden nicht geloggt)");
+          console.log("Cache:", "no-store");
           try {
-            const response = await fetch(kalenderUrl, {
-              credentials: "include",
-              cache: "no-store",
-              headers: { Accept: "application/json" }
-            });
-            const result = await response.json();
+            let response;
+            try {
+              response = await fetch(kalenderUrl, {
+                credentials: "include",
+                cache: "no-store",
+                headers: { Accept: "application/json" }
+              });
+            } catch (error) {
+              console.error("Netzwerkfehler beim Trainingsplan-Request:", error);
+              throw error;
+            }
+
+            const contentType = response.headers.get("content-type") || "";
+            console.log("Antwort erhalten nach:", `${Math.round(performance.now() - start)} ms`);
+            console.log("HTTP-Status:", response.status, response.statusText);
+            console.log("Content-Type:", contentType || "nicht gesetzt");
+
+            let result;
+            try {
+              result = contentType.includes("application/json")
+                ? await response.json()
+                : await response.text();
+            } catch (error) {
+              console.error("Antwort konnte nicht gelesen werden:", error);
+              throw error;
+            }
+
+            console.log("Response-Body:", result);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            if (!result || typeof result !== "object") throw new Error("Ungültige Trainingsplan-Antwort.");
+
             const daten = Array.isArray(result)
               ? result.reduce((acc, item) => ({ ...acc, ...(item || {}) }), {})
               : (result || {});
-            this.gruppen = (Array.isArray(daten.gruppen) ? daten.gruppen : [])
-              .filter((gruppe) => gruppe.inaktiv !== true)
-              .map((gruppe) => this.normalisiereGruppe(gruppe));
+            const alleGruppen = Array.isArray(daten.gruppen) ? daten.gruppen : [];
+            const aktiveGruppen = alleGruppen.filter((gruppe) => gruppe.inaktiv !== true);
+            console.log("JSON-Schlüssel:", Object.keys(daten));
+            console.log("Gruppen gesamt:", alleGruppen.length);
+            console.log("Inaktive Gruppen:", alleGruppen.length - aktiveGruppen.length);
+            console.log("Aktive Gruppen:", aktiveGruppen.length);
+            console.log("Reservierungen werden für den Trainingsplan ignoriert:", Array.isArray(daten.reservierungen) ? daten.reservierungen.length : 0);
+            this.gruppen = aktiveGruppen.map((gruppe) => this.normalisiereGruppe(gruppe));
+            console.log("Gruppen nach Normalisierung:", this.gruppen);
+            console.log("Bereiche:", this.eindeutigeWerte("bereich"));
+            console.log("Tage:", this.tageFilter);
+            console.log("Trainer*innen:", this.trainerNamen);
+            console.log("Trainingsplan erfolgreich verarbeitet.");
           } catch (error) {
             console.error("[Trainingsplan] Laden fehlgeschlagen:", error);
             this.error = "Der Trainingsplan konnte nicht geladen werden. Bitte später erneut versuchen.";
           } finally {
             this.loading = false;
+            console.log("Ladevorgang beendet nach:", `${Math.round(performance.now() - start)} ms`);
+            console.groupEnd();
           }
         },
 
         normalisiereGruppe(gruppe) {
           const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
           const stufe = String(gruppe.hp_leiststufe || gruppe.gzfld03 || "").trim();
-          return {
+          const normalisierteGruppe = {
             id: String(gruppe.gruid),
             name: gruppe.grubez || "Training",
             bereich: String(bereich).trim(),
@@ -161,6 +203,20 @@
               saal: termin.ortbez || termin.ortkb || ""
             }))
           };
+          console.log("[Trainingsplan] Gruppe normalisiert:", {
+            id: normalisierteGruppe.id,
+            name: normalisierteGruppe.name,
+            bereich: normalisierteGruppe.bereich,
+            leistungsstufe: normalisierteGruppe.stufe,
+            altersgruppe: normalisierteGruppe.alter,
+            trainer: normalisierteGruppe.trainer,
+            trainingszeiten: normalisierteGruppe.termine.length
+          });
+          return normalisierteGruppe;
+        },
+
+        logFilterChange(name, value) {
+          console.log("[Trainingsplan] Filter geändert:", name, value, "Verbleibende Gruppen:", this.gefilterteGruppen.length);
         },
 
         get tageFilter() {
