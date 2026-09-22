@@ -80,6 +80,7 @@
           <dl class="training-details">
             <div v-if="gruppe.stufe"><dt>Leistungsstufe</dt><dd>{{ gruppe.stufe }}</dd></div>
             <div v-if="gruppe.alter"><dt>Alter</dt><dd>{{ gruppe.alter }}</dd></div>
+            <div><dt>Beitrag</dt><dd>{{ gruppe.beitrag }}</dd></div>
             <div v-if="gruppe.trainer"><dt>Trainer*in</dt><dd>{{ gruppe.trainer }}</dd></div>
           </dl>
           <div v-if="gruppe.termine.length" class="training-times">

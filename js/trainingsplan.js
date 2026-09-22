@@ -109,6 +109,7 @@ function TrainingPlanApp() {
         name: gruppe.gruppenname || "Training",
         bereich: String(bereich).trim(),
         stufe: String(stufe).trim(),
+        beitrag: String(gruppe.beitrag || "-").trim() || "-",
         alter: String(gruppe.hp_altersstufe || gruppentext.altersgruppe || "").trim(),
         trainer: String(gruppe.trainer_vorname || "").trim(),
         beschreibung: gruppentext.beschreibung,
