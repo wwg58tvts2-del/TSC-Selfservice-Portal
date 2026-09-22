@@ -177,10 +177,11 @@
             const termine = Array.isArray(gruppe.gruzar) ? gruppe.gruzar : [];
             termine.forEach((termin, index) => {
               const wochentag = Number(termin.wotag);
-              const leistungsniveau = String(gruppe.hp_leiststufe || gruppe.gzfld03 || "").trim();
-              const altersstufe = gruppe.hp_altersstufe || "";
+              const gruppentext = this.leseGruppentext(gruppe.grutxt);
+              const leistungsniveau = String(gruppe.hp_leiststufe || gruppe.gzfld03 || gruppentext.leistungsstufe || "").trim();
+              const altersstufe = String(gruppe.hp_altersstufe || gruppentext.altersgruppe || "").trim();
               const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
-              const freieBeschreibung = String(gruppe.grutxt || "").trim();
+              const freieBeschreibung = gruppentext.beschreibung;
               events.push({
                 terminId: `gruppe-${gruppe.gruid}-${index}`,
                 titel: gruppe.grubez || "Training",
@@ -205,6 +206,40 @@
               });
             });
           });
+
+        },
+
+        leseGruppentext(text) {
+          const freieZeilen = [];
+          let leistungsstufe = "";
+          let altersgruppe = "";
+          let naechstesFeld = "";
+          const zeilen = String(text || "")
+            .replace(/\r/g, "")
+            .split("\n")
+            .map((zeile) => zeile.trim())
+            .filter(Boolean);
+
+          zeilen.forEach((zeile) => {
+            const treffer = zeile.match(/^(Leistungsniveau|Altersgruppe):\s*(.*)$/i);
+            if (treffer) {
+              naechstesFeld = treffer[1].toLowerCase() === "altersgruppe"
+                ? "altersgruppe"
+                : "leistungsstufe";
+              if (treffer[2]) {
+                if (naechstesFeld === "altersgruppe") altersgruppe = treffer[2];
+                else leistungsstufe = treffer[2];
+                naechstesFeld = "";
+              }
+              return;
+            }
+            if (naechstesFeld === "altersgruppe") altersgruppe = zeile;
+            else if (naechstesFeld === "leistungsstufe") leistungsstufe = zeile;
+            else freieZeilen.push(zeile);
+            naechstesFeld = "";
+          });
+
+          return { leistungsstufe, altersgruppe, beschreibung: freieZeilen.join("\n") };
 
           const reservierungen = Array.isArray(daten?.reservierungen)
             ? daten.reservierungen

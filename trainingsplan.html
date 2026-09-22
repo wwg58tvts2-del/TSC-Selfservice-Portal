@@ -77,6 +77,7 @@
           <p v-if="gruppe.beschreibung" class="training-description">{{ gruppe.beschreibung }}</p>
           <p v-if="gruppe.notiz" class="training-note"><i class="bi bi-info-circle" aria-hidden="true"></i>{{ gruppe.notiz }}</p>
           <dl class="training-details">
+            <div><dt>Gruppen-ID</dt><dd>{{ gruppe.id }}</dd></div>
             <div v-if="gruppe.alter"><dt>Alter</dt><dd>{{ gruppe.alter }}</dd></div>
             <div v-if="gruppe.trainer"><dt>Trainer*in</dt><dd>{{ gruppe.trainer }}</dd></div>
           </dl>
@@ -185,15 +186,16 @@
 
         normalisiereGruppe(gruppe) {
           const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
-          const stufe = String(gruppe.hp_leiststufe || gruppe.gzfld03 || "").trim();
+          const gruppentext = this.leseGruppentext(gruppe.grutxt);
+          const stufe = String(gruppe.hp_leiststufe || gruppe.gzfld03 || gruppentext.leistungsstufe || "").trim();
           const normalisierteGruppe = {
             id: String(gruppe.gruid),
             name: gruppe.grubez || "Training",
             bereich: String(bereich).trim(),
             stufe: String(stufe).trim(),
-            alter: String(gruppe.hp_altersstufe || "").trim(),
+            alter: String(gruppe.hp_altersstufe || gruppentext.altersgruppe || "").trim(),
             trainer: String(gruppe.trnameall || "").trim(),
-            beschreibung: String(gruppe.grutxt || "").trim(),
+            beschreibung: gruppentext.beschreibung,
             notiz: String(gruppe.notiz || "").trim(),
             termine: (Array.isArray(gruppe.gruzar) ? gruppe.gruzar : []).map((termin, index) => ({
               id: `${gruppe.gruid}-${index}`,
@@ -213,6 +215,39 @@
             trainingszeiten: normalisierteGruppe.termine.length
           });
           return normalisierteGruppe;
+        },
+
+        leseGruppentext(text) {
+          const freieZeilen = [];
+          let leistungsstufe = "";
+          let altersgruppe = "";
+          let naechstesFeld = "";
+          const zeilen = String(text || "")
+            .replace(/\r/g, "")
+            .split("\n")
+            .map((zeile) => zeile.trim())
+            .filter(Boolean);
+
+          zeilen.forEach((zeile) => {
+            const treffer = zeile.match(/^(Leistungsniveau|Altersgruppe):\s*(.*)$/i);
+            if (treffer) {
+              naechstesFeld = treffer[1].toLowerCase() === "altersgruppe"
+                ? "altersgruppe"
+                : "leistungsstufe";
+              if (treffer[2]) {
+                if (naechstesFeld === "altersgruppe") altersgruppe = treffer[2];
+                else leistungsstufe = treffer[2];
+                naechstesFeld = "";
+              }
+              return;
+            }
+            if (naechstesFeld === "altersgruppe") altersgruppe = zeile;
+            else if (naechstesFeld === "leistungsstufe") leistungsstufe = zeile;
+            else freieZeilen.push(zeile);
+            naechstesFeld = "";
+          });
+
+          return { leistungsstufe, altersgruppe, beschreibung: freieZeilen.join("\n") };
         },
 
         logFilterChange(name, value) {
