@@ -102,7 +102,7 @@ function TrainingPlanApp() {
     normalisiereGruppe(gruppe) {
       const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
       const gruppentext = this.leseGruppentext(gruppe.grutxt);
-      const stufe = String(gruppe.hp_leiststufe || gruppe.gzfld03 || gruppentext.leistungsstufe || "").trim();
+      const stufe = String(gruppe.hp_leiststufe || gruppe.gzfld03 || "").trim();
       const normalisierteGruppe = {
         id: String(gruppe.gruid),
         name: gruppe.gruppenname || "Training",

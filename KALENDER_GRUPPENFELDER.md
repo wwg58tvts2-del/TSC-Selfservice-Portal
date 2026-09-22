@@ -54,14 +54,14 @@ Die Leistungsstufe wird in dieser Reihenfolge gelesen:
 | Kategorie (HP) | `hp_kat` | Primärer Bereich |
 | Zusatzfeld 1: Faktor (%) für Trainerkosten | `gzfld01` | Nicht verwendet |
 | Zusatzfeld 2: Berechnung | `gzfld02` | Nicht verwendet |
-| Zusatzfeld 3: Leistungsstufe | `gzfld03` | Wird aktuell nicht für die Leistungsstufe verwendet |
+| Zusatzfeld 3: Leistungsstufe | `gzfld03` | Fallback für die Leistungsstufe |
 | Zusatzfeld 4: Altersklasse | `gzfld04` | Nicht verwendet |
 | Zusatzfeld 5: Kalenderwoche | `gzfld05` | Gerade/ungerade Kalenderwoche |
 | Zusatzfeld 6: Trainingseinheiten | `gzfld06` | Nicht verwendet |
 | Zusatzfeld 7: Zielgruppe | `gzfld07` | Nicht verwendet |
 | Zusatzfeld 8: Ausblenden im | `gzfld08` | Nicht verwendet |
 
-Für die Leistungsstufe gilt daher: zuerst `hp_leiststufe` (Leistungsstufe (HP)), danach `gzfld03` (Zusatzfeld 3). Wenn beide Felder leer sind, wird der Wert hinter `Leistungsniveau:` aus `grutxt` verwendet.
+Für die Leistungsstufe gilt daher ausschließlich: zuerst `hp_leiststufe` (Leistungsstufe (HP)), danach `gzfld03` (Zusatzfeld 3). `grutxt` wird dafür nicht verwendet.
 
 ### `grutxt`
 

@@ -103,7 +103,7 @@
             termine.forEach((termin, index) => {
               const wochentag = Number(termin.wotag);
               const gruppentext = this.leseGruppentext(gruppe.grutxt);
-              const leistungsniveau = String(gruppe.hp_leiststufe || gruppe.gzfld03 || gruppentext.leistungsstufe || "").trim();
+              const leistungsniveau = String(gruppe.hp_leiststufe || gruppe.gzfld03 || "").trim();
               const altersstufe = String(gruppe.hp_altersstufe || gruppentext.altersgruppe || "").trim();
               const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
               const freieBeschreibung = gruppentext.beschreibung;
