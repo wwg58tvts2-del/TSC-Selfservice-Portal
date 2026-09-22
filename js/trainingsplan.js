@@ -103,22 +103,23 @@ function TrainingPlanApp() {
       const bereich = gruppe.hp_kat || String(gruppe.kbez || "").replace(/^Training\s+/i, "");
       const gruppentext = this.leseGruppentext(gruppe.grutxt);
       const stufe = String(gruppe.hp_leiststufe || gruppe.gzfld03 || "").trim();
+      const termin = Array.isArray(gruppe.gruzar) ? gruppe.gruzar[0] : null;
       const normalisierteGruppe = {
         id: String(gruppe.gruid),
         name: gruppe.gruppenname || "Training",
         bereich: String(bereich).trim(),
         stufe: String(stufe).trim(),
         alter: String(gruppe.hp_altersstufe || gruppentext.altersgruppe || "").trim(),
-        trainer: String(gruppe.trnameall || "").trim(),
+        trainer: String(gruppe.trainer_vorname || "").trim(),
         beschreibung: gruppentext.beschreibung,
         notiz: String(gruppe.notiz || "").trim(),
-        termine: (Array.isArray(gruppe.gruzar) ? gruppe.gruzar : []).map((termin, index) => ({
-          id: `${gruppe.gruid}-${index}`,
+        termine: termin ? [{
+          id: `${gruppe.gruid}-0`,
           tag: termin.wochentag || "",
           start: String(termin.startzeit || "").slice(0, 5),
           ende: String(termin.endzeit || "").slice(0, 5),
           saal: termin.ortbez || termin.ortkb || ""
-        }))
+        }] : []
       };
       console.log("[Trainingsplan] Gruppe normalisiert:", normalisierteGruppe);
       return normalisierteGruppe;
