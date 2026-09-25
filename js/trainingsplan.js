@@ -79,7 +79,16 @@ function TrainingPlanApp() {
     },
 
     async ladeKonfiguration() {
-      const response = await fetch("/webhook/portal-config", {
+      const lokaleConfigResponse = await fetch("config.local.json", {
+        credentials: "include",
+        cache: "no-store",
+        headers: { Accept: "application/json" }
+      });
+      const lokaleConfig = await lokaleConfigResponse.json();
+      if (!lokaleConfigResponse.ok) throw new Error(`Lokale Konfiguration HTTP ${lokaleConfigResponse.status}`);
+
+      const configUrl = lokaleConfig.configUrl || "/webhook/selfservice-config";
+      const response = await fetch(configUrl, {
         credentials: "include",
         cache: "no-store",
         headers: { Accept: "application/json" }

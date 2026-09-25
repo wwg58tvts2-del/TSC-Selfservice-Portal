@@ -76,9 +76,18 @@ export const state = reactive({
   async ladeConfig() {
     console.log("[Serviceportal] ladeConfig() gestartet");
     try {
+      const lokaleConfig =
+        await ladeConfigDaten(
+          "config.local.json"
+        );
+
+      const configUrl =
+        lokaleConfig.configUrl ||
+        "/webhook/selfservice-config";
+
       this.config =
         await ladeConfigDaten(
-          "/webhook/portal-config"
+          configUrl
         );
 
       console.log("[Serviceportal] Konfiguration im State übernommen");
