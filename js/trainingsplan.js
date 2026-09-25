@@ -79,7 +79,7 @@ function TrainingPlanApp() {
     },
 
     async ladeKonfiguration() {
-      const lokaleConfigResponse = await fetch("config.local.json", {
+      const lokaleConfigResponse = await fetch("config.json", {
         credentials: "include",
         cache: "no-store",
         headers: { Accept: "application/json" }

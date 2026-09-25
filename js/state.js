@@ -76,19 +76,31 @@ export const state = reactive({
   async ladeConfig() {
     console.log("[Serviceportal] ladeConfig() gestartet");
     try {
-      const lokaleConfig =
+      const konfigurationsQuelle =
         await ladeConfigDaten(
-          "config.local.json"
+          "config.json"
         );
 
       const configUrl =
-        lokaleConfig.configUrl ||
+        konfigurationsQuelle.configUrl ||
         "/webhook/selfservice-config";
 
-      this.config =
-        await ladeConfigDaten(
-          configUrl
+      try {
+        this.config =
+          await ladeConfigDaten(
+            configUrl
+          );
+      } catch (webhookError) {
+        console.warn(
+          `[Serviceportal] ${configUrl} nicht erreichbar, verwende config.local.json:`,
+          webhookError
         );
+
+        this.config =
+          await ladeConfigDaten(
+            "config.local.json"
+          );
+      }
 
       console.log("[Serviceportal] Konfiguration im State übernommen");
 
