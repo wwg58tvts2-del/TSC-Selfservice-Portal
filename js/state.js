@@ -82,25 +82,12 @@ export const state = reactive({
         );
 
       const configUrl =
-        konfigurationsQuelle.configUrl ||
-        "/webhook/selfservice-config";
+        konfigurationsQuelle.configUrl;
 
-      try {
-        this.config =
-          await ladeConfigDaten(
-            configUrl
-          );
-      } catch (webhookError) {
-        console.warn(
-          `[Serviceportal] ${configUrl} nicht erreichbar, verwende config.local.json:`,
-          webhookError
+      this.config =
+        await ladeConfigDaten(
+          configUrl
         );
-
-        this.config =
-          await ladeConfigDaten(
-            "config.local.json"
-          );
-      }
 
       console.log("[Serviceportal] Konfiguration im State übernommen");
 
@@ -283,7 +270,9 @@ export const state = reactive({
 
     try {
       const person =
-        await holeMemberStatus();
+        await holeMemberStatus(
+          this.config?.memberStatusUrl
+        );
 
       this.person = person;
 

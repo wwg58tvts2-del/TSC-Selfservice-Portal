@@ -1,7 +1,5 @@
     import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
-    const kalenderUrl = "/webhook/kalender";
-
     function CalendarApp() {
       return reactive({
         loading: true,
@@ -28,8 +26,9 @@
           try {
             this.config = await this.ladeKonfiguration();
             this.selectedHalls = this.halls.map((hall) => hall.id);
-            console.log("[Kalender] fetch() an", kalenderUrl);
-            const response = await fetch(kalenderUrl, {
+            const kalenderEndpoint = this.config?.calendarUrl;
+            console.log("[Kalender] fetch() an", kalenderEndpoint);
+            const response = await fetch(kalenderEndpoint, {
               method: "GET",
               credentials: "include",
               cache: "no-store",

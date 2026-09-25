@@ -85,8 +85,8 @@ export async function ladeConfigDaten(url) {
   return result;
 }
 
-export async function holeMemberStatus() {
-  const response = await fetch("/webhook/me", {
+export async function holeMemberStatus(url) {
+  const response = await fetch(url, {
     method: "GET",
     credentials: "include",
     cache: "no-store"
@@ -97,7 +97,7 @@ export async function holeMemberStatus() {
     ? await response.json()
     : await response.text();
 
-  loggeResponse("/webhook/me", response, result);
+  loggeResponse(url, response, result);
 
   if (response.status === 401 || response.status === 403) {
     return null;
@@ -126,8 +126,8 @@ export async function holeMemberStatus() {
 }
 
 export async function sendeLogout(config = {}) {
-  const webhookUrl = config.webhookUrl || "/webhook/logout";
-  const method = config.method || "GET";
+  const webhookUrl = config.webhookUrl;
+  const method = config.method;
 
   const response = await fetch(webhookUrl, {
     method,

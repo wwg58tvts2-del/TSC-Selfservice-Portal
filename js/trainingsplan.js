@@ -1,7 +1,5 @@
 import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
-const kalenderUrl = "/webhook/kalender";
-
 function TrainingPlanApp() {
   return reactive({
     loading: true,
@@ -14,16 +12,17 @@ function TrainingPlanApp() {
 
     async load() {
       const start = performance.now();
-      console.group(`[Trainingsplan] Daten laden: ${kalenderUrl}`);
+      console.group("[Trainingsplan] Daten laden");
       console.log("Ladevorgang gestartet");
       console.log("Methode:", "GET");
       console.log("Credentials:", "include (Cookies werden nicht geloggt)");
       console.log("Cache:", "no-store");
       try {
         this.config = await this.ladeKonfiguration();
+        const kalenderEndpoint = this.config?.calendarUrl;
         let response;
         try {
-          response = await fetch(kalenderUrl, {
+          response = await fetch(kalenderEndpoint, {
             credentials: "include",
             cache: "no-store",
             headers: { Accept: "application/json" }
