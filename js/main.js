@@ -1,5 +1,5 @@
 import {createApp} from "https://unpkg.com/petite-vue?module";
-import {state} from "./state.js?v=20260921-auth-poll-2";
+import {state} from "./state.js?v=20260925-config-source-1";
 
 
 // Bestehende Form.io-Skripte rufen
