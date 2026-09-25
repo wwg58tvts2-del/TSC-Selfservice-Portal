@@ -159,44 +159,18 @@
   font-size: 0.9rem;
 }
 
-.training-times {
-  margin-top: 18px;
-  padding-top: 15px;
-  border-top: 1px solid var(--line);
-}
-
-.training-times > p {
-  margin: 0 0 8px;
-  color: var(--club-red);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.training-times ul {
+.training-time-values {
   display: grid;
   gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
-.training-times li {
-  display: grid;
-  grid-template-columns: 100px 1fr auto;
-  gap: 8px;
+.training-time-values span {
   color: var(--muted);
-  font-size: 0.88rem;
 }
 
-.training-times li strong {
+.training-time-values strong {
   color: var(--ink);
-}
-
-.training-times li span:last-child {
-  color: var(--club-red);
-  text-align: right;
+  margin-right: 8px;
 }
 
 @media (max-width: 650px) {
@@ -213,12 +187,4 @@
     grid-template-columns: 1fr;
   }
 
-  .training-times li {
-    grid-template-columns: 86px 1fr;
-  }
-
-  .training-times li span:last-child {
-    grid-column: 2;
-    text-align: left;
-  }
 }

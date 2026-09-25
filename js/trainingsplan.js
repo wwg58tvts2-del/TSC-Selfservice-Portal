@@ -126,8 +126,7 @@ function TrainingPlanApp() {
           id: `${gruppe.gruid}-0`,
           tag: termin.wochentag || "",
           start: String(termin.startzeit || "").slice(0, 5),
-          ende: String(termin.endzeit || "").slice(0, 5),
-          saal: termin.ortbez || termin.ortkb || ""
+          ende: String(termin.endzeit || "").slice(0, 5)
         }] : []
       };
       console.log("[Trainingsplan] Gruppe normalisiert:", normalisierteGruppe);

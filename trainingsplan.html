@@ -82,17 +82,16 @@
             <div v-if="gruppe.alter"><dt>Alter</dt><dd>{{ gruppe.alter }}</dd></div>
             <div><dt>Beitrag</dt><dd>{{ gruppe.beitrag }}</dd></div>
             <div v-if="gruppe.trainer"><dt>Trainer*in</dt><dd>{{ gruppe.trainer }}</dd></div>
+            <div v-if="gruppe.termine.length">
+              <dt>Trainingszeit</dt>
+              <dd class="training-time-values">
+                <span v-for="termin in gruppe.termine" :key="termin.id">
+                  <strong>{{ termin.tag }}</strong>
+                  {{ termin.start }} - {{ termin.ende }}
+                </span>
+              </dd>
+            </div>
           </dl>
-          <div v-if="gruppe.termine.length" class="training-times">
-            <p>Trainingszeiten</p>
-            <ul>
-              <li v-for="termin in gruppe.termine" :key="termin.id">
-                <strong>{{ termin.tag }}</strong>
-                <span>{{ termin.start }} - {{ termin.ende }}</span>
-                <span v-if="termin.saal">{{ termin.saal }}</span>
-              </li>
-            </ul>
-          </div>
         </article>
       </section>
     </div>
@@ -104,6 +103,6 @@
     </nav>
   </footer>
 
-  <script type="module" src="js/trainingsplan.js?v=20260922-2"></script>
+  <script type="module" src="js/trainingsplan.js?v=20260925-time-only-1"></script>
 </body>
 </html>
