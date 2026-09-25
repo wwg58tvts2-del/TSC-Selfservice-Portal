@@ -1,5 +1,5 @@
 import {createApp} from "https://unpkg.com/petite-vue?module";
-import {state} from "./state.js?v=20260925-config-source-1";
+import {state} from "./state.js?v=20260925-logout-selection-1";
 
 
 // Bestehende Form.io-Skripte rufen

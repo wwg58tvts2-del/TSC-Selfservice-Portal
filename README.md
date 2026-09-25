@@ -204,7 +204,7 @@ Dieser Abschnitt wird über `/webhook/portal-config` geliefert. Pfad und Methode
 
 Bei HTTP-Erfolg und `erfolgreich: true` wird die lokale Person entfernt. Auch `erfolgreich: false` mit `status: "nicht_angemeldet"` entfernt sie, einschließlich entsprechender HTTP-Fehlerantworten. Andere Fehler behalten die Person bei. Die oben dokumentierte JSON-Antwort „Anmeldung erforderlich“ ist dafür geeignet.
 
-Der Logout verarbeitet keine Datei. Die Meldung kehrt nicht automatisch zur Auswahl zurück. Das Backend muss die Sitzung beziehungsweise den Cookie beenden; das Entfernen der lokalen Person allein tut dies nicht.
+Der Logout verarbeitet keine Datei. Bei bestätigter Abmeldung oder `status: "nicht_angemeldet"` wird die Form.io-Instanz geschlossen und zur Formularauswahl zurückgekehrt. Die Formularliste wird anhand des nun abgemeldeten Status neu berechnet. Bei anderen Fehlern bleiben Person und aktuelle Ansicht erhalten. Das Backend muss die Sitzung beziehungsweise den Cookie beenden; das Entfernen der lokalen Person allein tut dies nicht.
 
 ## Globale Funktionen und Fehlersuche
 

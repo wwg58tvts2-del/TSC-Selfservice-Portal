@@ -29,10 +29,12 @@ Das Reservierungs-Panel wird über `panel.resetValue()` zurückgesetzt, danach `
 ## Logout
 
 `memberLogout` enthält nur `webhookUrl`, `method` und `ladeText`. Defaults für Pfad und Methode bleiben `/webhook/logout` und GET. Kein Request-Body. Bei HTTP-Erfolg und `erfolgreich: true` lokale Person entfernen; ebenso bei `erfolgreich: false` und `status: "nicht_angemeldet"`, auch im HTTP-Fehlerfall. Andere Fehler behalten die Person. Keine Dateiverarbeitung oder automatische Rücknavigation. Die Sitzung beendet das Backend.
+`memberLogout` enthält nur `webhookUrl`, `method` und `ladeText`. Defaults für Pfad und Methode bleiben `/webhook/logout` und GET. Kein Request-Body. Bei HTTP-Erfolg und `erfolgreich: true` lokale Person entfernen; ebenso bei `erfolgreich: false` und `status: "nicht_angemeldet"`, auch im HTTP-Fehlerfall. In beiden Fällen Form.io-Instanz zerstören und zur Auswahl zurückkehren; `sichtbareFormulare` berechnet die für den Gaststatus passenden Einträge reaktiv neu. Andere Fehler behalten Person und Ansicht. Keine Dateiverarbeitung. Die Sitzung beendet das Backend.
 
 ## Bestehende Grenzen und Prüfung
 
 Sichtbarkeit ersetzt keine Backend-Berechtigung. `active` filtert die Auswahl, nicht alle direkten Öffnungswege. Der `popstate`-Handler prüft Sichtbarkeit nicht erneut. Die Start-URL sucht nur in `forms.items`. Logout schließt das aktuelle Formular nicht automatisch.
+Sichtbarkeit ersetzt keine Backend-Berechtigung. `active` filtert die Auswahl, nicht alle direkten Öffnungswege. Der `popstate`-Handler prüft Sichtbarkeit nicht erneut. Die Start-URL sucht nur in `forms.items`.
 
 Die Versionskennung in HTML, lokalen Modulimporten und Konfigurationsabruf konsistent halten. Syntax, JSON, Erfolgs-/Fehlerfälle, Callback-Reihenfolge, Zustand und Cleanup prüfen. Simulierte Tests nicht als Live-Tests ausgeben. Response-Logging kann personenbezogene Inhalte enthalten.
 

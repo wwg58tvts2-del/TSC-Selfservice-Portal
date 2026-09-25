@@ -331,6 +331,7 @@ export const state = reactive({
 
       if (result.erfolgreich === true || result.status === "nicht_angemeldet") {
         this.person = null;
+        this.zurueck();
       }
 
       this.zeigeServerMeldung(result, false);
@@ -342,6 +343,7 @@ export const state = reactive({
 
       if (result?.erfolgreich === false && result.status === "nicht_angemeldet") {
         this.person = null;
+        this.zurueck();
       }
 
       if (result) {
