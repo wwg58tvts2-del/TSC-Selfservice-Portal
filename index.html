@@ -100,24 +100,6 @@
 
       <p v-if="warnung" class="alert alert-warning" role="alert">{{ warnung }}</p>
 
-      <section v-if="!person && config?.memberLogin" class="member-login-guide" aria-labelledby="member-login-guide-title">
-        <div class="member-login-guide-heading">
-          <h2 id="member-login-guide-title">Mitglieder Login</h2>
-        </div>
-        <div class="member-login-guide-content">
-          <h3>Anmeldung zum Mitgliederbereich</h3>
-          <p>Über den Mitgliederbereich kannst Du auf persönliche Online-Services des Tanzsportclub Dortmund zugreifen und beispielsweise Deine hinterlegten Daten einsehen oder Änderungen beantragen. Für die Anmeldung benötigst Du kein dauerhaftes Passwort.</p>
-          <h4>So funktioniert die Anmeldung</h4>
-          <ol>
-            <li>Gib Deine Mitgliedsnummer ein und fordere ein Einmalpasswort an.</li>
-            <li>Wir senden das Einmalpasswort an die E-Mail-Adresse, die zu Deiner Mitgliedschaft hinterlegt ist.</li>
-            <li>Gib das Einmalpasswort ein und melde Dich an.</li>
-            <li>Danach werden Dir die für Dich verfügbaren Online-Services angezeigt.</li>
-          </ol>
-          <p class="member-login-guide-note">Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.</p>
-        </div>
-      </section>
-
       <section v-if="sichtbareFormulare.length" id="forms-section">
         <div class="section-divider" aria-hidden="true"></div>
         <p class="section-kicker">{{ config?.forms?.section?.kicker }}</p>
@@ -219,6 +201,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=20260926-member-login-guide-2"></script>
+  <script type="module" src="js/main.js?v=20260926-login-dialog-1"></script>
 </body>
 </html>

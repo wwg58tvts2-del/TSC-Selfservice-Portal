@@ -1,5 +1,5 @@
 import {createApp} from "https://unpkg.com/petite-vue?module";
-import {state} from "./state.js?v=20260926-member-login-guide-2";
+import {state} from "./state.js?v=20260926-login-dialog-1";
 
 
 // Bestehende Form.io-Skripte rufen

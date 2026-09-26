@@ -45,7 +45,7 @@ Das Frontend filtert diese Listen nicht nach `active` oder `sichtbarkeit`; es ze
 
 `main.js` veröffentlicht die globalen Funktionen, mountet Petite Vue und ruft `state.init()` auf. Nach dem Laden der Konfiguration wartet das Portal auf die stille Prüfung von `/webhook/me` und wertet anschließend `?form=...` aus.
 
-Auf der Auswahlseite erscheint für abgemeldete Personen ein nativer Mitglieder-Login-Hinweis mit dem Ablauf der Einmalpasswort-Anmeldung. Der Button öffnet das bestehende Form.io-Login über `memberLogin.id`. Nach `submitDone` prüft das Portal `/webhook/me`; bei bestätigtem Login wird die Form.io-Ansicht geschlossen und die Auswahl mit dem angemeldeten Status angezeigt. `/webhook/me` erwartet eine Person und `gefunden: true` oder `erfolgreich: true`:
+Der Loginbutton oben rechts öffnet das Form.io-Login über `memberLogin.id`; der dort gepflegte Hinweistext erscheint damit nur im Loginfenster. Nach `submitDone` prüft das Portal `/webhook/me`; bei bestätigtem Login wird die Form.io-Ansicht geschlossen und die Auswahl mit dem angemeldeten Status angezeigt. `/webhook/me` erwartet eine Person und `gefunden: true` oder `erfolgreich: true`:
 
 ```json
 {
