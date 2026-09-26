@@ -1,6 +1,6 @@
 # Serviceportal – Codepflege
 
-Stand: 20.09.2026, Version `20260920-storno-3`. Die vollständige Funktionsbeschreibung und JSON-Beispiele stehen in [README.md](README.md).
+Stand: 26.09.2026, Version `20260926-member-login-guide-1`. Die vollständige Funktionsbeschreibung und JSON-Beispiele stehen in [README.md](README.md).
 
 ## Architektur und Stil
 
@@ -19,6 +19,8 @@ HTTP-Fehler behalten das JSON als `error.result`. Dadurch werden Servertexte auc
 Die Member-Prüfung und sonstigen lokalen UI-Meldungen sind separate Abläufe und wurden nicht auf diese Regel umgestellt. `/webhook/me` erwartet `person` und `gefunden: true` oder `erfolgreich: true`; Arrays werden weiterhin akzeptiert. Eine spätere fehlgeschlagene Prüfung löscht eine vorhandene Person nicht automatisch.
 
 ## Formulare
+
+Der Mitglieder-Login-Hinweis steht nativ auf der Auswahlseite. Seine Schaltfläche öffnet das über `memberLogin.id` konfigurierte Form.io-Login. Nach `submitDone` aktualisiert `/webhook/me` den Status; nur bei bestätigter Person wird die Form.io-Ansicht geschlossen und die Portal-Auswahl geöffnet.
 
 `window.sendeFormular(instance, config)` reicht beide Argumente unverändert weiter. Optionen: `webhookUrl`, `method` (Standard POST), `ladeText`, `zurueckNachErfolg` (Standard true), `onSuccess`. `fehlerTitel` und `fehlerNachricht` werden nicht mehr verwendet.
 

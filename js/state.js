@@ -6,7 +6,7 @@ import {
   holeMemberStatus,
   sendeLogout,
   sendeFormularRequest
-} from "./api.js?v=20260926-config-all-items-1";
+} from "./api.js?v=20260926-member-login-guide-1";
 
 import {
   leseFormIdAusUrl,
@@ -372,13 +372,17 @@ export const state = reactive({
           container,
           formUrl,
           {
-            onSubmitDone: () => {
+            onSubmitDone: async () => {
               if (
                 this.config
                   ?.memberLogin
                   ?.id === form.id
               ) {
-                this.ladeMemberDaten();
+                const person = await this.ladeMemberDaten();
+
+                if (person) {
+                  this.zurueck();
+                }
               }
 
               window.scrollTo({
