@@ -172,10 +172,10 @@
         <section class="member-login-step-card">
           <div class="member-login-step-heading">
             <span class="member-login-step-number">Schritt 1</span>
-            <h2>Statusgruppe und Kennung</h2>
+            <h2>Wähle deine Statusgruppe</h2>
           </div>
           <fieldset class="member-login-status-group" :disabled="memberLoginBusy">
-            <legend>Wähle deine Statusgruppe aus</legend>
+            <legend class="visually-hidden">Statusgruppe</legend>
             <label class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === 'mitglied' }">
               <input type="radio" name="memberStatusGroup" value="mitglied" :checked="memberLoginDaten.statusGruppe === 'mitglied'" @change="waehleMemberStatusgruppe('mitglied')">
               Mitglied
@@ -185,6 +185,14 @@
               Trainer*in
             </label>
           </fieldset>
+        </section>
+
+        <section v-if="memberLoginDaten.statusGruppe" class="member-login-step-card">
+          <div class="member-login-step-heading">
+            <span class="member-login-step-number">Schritt 2</span>
+            <h2>Kennung eingeben</h2>
+          </div>
+          <p class="member-login-step-copy">Wir senden den Code an die E-Mail-Adresse, die zu Deiner Mitgliedschaft hinterlegt ist.</p>
           <div v-if="memberLoginDaten.statusGruppe === 'mitglied'" class="member-login-field">
             <label class="form-label" for="member-number">Mitgliedsnummer</label>
             <input id="member-number" v-model="memberLoginDaten.mgnr" class="form-control" type="text" inputmode="numeric" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
@@ -193,31 +201,23 @@
             <label class="form-label" for="trainer-id">Trainer-ID</label>
             <input id="trainer-id" v-model="memberLoginDaten.trainerId" class="form-control" type="text" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
           </div>
-        </section>
-
-        <section class="member-login-step-card">
-          <div class="member-login-step-heading">
-            <span class="member-login-step-number">Schritt 2</span>
-            <h2>Einmalpasswort anfordern</h2>
-          </div>
-          <p class="member-login-step-copy">Wir senden den Code an die E-Mail-Adresse, die zu Deiner Mitgliedschaft hinterlegt ist.</p>
           <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginKennungGueltig || memberLoginBusy" @click="fordereEinmalpasswortAn()">
             <i class="bi bi-envelope-fill" aria-hidden="true"></i>
             {{ memberLoginOtpAngefordert ? 'Einmalpasswort erneut anfordern' : 'Einmalpasswort anfordern' }}
           </button>
         </section>
 
-        <section class="member-login-step-card" :class="{ 'is-pending': !memberLoginOtpAngefordert }" :aria-disabled="!memberLoginOtpAngefordert">
+        <section v-if="memberLoginOtpAngefordert" class="member-login-step-card">
           <div class="member-login-step-heading">
             <span class="member-login-step-number">Schritt 3</span>
-            <h2>Anmelden</h2>
+            <h2>Einmalpasswort eingeben</h2>
           </div>
-          <p v-if="!memberLoginOtpAngefordert" class="member-login-step-copy">Fordere zuerst ein Einmalpasswort an.</p>
+          <p class="member-login-step-copy">Gib das Einmalpasswort ein, das an Deine hinterlegte E-Mail-Adresse gesendet wurde.</p>
           <div class="member-login-field">
             <label class="form-label" for="member-otp">Einmalpasswort</label>
-            <input id="member-otp" v-model="memberLoginDaten.passwort" class="form-control" type="password" autocomplete="one-time-code" :disabled="!memberLoginOtpAngefordert || memberLoginBusy">
+            <input id="member-otp" v-model="memberLoginDaten.passwort" class="form-control" type="password" autocomplete="one-time-code" :disabled="memberLoginBusy">
           </div>
-          <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginOtpAngefordert || !memberLoginDaten.passwort.trim() || memberLoginBusy" @click="meldeMitEinmalpasswortAn()">
+          <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginDaten.passwort.trim() || memberLoginBusy" @click="meldeMitEinmalpasswortAn()">
             <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
             Anmelden
           </button>
@@ -270,6 +270,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=20260926-native-member-login-4"></script>
+  <script type="module" src="js/main.js?v=20260926-native-member-login-5"></script>
 </body>
 </html>

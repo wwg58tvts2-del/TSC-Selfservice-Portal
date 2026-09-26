@@ -82,14 +82,6 @@
   line-height: 1.5;
 }
 
-.member-login-step-card.is-pending {
-  background: #f7f6f5;
-}
-
-.member-login-step-card.is-pending .member-login-step-number {
-  color: var(--muted);
-}
-
 .member-login-note {
   max-width: 560px;
   margin: 18px auto 0;
