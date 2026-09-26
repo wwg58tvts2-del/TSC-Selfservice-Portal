@@ -173,7 +173,7 @@ export const state = reactive({
 
 
   get memberLoginStatusgruppen() {
-    const statusgruppen = this.config?.memberLogin?.statusGroups;
+    const statusgruppen = this.config?.memberLogin?.steps?.chooseStatus?.statusGroups;
     return Array.isArray(statusgruppen) ? statusgruppen : [];
   },
 
@@ -405,7 +405,7 @@ export const state = reactive({
     }
 
     const loginConfig = this.config?.memberLogin || {};
-    const requestConfig = loginConfig.requestOtp || {};
+    const requestConfig = loginConfig.steps?.requestOtp || {};
 
     if (!requestConfig.webhookUrl || !requestConfig.method) {
       this.zeigeMeldung(
@@ -468,7 +468,7 @@ export const state = reactive({
     }
 
     const loginConfig = this.config?.memberLogin || {};
-    const authenticationConfig = loginConfig.authenticate || {};
+    const authenticationConfig = loginConfig.steps?.authenticate || {};
 
     if (!authenticationConfig.webhookUrl || !authenticationConfig.method) {
       this.zeigeMeldung(

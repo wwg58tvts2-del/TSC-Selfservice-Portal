@@ -161,7 +161,7 @@
       <div class="member-login-page-header">
         <button id="back-button" class="btn btn-outline-secondary" type="button" @click="zurueck()">
           <i class="bi bi-arrow-left" aria-hidden="true"></i>
-          {{ config?.memberLogin?.backLabel }}
+          Zurück
         </button>
         <p class="section-kicker">{{ config?.memberLogin?.kicker }}</p>
         <h1 id="member-login-title" class="member-login-title">{{ config?.memberLogin?.title }}</h1>
@@ -171,11 +171,11 @@
       <div class="member-login-controls">
         <section class="member-login-step-card">
           <div class="member-login-step-heading">
-            <span class="member-login-step-number">{{ config?.memberLogin?.stepLabels?.status }}</span>
-            <h2>{{ config?.memberLogin?.stepTitles?.status }}</h2>
+            <span class="member-login-step-number">{{ config?.memberLogin?.steps?.chooseStatus?.label }}</span>
+            <h2>{{ config?.memberLogin?.steps?.chooseStatus?.title }}</h2>
           </div>
           <fieldset class="member-login-status-group" :disabled="memberLoginBusy">
-            <legend class="visually-hidden">{{ config?.memberLogin?.statusGroupsLabel }}</legend>
+            <legend class="visually-hidden">{{ config?.memberLogin?.steps?.chooseStatus?.statusGroupsLabel }}</legend>
             <label v-for="gruppe in memberLoginStatusgruppen" :key="gruppe.value" class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === gruppe.value }">
               <input type="radio" name="memberStatusGroup" :value="gruppe.value" :checked="memberLoginDaten.statusGruppe === gruppe.value" @change="waehleMemberStatusgruppe(gruppe.value)">
               {{ gruppe.label }}
@@ -185,33 +185,33 @@
 
         <section v-if="memberLoginDaten.statusGruppe" class="member-login-step-card">
           <div class="member-login-step-heading">
-            <span class="member-login-step-number">{{ config?.memberLogin?.stepLabels?.identifier }}</span>
-            <h2>{{ config?.memberLogin?.stepTitles?.identifier }}</h2>
+            <span class="member-login-step-number">{{ config?.memberLogin?.steps?.requestOtp?.label }}</span>
+            <h2>{{ config?.memberLogin?.steps?.requestOtp?.title }}</h2>
           </div>
-          <p class="member-login-step-copy">{{ config?.memberLogin?.otpRequest?.description }}</p>
+          <p class="member-login-step-copy">{{ config?.memberLogin?.steps?.requestOtp?.description }}</p>
           <div v-if="memberLoginKennungFeld" class="member-login-field">
             <label class="form-label" for="member-login-identifier">{{ memberLoginKennungLabel }}</label>
             <input id="member-login-identifier" v-model="memberLoginDaten[memberLoginKennungFeld]" class="form-control" type="text" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
           </div>
           <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginKennungGueltig || memberLoginBusy" @click="fordereEinmalpasswortAn()">
             <i class="bi bi-envelope-fill" aria-hidden="true"></i>
-            {{ memberLoginOtpAngefordert ? config?.memberLogin?.otpRequest?.resendLabel : config?.memberLogin?.otpRequest?.buttonLabel }}
+            {{ memberLoginOtpAngefordert ? config?.memberLogin?.steps?.requestOtp?.resendLabel : config?.memberLogin?.steps?.requestOtp?.buttonLabel }}
           </button>
         </section>
 
         <section v-if="memberLoginOtpAngefordert" class="member-login-step-card">
           <div class="member-login-step-heading">
-            <span class="member-login-step-number">{{ config?.memberLogin?.stepLabels?.authenticate }}</span>
-            <h2>{{ config?.memberLogin?.stepTitles?.authenticate }}</h2>
+            <span class="member-login-step-number">{{ config?.memberLogin?.steps?.authenticate?.label }}</span>
+            <h2>{{ config?.memberLogin?.steps?.authenticate?.title }}</h2>
           </div>
-          <p class="member-login-step-copy">{{ config?.memberLogin?.authenticate?.description }}</p>
+          <p class="member-login-step-copy">{{ config?.memberLogin?.steps?.authenticate?.description }}</p>
           <div class="member-login-field">
-            <label class="form-label" for="member-otp">{{ config?.memberLogin?.authenticate?.passwordLabel }}</label>
+            <label class="form-label" for="member-otp">{{ config?.memberLogin?.steps?.authenticate?.passwordLabel }}</label>
             <input id="member-otp" v-model="memberLoginDaten.passwort" class="form-control" type="password" autocomplete="one-time-code" :disabled="memberLoginBusy">
           </div>
           <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginDaten.passwort.trim() || memberLoginBusy" @click="meldeMitEinmalpasswortAn()">
             <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
-            {{ config?.memberLogin?.authenticate?.buttonLabel }}
+            {{ config?.memberLogin?.steps?.authenticate?.buttonLabel }}
           </button>
         </section>
       </div>

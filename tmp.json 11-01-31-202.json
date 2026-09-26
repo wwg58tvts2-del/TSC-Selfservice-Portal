@@ -16,9 +16,61 @@
         "intro": "Wähle aus unseren Online-Angeboten das Passende aus."
     },
     "memberLogin": {
-            "id": "6aa47991dd3e2a5abef5b6a2",
-            "titel": "Mitglieder Login",
-            "beschreibung": "Hier kannst Du dich als Mitglied einloggen."
+        "title": "Mitglieder Login",
+        "kicker": "Mitgliederbereich",
+        "intro": "Melde Dich mit einem Einmalpasswort an. Ein dauerhaftes Passwort benötigst Du nicht.",
+        "securityNote": "Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.",
+        "steps": {
+            "chooseStatus": {
+                "label": "Schritt 1",
+                "title": "Wähle deine Statusgruppe",
+                "statusGroupsLabel": "Wähle deine Statusgruppe aus",
+                "statusGroups": [
+                    {
+                        "value": "mitglied",
+                        "label": "Mitglied",
+                        "identifierField": "mgnr",
+                        "identifierLabel": "Mitgliedsnummer"
+                    },
+                    {
+                        "value": "trainer",
+                        "label": "Trainer*in",
+                        "identifierField": "trainerId",
+                        "identifierLabel": "Trainer-ID"
+                    }
+                ]
+            },
+            "requestOtp": {
+                "label": "Schritt 2",
+                "title": "Kennung eingeben",
+                "webhookUrl": "/webhook/send-otp",
+                "method": "POST",
+                "loadingText": "Dein Einmalpasswort wird angefordert …",
+                "description": "Wir senden den Code an die E-Mail-Adresse, die zu Deiner Mitgliedschaft hinterlegt ist.",
+                "buttonLabel": "Einmalpasswort anfordern",
+                "resendLabel": "Einmalpasswort erneut anfordern"
+            },
+            "authenticate": {
+                "label": "Schritt 3",
+                "title": "Einmalpasswort eingeben",
+                "webhookUrl": "/webhook/auth",
+                "method": "POST",
+                "loadingText": "Du wirst angemeldet …",
+                "description": "Gib das Einmalpasswort ein, das an Deine hinterlegte E-Mail-Adresse gesendet wurde.",
+                "passwordLabel": "Einmalpasswort",
+                "buttonLabel": "Anmelden"
+            }
+        },
+        "messages": {
+            "configurationErrorTitle": "Login nicht konfiguriert",
+            "configurationError": "Die Login-Endpunkte fehlen in der Portal-Konfiguration.",
+            "otpRequestErrorTitle": "Einmalpasswort konnte nicht angefordert werden",
+            "otpRequestError": "Bitte versuche es später erneut.",
+            "memberDataErrorTitle": "Anmeldung nicht bestätigt",
+            "memberDataError": "Die Anmeldung wurde verarbeitet, aber die Memberdaten konnten nicht geladen werden.",
+            "authenticationErrorTitle": "Anmeldung fehlgeschlagen",
+            "authenticationError": "Bitte prüfe Dein Einmalpasswort und versuche es erneut."
+        }
     },
     "memberStatusUrl": "/webhook/me",
     "memberLogout": {
