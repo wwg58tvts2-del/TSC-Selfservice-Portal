@@ -73,7 +73,7 @@
         v-if="!person"
         class="header-login-button"
         type="button"
-        @click="oeffneFormular(config.memberLogin)"
+        @click="oeffneLogin()"
       >
         <i class="bi bi-person-circle" aria-hidden="true"></i>
         <span>{{ config.memberLogin.titel }}</span>
@@ -157,6 +157,59 @@
       </section>
     </section>
 
+    <section v-else-if="view === 'login'" id="member-login-container" class="form-modal">
+      <div class="form-modal-backdrop" aria-hidden="true"></div>
+      <div class="form-modal-dialog member-login-dialog" role="dialog" aria-modal="true" aria-labelledby="member-login-title">
+        <div class="form-modal-header">
+          <button id="back-button" class="btn btn-outline-secondary" type="button" @click="zurueck()">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            Zurück
+          </button>
+        </div>
+        <h1 id="member-login-title" class="member-login-title">Mitglieder Login</h1>
+        <div class="member-login-info">
+          <h2>Anmeldung zum Mitgliederbereich</h2>
+          <p>Über den Mitgliederbereich kannst Du auf persönliche Online-Services des Tanzsportclub Dortmund zugreifen und beispielsweise Deine hinterlegten Daten einsehen oder Änderungen beantragen. Für die Anmeldung benötigst Du kein dauerhaftes Passwort.</p>
+          <h3>So funktioniert die Anmeldung</h3>
+          <ol>
+            <li>Wähle Deine Statusgruppe und gib die zugehörige Nummer ein.</li>
+            <li>Fordere ein Einmalpasswort an. Wir senden es an die E-Mail-Adresse, die zu Deiner Mitgliedschaft hinterlegt ist.</li>
+            <li>Gib das erhaltene Einmalpasswort ein und melde Dich an.</li>
+            <li>Danach kannst Du die für Dich verfügbaren Online-Services nutzen.</li>
+          </ol>
+          <p class="member-login-note">Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.</p>
+        </div>
+
+        <fieldset class="member-login-status-group" :disabled="memberLoginBusy">
+          <legend>Wähle deine Statusgruppe aus</legend>
+          <label><input type="radio" name="memberStatusGroup" value="mitglied" :checked="memberLoginDaten.statusGruppe === 'mitglied'" @change="waehleMemberStatusgruppe('mitglied')"> Mitglied</label>
+          <label><input type="radio" name="memberStatusGroup" value="trainer" :checked="memberLoginDaten.statusGruppe === 'trainer'" @change="waehleMemberStatusgruppe('trainer')"> Trainer*in</label>
+        </fieldset>
+
+        <div v-if="memberLoginDaten.statusGruppe === 'mitglied'" class="member-login-field">
+          <label class="form-label" for="member-number">Mitgliedsnummer</label>
+          <input id="member-number" v-model="memberLoginDaten.mgnr" class="form-control" type="text" inputmode="numeric" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
+        </div>
+        <div v-else-if="memberLoginDaten.statusGruppe === 'trainer'" class="member-login-field">
+          <label class="form-label" for="trainer-id">Trainer-ID</label>
+          <input id="trainer-id" v-model="memberLoginDaten.trainerId" class="form-control" type="text" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
+        </div>
+        <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginKennungGueltig || memberLoginBusy" @click="fordereEinmalpasswortAn()">
+          <i class="bi bi-envelope-fill" aria-hidden="true"></i>
+          {{ memberLoginOtpAngefordert ? 'Einmalpasswort erneut anfordern' : 'Einmalpasswort anfordern' }}
+        </button>
+
+        <div v-if="memberLoginOtpAngefordert" class="member-login-field">
+          <label class="form-label" for="member-otp">Einmalpasswort</label>
+          <input id="member-otp" v-model="memberLoginDaten.passwort" class="form-control" type="password" autocomplete="one-time-code" :disabled="memberLoginBusy">
+          <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginDaten.passwort.trim() || memberLoginBusy" @click="meldeMitEinmalpasswortAn()">
+            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
+            Anmelden
+          </button>
+        </div>
+      </div>
+    </section>
+
     <section v-else id="form-container" class="form-modal">
       <div class="form-modal-backdrop" aria-hidden="true"></div>
       <div class="form-modal-dialog" role="dialog" aria-modal="true">
@@ -201,6 +254,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=20260926-login-dialog-1"></script>
+  <script type="module" src="js/main.js?v=20260926-native-member-login-1"></script>
 </body>
 </html>

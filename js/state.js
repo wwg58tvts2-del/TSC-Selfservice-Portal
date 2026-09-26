@@ -42,6 +42,14 @@ export const state = reactive({
   },
 
   memberCheckTimer: null,
+  memberLoginDaten: {
+    statusGruppe: "",
+    mgnr: "",
+    trainerId: "",
+    passwort: ""
+  },
+  memberLoginOtpAngefordert: false,
+  memberLoginBusy: false,
 
 
   async init() {
@@ -163,6 +171,20 @@ export const state = reactive({
     }
 
     return [statusGruppe];
+  },
+
+
+  get memberLoginKennungFeld() {
+    return {
+      mitglied: "mgnr",
+      trainer: "trainerId"
+    }[this.memberLoginDaten.statusGruppe] || "";
+  },
+
+
+  get memberLoginKennungGueltig() {
+    const feld = this.memberLoginKennungFeld;
+    return Boolean(feld && this.memberLoginDaten[feld].trim());
   },
 
 
@@ -323,11 +345,145 @@ export const state = reactive({
   },
 
 
+  oeffneLogin() {
+    this.zerstoereFormio();
+    this.selectedForm = null;
+    this.memberLoginDaten = {
+      statusGruppe: "",
+      mgnr: "",
+      trainerId: "",
+      passwort: ""
+    };
+    this.memberLoginOtpAngefordert = false;
+    this.memberLoginBusy = false;
+    this.warnung = "";
+    this.view = "login";
+    aktualisiereUrl(null);
+  },
+
+
+  waehleMemberStatusgruppe(statusGruppe) {
+    this.memberLoginDaten.statusGruppe = statusGruppe;
+    this.memberLoginDaten.mgnr = "";
+    this.memberLoginDaten.trainerId = "";
+    this.memberLoginDaten.passwort = "";
+    this.memberLoginOtpAngefordert = false;
+  },
+
+
+  aendereMemberLoginKennung() {
+    this.memberLoginOtpAngefordert = false;
+    this.memberLoginDaten.passwort = "";
+  },
+
+
+  async fordereEinmalpasswortAn() {
+    if (!this.memberLoginKennungGueltig || this.memberLoginBusy) {
+      return;
+    }
+
+    const requestData = {
+      statusGruppe: this.memberLoginDaten.statusGruppe,
+      [this.memberLoginKennungFeld]: this.memberLoginDaten[this.memberLoginKennungFeld].trim()
+    };
+
+    this.memberLoginBusy = true;
+    this.zeigeLadenIntern("Dein Einmalpasswort wird angefordert …");
+
+    try {
+      const result = await sendeFormularRequest("/webhook/send-otp", "POST", requestData);
+
+      if (!result || typeof result.erfolgreich !== "boolean") {
+        const error = new Error("Ungültige JSON-Antwort.");
+        error.result = result;
+        throw error;
+      }
+
+      if (result.erfolgreich) {
+        this.memberLoginOtpAngefordert = true;
+        this.memberLoginDaten.passwort = "";
+      }
+
+      this.zeigeServerMeldung(result, false);
+    } catch (error) {
+      console.error("Fehler beim Anfordern des Einmalpassworts:", error);
+      if (error.result) {
+        this.zeigeServerMeldung(error.result, false);
+      } else {
+        this.zeigeMeldung("Einmalpasswort konnte nicht angefordert werden", "Bitte versuche es später erneut.", false);
+      }
+    } finally {
+      this.memberLoginBusy = false;
+      this.versteckeLadenIntern();
+    }
+  },
+
+
+  async meldeMitEinmalpasswortAn() {
+    if (!this.memberLoginOtpAngefordert || !this.memberLoginDaten.passwort.trim() || this.memberLoginBusy) {
+      return;
+    }
+
+    const requestData = {
+      statusGruppe: this.memberLoginDaten.statusGruppe,
+      [this.memberLoginKennungFeld]: this.memberLoginDaten[this.memberLoginKennungFeld].trim(),
+      passwort: this.memberLoginDaten.passwort
+    };
+
+    this.memberLoginBusy = true;
+    this.zeigeLadenIntern("Du wirst angemeldet …");
+
+    try {
+      const result = await sendeFormularRequest("/webhook/auth", "POST", requestData);
+
+      if (!result || typeof result.erfolgreich !== "boolean") {
+        const error = new Error("Ungültige JSON-Antwort.");
+        error.result = result;
+        throw error;
+      }
+
+      if (!result.erfolgreich) {
+        this.zeigeServerMeldung(result, false);
+        return;
+      }
+
+      const person = await this.ladeMemberDaten({ silent: true });
+
+      if (!person) {
+        this.zeigeMeldung("Anmeldung nicht bestätigt", "Die Anmeldung wurde verarbeitet, aber die Memberdaten konnten nicht geladen werden.", false);
+        return;
+      }
+
+      this.memberLoginOtpAngefordert = false;
+      this.memberLoginDaten.passwort = "";
+      this.zeigeServerMeldung(result, false);
+      this.zurueck();
+    } catch (error) {
+      console.error("Fehler bei der Mitgliederanmeldung:", error);
+      if (error.result) {
+        this.zeigeServerMeldung(error.result, false);
+      } else {
+        this.zeigeMeldung("Anmeldung fehlgeschlagen", "Bitte prüfe Dein Einmalpasswort und versuche es erneut.", false);
+      }
+    } finally {
+      this.memberLoginBusy = false;
+      this.versteckeLadenIntern();
+    }
+  },
+
+
   zurueck() {
     this.zerstoereFormio();
 
     this.view = "auswahl";
     this.selectedForm = null;
+    this.memberLoginOtpAngefordert = false;
+    this.memberLoginDaten = {
+      statusGruppe: "",
+      mgnr: "",
+      trainerId: "",
+      passwort: ""
+    };
 
     aktualisiereUrl(null);
     window.scrollTo(0, 0);
@@ -372,19 +528,7 @@ export const state = reactive({
           container,
           formUrl,
           {
-            onSubmitDone: async () => {
-              if (
-                this.config
-                  ?.memberLogin
-                  ?.id === form.id
-              ) {
-                const person = await this.ladeMemberDaten();
-
-                if (person) {
-                  this.zurueck();
-                }
-              }
-
+            onSubmitDone: () => {
               window.scrollTo({
                 top: 0,
                 behavior: "smooth"

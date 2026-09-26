@@ -45,7 +45,7 @@ Das Frontend filtert diese Listen nicht nach `active` oder `sichtbarkeit`; es ze
 
 `main.js` veröffentlicht die globalen Funktionen, mountet Petite Vue und ruft `state.init()` auf. Nach dem Laden der Konfiguration wartet das Portal auf die stille Prüfung von `/webhook/me` und wertet anschließend `?form=...` aus.
 
-Der Loginbutton oben rechts öffnet das Form.io-Login über `memberLogin.id`; der dort gepflegte Hinweistext erscheint damit nur im Loginfenster. Nach `submitDone` prüft das Portal `/webhook/me`; bei bestätigtem Login wird die Form.io-Ansicht geschlossen und die Auswahl mit dem angemeldeten Status angezeigt. `/webhook/me` erwartet eine Person und `gefunden: true` oder `erfolgreich: true`:
+Der Loginbutton oben rechts öffnet das native Mitgliederlogin. Zuerst wird `POST /webhook/send-otp` mit `statusGruppe` und dem passenden Kennungsfeld (`mgnr` oder `trainerId`) aufgerufen. Nach erfolgreichem Versand wird das Einmalpasswort angezeigt; die Anmeldung sendet diese Daten plus `passwort` per `POST /webhook/auth`. Beide Requests verwenden `{ request: { data } }`. Nach erfolgreichem Auth-Response prüft das Portal `/webhook/me`; nur bei bestätigter Person schließt sich das Loginfenster. `/webhook/me` erwartet eine Person und `gefunden: true` oder `erfolgreich: true`:
 
 ```json
 {

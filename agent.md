@@ -1,6 +1,6 @@
 # Serviceportal – Codepflege
 
-Stand: 26.09.2026, Version `20260926-login-dialog-1`. Die vollständige Funktionsbeschreibung und JSON-Beispiele stehen in [README.md](README.md).
+Stand: 26.09.2026, Version `20260926-native-member-login-1`. Die vollständige Funktionsbeschreibung und JSON-Beispiele stehen in [README.md](README.md).
 
 ## Architektur und Stil
 
@@ -18,9 +18,11 @@ HTTP-Fehler behalten das JSON als `error.result`. Dadurch werden Servertexte auc
 
 Die Member-Prüfung und sonstigen lokalen UI-Meldungen sind separate Abläufe und wurden nicht auf diese Regel umgestellt. `/webhook/me` erwartet `person` und `gefunden: true` oder `erfolgreich: true`; Arrays werden weiterhin akzeptiert. Eine spätere fehlgeschlagene Prüfung löscht eine vorhandene Person nicht automatisch.
 
-## Formulare
+## Mitgliederlogin
 
-Der Headerbutton öffnet das über `memberLogin.id` konfigurierte Form.io-Login samt dort gepflegtem Hinweistext. Nach `submitDone` aktualisiert `/webhook/me` den Status; nur bei bestätigter Person wird die Form.io-Ansicht geschlossen und die Portal-Auswahl geöffnet.
+Das Mitgliederlogin ist natives HTML und verwendet kein Form.io. OTP-Anforderung: `POST /webhook/send-otp` mit `{ request: { data: { statusGruppe, mgnr | trainerId } } }`. Anmeldung: `POST /webhook/auth` mit denselben Daten plus `passwort`. Beide erwarten den üblichen JSON-Vertrag mit booleschem `erfolgreich`. Nach Auth-Erfolg muss `/webhook/me` eine Person liefern; dann wird die Loginansicht geschlossen. Form.io bleibt für die übrigen Portalformulare in Verwendung.
+
+## Formulare
 
 `window.sendeFormular(instance, config)` reicht beide Argumente unverändert weiter. Optionen: `webhookUrl`, `method` (Standard POST), `ladeText`, `zurueckNachErfolg` (Standard true), `onSuccess`. `fehlerTitel` und `fehlerNachricht` werden nicht mehr verwendet.
 
