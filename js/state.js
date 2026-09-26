@@ -19,6 +19,31 @@ import {
 } from "./formio.js?v=20260920-storno-3";
 
 
+const MEMBER_LOGIN_STORAGE_KEY = "tsc-serviceportal.member-login";
+
+function leseGespeicherteLoginIdentitaet() {
+  try {
+    const gespeicherteDaten = JSON.parse(
+      window.localStorage.getItem(MEMBER_LOGIN_STORAGE_KEY) || "null"
+    );
+
+    if (
+      !gespeicherteDaten ||
+      typeof gespeicherteDaten.statusGruppe !== "string" ||
+      typeof gespeicherteDaten.identifierField !== "string" ||
+      typeof gespeicherteDaten.identifierValue !== "string"
+    ) {
+      return null;
+    }
+
+    return gespeicherteDaten;
+  } catch (error) {
+    console.warn("Gespeicherte Login-Kennung konnte nicht gelesen werden:", error);
+    return null;
+  }
+}
+
+
 export const state = reactive({
   config: null,
   person: null,
@@ -42,6 +67,7 @@ export const state = reactive({
   },
 
   memberCheckTimer: null,
+  memberLoginIdentitaet: null,
   memberLoginDaten: {
     statusGruppe: "",
     passwort: ""
@@ -51,6 +77,8 @@ export const state = reactive({
 
 
   async init() {
+    this.memberLoginIdentitaet = leseGespeicherteLoginIdentitaet();
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && this.msgbox.visible) {
         this.schliesseMeldung();
@@ -217,6 +245,35 @@ export const state = reactive({
   },
 
 
+  speichereMemberLoginIdentitaet() {
+    const identifierField = this.memberLoginKennungFeld;
+    const identifierValue = String(this.memberLoginDaten[identifierField] || "").trim();
+
+    if (!identifierField || !identifierValue || !this.memberLoginDaten.statusGruppe) {
+      return null;
+    }
+
+    const identitaet = {
+      statusGruppe: this.memberLoginDaten.statusGruppe,
+      identifierField,
+      identifierValue
+    };
+
+    this.memberLoginIdentitaet = identitaet;
+
+    try {
+      window.localStorage.setItem(
+        MEMBER_LOGIN_STORAGE_KEY,
+        JSON.stringify(identitaet)
+      );
+    } catch (error) {
+      console.warn("Login-Kennung konnte nicht gespeichert werden:", error);
+    }
+
+    return identitaet;
+  },
+
+
   get sichtbareFormulare() {
     const forms =
       Array.isArray(
@@ -283,7 +340,24 @@ export const state = reactive({
           this.config?.memberStatusUrl
         );
 
-      this.person = person;
+      if (person) {
+        const loginIdentitaet =
+          this.memberLoginIdentitaet ||
+          leseGespeicherteLoginIdentitaet();
+
+        this.memberLoginIdentitaet = loginIdentitaet;
+        this.person = loginIdentitaet
+          ? {
+              ...person,
+              statusGruppe: person.statusGruppe || loginIdentitaet.statusGruppe,
+              loginStatusGruppe: loginIdentitaet.statusGruppe,
+              [loginIdentitaet.identifierField]:
+                person[loginIdentitaet.identifierField] || loginIdentitaet.identifierValue
+            }
+          : person;
+      } else {
+        this.person = null;
+      }
 
       console.info(
         "[Serviceportal] Erkannte Statusgruppen:",
@@ -380,6 +454,20 @@ export const state = reactive({
     this.zerstoereFormio();
     this.selectedForm = null;
     this.memberLoginDaten = this.leereMemberLoginDaten();
+    const gespeicherteIdentitaet =
+      this.memberLoginIdentitaet || leseGespeicherteLoginIdentitaet();
+    const konfigurierteStatusgruppe = this.memberLoginStatusgruppen.find(
+      (gruppe) =>
+        gruppe.value === gespeicherteIdentitaet?.statusGruppe &&
+        gruppe.identifierField === gespeicherteIdentitaet?.identifierField
+    );
+
+    if (konfigurierteStatusgruppe) {
+      this.memberLoginDaten.statusGruppe = konfigurierteStatusgruppe.value;
+      this.memberLoginDaten[konfigurierteStatusgruppe.identifierField] =
+        gespeicherteIdentitaet.identifierValue;
+    }
+
     this.memberLoginOtpAngefordert = false;
     this.memberLoginBusy = false;
     this.warnung = "";
@@ -519,6 +607,16 @@ export const state = reactive({
           false
         );
         return;
+      }
+
+      const loginIdentitaet = this.speichereMemberLoginIdentitaet();
+      if (loginIdentitaet) {
+        this.person = {
+          ...this.person,
+          statusGruppe: this.person.statusGruppe || loginIdentitaet.statusGruppe,
+          loginStatusGruppe: loginIdentitaet.statusGruppe,
+          [loginIdentitaet.identifierField]: loginIdentitaet.identifierValue
+        };
       }
 
       this.memberLoginOtpAngefordert = false;

@@ -20,6 +20,7 @@
         "kicker": "Mitgliederbereich",
         "intro": "Melde Dich mit einem Einmalpasswort an. Ein dauerhaftes Passwort benötigst Du nicht.",
         "securityNote": "Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.",
+        "rememberedIdentifierNote": "Statusgruppe und Kennung werden auf diesem Gerät für zukünftige Logins gespeichert. Das Einmalpasswort wird nicht gespeichert.",
         "steps": {
             "chooseStatus": {
                 "label": "Schritt 1",
