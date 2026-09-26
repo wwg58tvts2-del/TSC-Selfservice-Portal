@@ -1,228 +1,55 @@
 {
-  "label": "InfoBox",
-  "attrs": [
-    {
-      "attr": "",
-      "value": ""
-    }
-  ],
-  "content": "<div style=\"\n  margin:4px 0 26px;\n  padding:6px 4px 18px;\n  border-bottom:2px solid #8b0000;\n  font-family:Arial,Helvetica,sans-serif;\n  box-sizing:border-box;\n\">\n\n  <h1 style=\"\n    margin:0;\n    font-size:29px;\n    line-height:1.2;\n    font-weight:700;\n    color:#222;\n  \">\n    Mitglieder Login\n  </h1>\n\n  <p style=\"\n    margin:8px 0 0;\n    font-size:14px;\n    line-height:1.5;\n    color:#666;\n  \">\n  </p>\n\n</div>",
-  "refreshOnChange": false,
-  "key": "html1",
-  "type": "htmlelement",
-  "input": false,
-  "tableView": false
-}
-
-
-{
-  "label": "HTML",
-  "attrs": [
-    {
-      "attr": "",
-      "value": ""
-    }
-  ],
-  "content": "<div style=\"\n  margin:0 0 22px;\n  padding:14px 16px;\n  border:1px solid #dedede;\n  border-left:4px solid #8b0000;\n  border-radius:6px;\n  background:#fafafa;\n  font-family:Arial,Helvetica,sans-serif;\n  color:#333;\n  box-sizing:border-box;\n\">\n\n  <div style=\"\n    margin:0 0 10px;\n    font-size:14px;\n    line-height:1.5;\n    font-weight:600;\n  \">\n    Anmeldung zum Mitgliederbereich\n  </div>\n\n  <div style=\"\n    margin:0 0 14px;\n    font-size:14px;\n    line-height:1.6;\n  \">\n    Über den Mitgliederbereich kannst Du auf persönliche Online-Services\n    des Tanzsportclub Dortmund zugreifen und beispielsweise Deine\n    hinterlegten Daten einsehen oder Änderungen beantragen.\n    Für die Anmeldung benötigst Du kein dauerhaftes Passwort.\n  </div>\n\n  <div style=\"\n    margin:0 0 8px;\n    font-size:14px;\n    line-height:1.5;\n    font-weight:600;\n  \">\n    So funktioniert die Anmeldung:\n  </div>\n\n  <ol style=\"\n    margin:0 0 12px;\n    padding-left:20px;\n    font-size:14px;\n    line-height:1.7;\n  \">\n    <li>\n      Gib Deine Mitgliedsnummer ein und klicke auf\n      <strong>„Einmalpasswort zusenden“</strong>.\n    </li>\n    <li>\n      Wir senden ein Einmalpasswort an die E-Mail-Adresse,\n      die zu Deiner Mitgliedschaft im Verein hinterlegt ist.\n    </li>\n    <li>\n      Gib das erhaltene Einmalpasswort ein und klicke auf\n      <strong>„Anmelden“</strong>.\n    </li>\n    <li>\n      Nach erfolgreicher Anmeldung kannst Du die für Dich verfügbaren\n      Online-Services nutzen.\n    </li>\n  </ol>\n\n  <div style=\"\n    margin:0;\n    font-size:14px;\n    line-height:1.5;\n    font-weight:600;\n  \">\n    Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte\n    Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.\n  </div>\n\n</div>",
-  "refreshOnChange": false,
-  "key": "html",
-  "type": "htmlelement",
-  "input": false,
-  "tableView": false
-}
-
-{
-  "label": "Statusgruppe",
-  "title": "Statusgruppe",
-  "collapsible": false,
-  "key": "statusgruppe",
-  "type": "panel",
-  "input": false,
-  "tableView": false,
-  "components": [
-    {
-      "label": "Wähle deine Statusgruppe aus",
-      "optionsLabelPosition": "right",
-      "inline": false,
-      "tableView": false,
-      "values": [
-        {
-          "label": "Mitglied",
-          "value": "mitglied",
-          "shortcut": ""
+    "calendarUrl": "/webhook/kalender",
+    "page": {
+        "title": "Portal",
+        "favicon": "img/Logo_ohne_Noten_quadratisch_transparenter_Hintergrund-1.png"
+    },
+    "header": {
+        "logo": "img/Logo_ohne_Noten_transparenter_Hintergrund-1.png",
+        "logoAlt": "Tanzsportclub Dortmund",
+        "kicker": "Tanzsportclub Dortmund - Testsystem",
+        "caption": "Online-Services und Anträge"
+    },
+    "body": {
+        "kicker": "Willkommen beim Tanzsportclub Dortmund",
+        "title": "Womit können wir dir helfen?",
+        "intro": "Wähle aus unseren Online-Angeboten das Passende aus."
+    },
+    "memberLogin": {
+            "id": "6aa47991dd3e2a5abef5b6a2",
+            "titel": "Mitglieder Login",
+            "beschreibung": "Hier kannst Du dich als Mitglied einloggen."
+    },
+    "memberStatusUrl": "/webhook/me",
+    "memberLogout": {
+        "webhookUrl": "/webhook/logout",
+        "method": "GET",
+        "ladeText": "Du wirst abgemeldet ..."
+    },
+    "footer":[],
+    "forms": {
+        "baseUrl": "https://tsc-form.m-wiesner.de/form/",
+        "section": {
+            "kicker": "Anträge",
+            "title": "Webformulare",
+            "intro": "Wähle das passende Formular aus, um fortzufahren."
         },
-        {
-          "label": "Trainer*in",
-          "value": "trainer",
-          "shortcut": ""
+        "items": []
+    },
+    "onlineServices": {
+        "section": {
+            "kicker": "Digital",
+            "title": "Online-Services",
+            "intro": "Nützliche Online-Angebote des Tanzsportclubs und seiner Verbände."
         },
-        {
-          "label": "Extern",
-          "value": "extern",
-          "shortcut": ""
-        }
-      ],
-      "validate": {
-        "required": true
-      },
-      "validateWhenHidden": false,
-      "key": "statusGruppe",
-      "type": "radio",
-      "input": true
+        "items": []
+    },
+    "downloads": {
+        "section": {
+            "kicker": "Dokumente",
+            "title": "Downloads",
+            "intro": "Wichtige Dokumente direkt herunterladen."
+        },
+        "items": []
     }
-  ]
-}
-
-
-{
-  "label": "Einmalpasswort anfordern",
-  "title": "Einmalpasswort anfordern",
-  "collapsible": false,
-  "key": "panel",
-  "conditional": {
-    "show": false,
-    "when": "statusGruppe"
-  },
-  "type": "panel",
-  "input": false,
-  "tableView": false,
-  "components": [
-    {
-      "label": "Mitgliedsnummer",
-      "applyMaskOn": "change",
-      "tableView": true,
-      "validateWhenHidden": false,
-      "key": "mgnr",
-      "conditional": {
-        "show": true,
-        "when": "statusGruppe",
-        "eq": "mitglied"
-      },
-      "type": "textfield",
-      "input": true
-    },
-    {
-      "label": "Trainer-ID",
-      "applyMaskOn": "change",
-      "tableView": true,
-      "validateWhenHidden": false,
-      "key": "trainerId",
-      "conditional": {
-        "show": true,
-        "when": "statusGruppe",
-        "eq": "trainer"
-      },
-      "type": "textfield",
-      "input": true
-    },
-    {
-      "label": "Externe-ID",
-      "applyMaskOn": "change",
-      "tableView": true,
-      "validateWhenHidden": false,
-      "key": "externId",
-      "conditional": {
-        "show": true,
-        "when": "statusGruppe",
-        "eq": "extern"
-      },
-      "type": "textfield",
-      "input": true
-    },
-    {
-      "label": "Einmalpasswort anfordern",
-      "action": "custom",
-      "showValidations": false,
-      "theme": "success",
-      "block": true,
-      "leftIcon": "bi bi-envelope-fill",
-      "disabled": true,
-      "tableView": false,
-      "key": "eMailSenden",
-      "logic": [
-        {
-          "name": "E-Mail anfordern",
-          "trigger": {
-            "type": "javascript",
-            "javascript": "result = !!data.mgnr || !!data.trainerId || !!data.externId;"
-          },
-          "actions": [
-            {
-              "name": "E-Mail anfordern",
-              "type": "property",
-              "property": {
-                "label": "Disabled",
-                "value": "disabled",
-                "type": "boolean"
-              },
-              "state": false
-            }
-          ]
-        }
-      ],
-      "type": "button",
-      "custom": "// ======================================================\n// FORM.IO → n8n EINMALPASSWORT ANFORDERN\n// ======================================================\n\n// ======================================================\n// KONFIGURATION\n// ======================================================\n\nconst CONFIG = {\n  webhookUrl: '/webhook/send-otp',\n  method: 'POST',\n  ladeText: 'Dein Einmalpasswort wird angefordert …',\n\n  // Loginformular bleibt geöffnet\n  zurueckNachErfolg: false\n};\n\n// ======================================================\n// EINMALPASSWORT ANFORDERN\n// ======================================================\n\nwindow.sendeFormular(instance, CONFIG);",
-      "input": true
-    }
-  ]
-}
-
-{
-  "label": "Anmelden",
-  "title": "Anmelden",
-  "collapsible": false,
-  "key": "passwort",
-  "conditional": {
-    "show": false,
-    "when": "statusGruppe"
-  },
-  "type": "panel",
-  "input": false,
-  "tableView": false,
-  "components": [
-    {
-      "label": "Passwort",
-      "applyMaskOn": "change",
-      "tableView": false,
-      "validateWhenHidden": false,
-      "key": "passwort",
-      "type": "password",
-      "input": true,
-      "protected": true
-    },
-    {
-      "label": "Anmelden",
-      "action": "custom",
-      "showValidations": false,
-      "block": true,
-      "leftIcon": "bi bi-box-arrow-in-right",
-      "disabled": true,
-      "tableView": false,
-      "key": "login",
-      "logic": [
-        {
-          "name": "Anmelden",
-          "trigger": {
-            "type": "javascript",
-            "javascript": "result = !!data.passwort "
-          },
-          "actions": [
-            {
-              "name": "Anmelden enablen",
-              "type": "property",
-              "property": {
-                "label": "Disabled",
-                "value": "disabled",
-                "type": "boolean"
-              },
-              "state": false
-            }
-          ]
-        }
-      ],
-      "type": "button",
-      "custom": "// ======================================================\n// FORM.IO → n8n ANMELDEN\n// ======================================================\n\n// ======================================================\n// KONFIGURATION\n// ======================================================\n\nconst CONFIG = {\n  webhookUrl: '/webhook/auth',\n  method: 'POST',\n  ladeText: 'Du wirst angemeldet …',\n\n  // Nach dem Schließen der Erfolgsmeldung zur Auswahl zurück\n  zurueckNachErfolg: true,\n\n  // Nach erfolgreichem Login Memberdaten und Header aktualisieren\n  onSuccess: async () => {\n    const person = await window.ladeMemberDaten({ silent: true });\n\n    if (!person) {\n      throw new Error('Die Anmeldung wurde bestätigt, aber die Memberdaten konnten nicht geladen werden.');\n    }\n  }\n};\n\n// ======================================================\n// ANMELDEN\n// ======================================================\n\nwindow.sendeFormular(instance, CONFIG);",
-      "input": true
-    }
-  ]
 }

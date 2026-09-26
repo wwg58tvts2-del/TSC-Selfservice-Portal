@@ -6,7 +6,7 @@ import {
   holeMemberStatus,
   sendeLogout,
   sendeFormularRequest
-} from "./api.js?v=20260926-member-login-guide-1";
+} from "./api.js?v=20260926-config-login-1";
 
 import {
   leseFormIdAusUrl,
@@ -44,8 +44,6 @@ export const state = reactive({
   memberCheckTimer: null,
   memberLoginDaten: {
     statusGruppe: "",
-    mgnr: "",
-    trainerId: "",
     passwort: ""
   },
   memberLoginOtpAngefordert: false,
@@ -124,7 +122,7 @@ export const state = reactive({
         hatSichtbarenCookie()
       );
 
-      // /webhook/me immer abwarten,
+      // Memberstatus immer abwarten,
       // damit Login-Status vor Formular-
       // und Header-Anzeige feststeht
       await this.ladeMemberDaten({
@@ -174,17 +172,48 @@ export const state = reactive({
   },
 
 
+  get memberLoginStatusgruppen() {
+    const statusgruppen = this.config?.memberLogin?.statusGroups;
+    return Array.isArray(statusgruppen) ? statusgruppen : [];
+  },
+
+
+  get memberLoginAktiveStatusgruppe() {
+    return this.memberLoginStatusgruppen.find(
+      (gruppe) => gruppe.value === this.memberLoginDaten.statusGruppe
+    );
+  },
+
+
   get memberLoginKennungFeld() {
-    return {
-      mitglied: "mgnr",
-      trainer: "trainerId"
-    }[this.memberLoginDaten.statusGruppe] || "";
+    return this.memberLoginAktiveStatusgruppe?.identifierField || "";
+  },
+
+
+  get memberLoginKennungLabel() {
+    return this.memberLoginAktiveStatusgruppe?.identifierLabel || "";
+  },
+
+
+  leereMemberLoginDaten() {
+    const daten = {
+      statusGruppe: "",
+      passwort: ""
+    };
+
+    this.memberLoginStatusgruppen.forEach((gruppe) => {
+      if (gruppe.identifierField) {
+        daten[gruppe.identifierField] = "";
+      }
+    });
+
+    return daten;
   },
 
 
   get memberLoginKennungGueltig() {
     const feld = this.memberLoginKennungFeld;
-    return Boolean(feld && this.memberLoginDaten[feld].trim());
+    return Boolean(feld && String(this.memberLoginDaten[feld] || "").trim());
   },
 
 
@@ -276,7 +305,7 @@ export const state = reactive({
 
     } catch (error) {
       console.error(
-        "Fehler beim Aufruf von /webhook/me:",
+        "Fehler beim Aufruf des Memberstatus-Webhooks:",
         error
       );
 
@@ -286,7 +315,7 @@ export const state = reactive({
 
       if (!silent) {
         this.zeigeMeldung(
-          "/webhook/me fehlgeschlagen",
+          "Memberstatus fehlgeschlagen",
           error.message ||
             "Der Anmeldestatus konnte nicht geprüft werden.",
           false
@@ -348,12 +377,7 @@ export const state = reactive({
   oeffneLogin() {
     this.zerstoereFormio();
     this.selectedForm = null;
-    this.memberLoginDaten = {
-      statusGruppe: "",
-      mgnr: "",
-      trainerId: "",
-      passwort: ""
-    };
+    this.memberLoginDaten = this.leereMemberLoginDaten();
     this.memberLoginOtpAngefordert = false;
     this.memberLoginBusy = false;
     this.warnung = "";
@@ -363,10 +387,8 @@ export const state = reactive({
 
 
   waehleMemberStatusgruppe(statusGruppe) {
+    this.memberLoginDaten = this.leereMemberLoginDaten();
     this.memberLoginDaten.statusGruppe = statusGruppe;
-    this.memberLoginDaten.mgnr = "";
-    this.memberLoginDaten.trainerId = "";
-    this.memberLoginDaten.passwort = "";
     this.memberLoginOtpAngefordert = false;
   },
 
@@ -382,16 +404,33 @@ export const state = reactive({
       return;
     }
 
+    const loginConfig = this.config?.memberLogin || {};
+    const requestConfig = loginConfig.requestOtp || {};
+
+    if (!requestConfig.webhookUrl || !requestConfig.method) {
+      this.zeigeMeldung(
+        loginConfig.messages?.configurationErrorTitle,
+        loginConfig.messages?.configurationError,
+        false
+      );
+
+      return;
+    }
+
     const requestData = {
       statusGruppe: this.memberLoginDaten.statusGruppe,
-      [this.memberLoginKennungFeld]: this.memberLoginDaten[this.memberLoginKennungFeld].trim()
+      [this.memberLoginKennungFeld]: String(this.memberLoginDaten[this.memberLoginKennungFeld] || "").trim()
     };
 
     this.memberLoginBusy = true;
-    this.zeigeLadenIntern("Dein Einmalpasswort wird angefordert …");
+    this.zeigeLadenIntern(requestConfig.loadingText);
 
     try {
-      const result = await sendeFormularRequest("/webhook/send-otp", "POST", requestData);
+      const result = await sendeFormularRequest(
+        requestConfig.webhookUrl,
+        requestConfig.method,
+        requestData
+      );
 
       if (!result || typeof result.erfolgreich !== "boolean") {
         const error = new Error("Ungültige JSON-Antwort.");
@@ -410,7 +449,11 @@ export const state = reactive({
       if (error.result) {
         this.zeigeServerMeldung(error.result, false);
       } else {
-        this.zeigeMeldung("Einmalpasswort konnte nicht angefordert werden", "Bitte versuche es später erneut.", false);
+        this.zeigeMeldung(
+          loginConfig.messages?.otpRequestErrorTitle,
+          loginConfig.messages?.otpRequestError,
+          false
+        );
       }
     } finally {
       this.memberLoginBusy = false;
@@ -424,17 +467,34 @@ export const state = reactive({
       return;
     }
 
+    const loginConfig = this.config?.memberLogin || {};
+    const authenticationConfig = loginConfig.authenticate || {};
+
+    if (!authenticationConfig.webhookUrl || !authenticationConfig.method) {
+      this.zeigeMeldung(
+        loginConfig.messages?.configurationErrorTitle,
+        loginConfig.messages?.configurationError,
+        false
+      );
+
+      return;
+    }
+
     const requestData = {
       statusGruppe: this.memberLoginDaten.statusGruppe,
-      [this.memberLoginKennungFeld]: this.memberLoginDaten[this.memberLoginKennungFeld].trim(),
+      [this.memberLoginKennungFeld]: String(this.memberLoginDaten[this.memberLoginKennungFeld] || "").trim(),
       passwort: this.memberLoginDaten.passwort
     };
 
     this.memberLoginBusy = true;
-    this.zeigeLadenIntern("Du wirst angemeldet …");
+    this.zeigeLadenIntern(authenticationConfig.loadingText);
 
     try {
-      const result = await sendeFormularRequest("/webhook/auth", "POST", requestData);
+      const result = await sendeFormularRequest(
+        authenticationConfig.webhookUrl,
+        authenticationConfig.method,
+        requestData
+      );
 
       if (!result || typeof result.erfolgreich !== "boolean") {
         const error = new Error("Ungültige JSON-Antwort.");
@@ -450,7 +510,11 @@ export const state = reactive({
       const person = await this.ladeMemberDaten({ silent: true });
 
       if (!person) {
-        this.zeigeMeldung("Anmeldung nicht bestätigt", "Die Anmeldung wurde verarbeitet, aber die Memberdaten konnten nicht geladen werden.", false);
+        this.zeigeMeldung(
+          loginConfig.messages?.memberDataErrorTitle,
+          loginConfig.messages?.memberDataError,
+          false
+        );
         return;
       }
 
@@ -463,7 +527,11 @@ export const state = reactive({
       if (error.result) {
         this.zeigeServerMeldung(error.result, false);
       } else {
-        this.zeigeMeldung("Anmeldung fehlgeschlagen", "Bitte prüfe Dein Einmalpasswort und versuche es erneut.", false);
+        this.zeigeMeldung(
+          loginConfig.messages?.authenticationErrorTitle,
+          loginConfig.messages?.authenticationError,
+          false
+        );
       }
     } finally {
       this.memberLoginBusy = false;
@@ -478,12 +546,7 @@ export const state = reactive({
     this.view = "auswahl";
     this.selectedForm = null;
     this.memberLoginOtpAngefordert = false;
-    this.memberLoginDaten = {
-      statusGruppe: "",
-      mgnr: "",
-      trainerId: "",
-      passwort: ""
-    };
+    this.memberLoginDaten = this.leereMemberLoginDaten();
 
     aktualisiereUrl(null);
     window.scrollTo(0, 0);

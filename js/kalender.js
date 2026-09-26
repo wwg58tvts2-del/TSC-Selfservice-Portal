@@ -69,7 +69,8 @@
           const lokaleConfig = await lokaleConfigResponse.json();
           if (!lokaleConfigResponse.ok) throw new Error(`Lokale Konfiguration HTTP ${lokaleConfigResponse.status}`);
 
-          const configUrl = lokaleConfig.configUrl || "/webhook/selfservice-config";
+          const configUrl = lokaleConfig.configUrl;
+          if (!configUrl) throw new Error("config.json enthält keine configUrl.");
           const response = await fetch(configUrl, {
             credentials: "include",
             cache: "no-store",

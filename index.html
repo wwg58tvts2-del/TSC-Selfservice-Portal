@@ -76,7 +76,7 @@
         @click="oeffneLogin()"
       >
         <i class="bi bi-person-circle" aria-hidden="true"></i>
-        <span>{{ config.memberLogin.titel }}</span>
+        <span>{{ config.memberLogin.title }}</span>
       </button>
       <button
         v-else
@@ -161,69 +161,61 @@
       <div class="member-login-page-header">
         <button id="back-button" class="btn btn-outline-secondary" type="button" @click="zurueck()">
           <i class="bi bi-arrow-left" aria-hidden="true"></i>
-          Zurück zur Auswahl
+          {{ config?.memberLogin?.backLabel }}
         </button>
-        <p class="section-kicker">Mitgliederbereich</p>
-        <h1 id="member-login-title" class="member-login-title">Mitglieder Login</h1>
+        <p class="section-kicker">{{ config?.memberLogin?.kicker }}</p>
+        <h1 id="member-login-title" class="member-login-title">{{ config?.memberLogin?.title }}</h1>
       </div>
-      <p class="member-login-intro">Melde Dich mit einem Einmalpasswort an. Ein dauerhaftes Passwort benötigst Du nicht.</p>
+      <p class="member-login-intro">{{ config?.memberLogin?.intro }}</p>
 
       <div class="member-login-controls">
         <section class="member-login-step-card">
           <div class="member-login-step-heading">
-            <span class="member-login-step-number">Schritt 1</span>
-            <h2>Wähle deine Statusgruppe</h2>
+            <span class="member-login-step-number">{{ config?.memberLogin?.stepLabels?.status }}</span>
+            <h2>{{ config?.memberLogin?.stepTitles?.status }}</h2>
           </div>
           <fieldset class="member-login-status-group" :disabled="memberLoginBusy">
-            <legend class="visually-hidden">Statusgruppe</legend>
-            <label class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === 'mitglied' }">
-              <input type="radio" name="memberStatusGroup" value="mitglied" :checked="memberLoginDaten.statusGruppe === 'mitglied'" @change="waehleMemberStatusgruppe('mitglied')">
-              Mitglied
-            </label>
-            <label class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === 'trainer' }">
-              <input type="radio" name="memberStatusGroup" value="trainer" :checked="memberLoginDaten.statusGruppe === 'trainer'" @change="waehleMemberStatusgruppe('trainer')">
-              Trainer*in
+            <legend class="visually-hidden">{{ config?.memberLogin?.statusGroupsLabel }}</legend>
+            <label v-for="gruppe in memberLoginStatusgruppen" :key="gruppe.value" class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === gruppe.value }">
+              <input type="radio" name="memberStatusGroup" :value="gruppe.value" :checked="memberLoginDaten.statusGruppe === gruppe.value" @change="waehleMemberStatusgruppe(gruppe.value)">
+              {{ gruppe.label }}
             </label>
           </fieldset>
         </section>
 
         <section v-if="memberLoginDaten.statusGruppe" class="member-login-step-card">
           <div class="member-login-step-heading">
-            <span class="member-login-step-number">Schritt 2</span>
-            <h2>Kennung eingeben</h2>
+            <span class="member-login-step-number">{{ config?.memberLogin?.stepLabels?.identifier }}</span>
+            <h2>{{ config?.memberLogin?.stepTitles?.identifier }}</h2>
           </div>
-          <p class="member-login-step-copy">Wir senden den Code an die E-Mail-Adresse, die zu Deiner Mitgliedschaft hinterlegt ist.</p>
-          <div v-if="memberLoginDaten.statusGruppe === 'mitglied'" class="member-login-field">
-            <label class="form-label" for="member-number">Mitgliedsnummer</label>
-            <input id="member-number" v-model="memberLoginDaten.mgnr" class="form-control" type="text" inputmode="numeric" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
-          </div>
-          <div v-else-if="memberLoginDaten.statusGruppe === 'trainer'" class="member-login-field">
-            <label class="form-label" for="trainer-id">Trainer-ID</label>
-            <input id="trainer-id" v-model="memberLoginDaten.trainerId" class="form-control" type="text" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
+          <p class="member-login-step-copy">{{ config?.memberLogin?.otpRequest?.description }}</p>
+          <div v-if="memberLoginKennungFeld" class="member-login-field">
+            <label class="form-label" for="member-login-identifier">{{ memberLoginKennungLabel }}</label>
+            <input id="member-login-identifier" v-model="memberLoginDaten[memberLoginKennungFeld]" class="form-control" type="text" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
           </div>
           <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginKennungGueltig || memberLoginBusy" @click="fordereEinmalpasswortAn()">
             <i class="bi bi-envelope-fill" aria-hidden="true"></i>
-            {{ memberLoginOtpAngefordert ? 'Einmalpasswort erneut anfordern' : 'Einmalpasswort anfordern' }}
+            {{ memberLoginOtpAngefordert ? config?.memberLogin?.otpRequest?.resendLabel : config?.memberLogin?.otpRequest?.buttonLabel }}
           </button>
         </section>
 
         <section v-if="memberLoginOtpAngefordert" class="member-login-step-card">
           <div class="member-login-step-heading">
-            <span class="member-login-step-number">Schritt 3</span>
-            <h2>Einmalpasswort eingeben</h2>
+            <span class="member-login-step-number">{{ config?.memberLogin?.stepLabels?.authenticate }}</span>
+            <h2>{{ config?.memberLogin?.stepTitles?.authenticate }}</h2>
           </div>
-          <p class="member-login-step-copy">Gib das Einmalpasswort ein, das an Deine hinterlegte E-Mail-Adresse gesendet wurde.</p>
+          <p class="member-login-step-copy">{{ config?.memberLogin?.authenticate?.description }}</p>
           <div class="member-login-field">
-            <label class="form-label" for="member-otp">Einmalpasswort</label>
+            <label class="form-label" for="member-otp">{{ config?.memberLogin?.authenticate?.passwordLabel }}</label>
             <input id="member-otp" v-model="memberLoginDaten.passwort" class="form-control" type="password" autocomplete="one-time-code" :disabled="memberLoginBusy">
           </div>
           <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginDaten.passwort.trim() || memberLoginBusy" @click="meldeMitEinmalpasswortAn()">
             <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
-            Anmelden
+            {{ config?.memberLogin?.authenticate?.buttonLabel }}
           </button>
         </section>
       </div>
-      <p class="member-login-note">Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.</p>
+      <p class="member-login-note">{{ config?.memberLogin?.securityNote }}</p>
     </section>
 
     <section v-else id="form-container" class="form-modal">
@@ -270,6 +262,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=20260926-native-member-login-5"></script>
+  <script type="module" src="js/main.js?v=20260926-config-login-1"></script>
 </body>
 </html>
