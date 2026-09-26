@@ -6,7 +6,7 @@ import {
   holeMemberStatus,
   sendeLogout,
   sendeFormularRequest
-} from "./api.js?v=20260921-auth-poll-2";
+} from "./api.js?v=20260926-config-all-items-1";
 
 import {
   leseFormIdAusUrl,
@@ -166,35 +166,6 @@ export const state = reactive({
   },
 
 
-  istFormularSichtbar(form) {
-    const sichtbarkeit =
-      Array.isArray(form.sichtbarkeit)
-        ? form.sichtbarkeit
-        : [
-            form.sichtbarkeit ||
-            "alle"
-          ];
-
-    const erlaubteGruppen =
-      sichtbarkeit.map(
-        (gruppe) =>
-          String(gruppe)
-            .trim()
-            .toLowerCase()
-      );
-
-    return (
-      erlaubteGruppen.includes("alle") ||
-      erlaubteGruppen.some(
-        (gruppe) =>
-          this.statusgruppen.includes(
-            gruppe
-          )
-      )
-    );
-  },
-
-
   get sichtbareFormulare() {
     const forms =
       Array.isArray(
@@ -203,11 +174,7 @@ export const state = reactive({
         ? this.config.forms.items
         : [];
 
-    return forms.filter(
-      (form) =>
-        form.active !== false &&
-        this.istFormularSichtbar(form)
-    );
+    return forms;
   },
 
 
@@ -219,10 +186,7 @@ export const state = reactive({
         ? this.config.onlineServices.items
         : [];
 
-    return services.filter(
-      (service) =>
-        service.active !== false
-    );
+    return services;
   },
 
 
@@ -234,10 +198,7 @@ export const state = reactive({
         ? this.config.downloads.items
         : [];
 
-    return downloads.filter(
-      (download) =>
-        download.active !== false
-    );
+    return downloads;
   },
 
 
@@ -249,10 +210,7 @@ export const state = reactive({
         ? this.config.footer
         : [];
 
-    return links.filter(
-      (link) =>
-        link.active !== false
-    );
+    return links;
   },
 
 
@@ -357,18 +315,6 @@ export const state = reactive({
 
 
   oeffneFormular(form) {
-    if (
-      !this.istFormularSichtbar(form)
-    ) {
-      this.zeigeMeldung(
-        "Keine Berechtigung",
-        "Dieses Formular ist für deinen Benutzerstatus nicht freigegeben.",
-        false
-      );
-
-      return;
-    }
-
     this.warnung = "";
     this.selectedForm = form;
     this.view = "formular";
@@ -486,15 +432,6 @@ export const state = reactive({
     if (!form) {
       this.warnung =
         "Das angeforderte Formular wurde nicht gefunden.";
-
-      return;
-    }
-
-    if (
-      !this.istFormularSichtbar(form)
-    ) {
-      this.warnung =
-        "Dieses Formular ist für deinen Benutzerstatus nicht freigegeben.";
 
       return;
     }

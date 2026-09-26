@@ -67,7 +67,7 @@
     <div
       class="header-actions"
       aria-label="Mitgliederbereich"
-      v-if="config?.memberLogin && config.memberLogin.active !== false"
+      v-if="config?.memberLogin"
     >
       <button
         v-if="!person"
@@ -201,6 +201,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=20260925-logout-selection-1"></script>
+  <script type="module" src="js/main.js?v=20260926-config-all-items-1"></script>
 </body>
 </html>

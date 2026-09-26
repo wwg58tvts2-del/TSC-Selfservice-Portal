@@ -27,7 +27,7 @@ Die Einstiegsskripte, lokalen Modulimporte und der Konfigurationsabruf tragen ei
 
 ## Konfiguration
 
-`page`, `header` und `body` enthalten Seitentexte und Logos. `forms.baseUrl` ist die Form.io-Basisadresse, `forms.items` enthält Formular-ID, Titel, Beschreibung, `active` und `sichtbarkeit`. `memberLogin` beschreibt das Loginformular. `onlineServices`, `downloads` und `footer` enthalten Links. Abschnittstexte stehen jeweils unter `section`.
+`page`, `header` und `body` enthalten Seitentexte und Logos. Die Config kann als einzelnes JSON-Objekt oder als Array mit dem Config-Objekt geliefert werden. `forms.baseUrl` ist die Form.io-Basisadresse; `forms.items`, `onlineServices.items`, `downloads.items` und `footer` werden vollständig angezeigt. Abschnittstexte stehen jeweils unter `section`.
 
 ```json
 {
@@ -39,9 +39,7 @@ Die Einstiegsskripte, lokalen Modulimporte und der Konfigurationsabruf tragen ei
 }
 ```
 
-`active: false` blendet einen Eintrag aus der Auswahl aus. Ohne Person gilt `gast`; bei einer Person wird `statusGruppe` auf `gast`, `alle`, `trainer` oder `mitglied` begrenzt. `sichtbarkeit` darf ein String oder Array sein; ohne Wert gilt `alle`.
-
-Die Sichtbarkeit wird beim Öffnen und beim initialen URL-Aufruf geprüft. Der aktuelle Browser-History-Handler prüft sie nicht erneut. Direkte Öffnungswege prüfen `active` nicht zusätzlich. Diese Filter ersetzen keine Backend-Berechtigungsprüfung.
+Das Frontend filtert diese Listen nicht nach `active` oder `sichtbarkeit`; es zeigt alle gelieferten Einträge und lässt die Formularauswahl zu. `active` und `sichtbarkeit` können weiterhin als Metadaten in der Config stehen, sind aber keine Zugriffsprüfung. n8n/Form.io muss Berechtigungen serverseitig beim Laden und Absenden jedes geschützten Formulars prüfen. Die UI ersetzt diese Autorisierung ausdrücklich nicht.
 
 ## Start, Login und Navigation
 

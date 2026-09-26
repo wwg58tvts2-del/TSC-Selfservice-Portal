@@ -77,16 +77,17 @@
           });
           const result = await response.json();
           if (!response.ok) throw new Error(`Konfiguration HTTP ${response.status}`);
-          if (!result || typeof result !== "object") throw new Error("Ungültige Portal-Konfiguration.");
+          const config = Array.isArray(result) ? result[0] : result;
+          if (!config || typeof config !== "object" || Array.isArray(config)) throw new Error("Ungültige Portal-Konfiguration.");
           const favicon = document.getElementById("favicon");
-          if (favicon && result.page?.favicon) favicon.href = result.page.favicon;
-          console.log("[Kalender] Portal-Konfiguration geladen:", result.header, result.footer);
-          return result;
+          if (favicon && config.page?.favicon) favicon.href = config.page.favicon;
+          console.log("[Kalender] Portal-Konfiguration geladen:", config.header, config.footer);
+          return config;
         },
 
         get sichtbareFooterLinks() {
           return Array.isArray(this.config?.footer)
-            ? this.config.footer.filter((link) => link.active !== false)
+            ? this.config.footer
             : [];
         },
 

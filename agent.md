@@ -33,8 +33,7 @@ Das Reservierungs-Panel wird über `panel.resetValue()` zurückgesetzt, danach `
 
 ## Bestehende Grenzen und Prüfung
 
-Sichtbarkeit ersetzt keine Backend-Berechtigung. `active` filtert die Auswahl, nicht alle direkten Öffnungswege. Der `popstate`-Handler prüft Sichtbarkeit nicht erneut. Die Start-URL sucht nur in `forms.items`. Logout schließt das aktuelle Formular nicht automatisch.
-Sichtbarkeit ersetzt keine Backend-Berechtigung. `active` filtert die Auswahl, nicht alle direkten Öffnungswege. Der `popstate`-Handler prüft Sichtbarkeit nicht erneut. Die Start-URL sucht nur in `forms.items`.
+Das Frontend zeigt alle gelieferten Einträge; `active` und `sichtbarkeit` filtern die Listen nicht. n8n/Form.io muss Zugriffsrechte serverseitig sowohl beim Laden als auch beim Absenden geschützter Formulare prüfen. Die Start-URL sucht nur in `forms.items`.
 
 Die Versionskennung in HTML, lokalen Modulimporten und Konfigurationsabruf konsistent halten. Syntax, JSON, Erfolgs-/Fehlerfälle, Callback-Reihenfolge, Zustand und Cleanup prüfen. Simulierte Tests nicht als Live-Tests ausgeben. Response-Logging kann personenbezogene Inhalte enthalten.
 

@@ -68,21 +68,23 @@ export async function ladeConfigDaten(url) {
     throw new Error(`Konfiguration konnte nicht geladen werden (${response.status}).`);
   }
 
-  if (!result || typeof result !== "object") {
+  const config = Array.isArray(result) ? result[0] : result;
+
+  if (!config || typeof config !== "object" || Array.isArray(config)) {
     console.error("Konfiguration ist kein gültiges JSON-Objekt.");
     console.groupEnd();
     throw new Error("Die Konfiguration hat kein gültiges JSON-Objekt geliefert.");
   }
 
-  console.log("JSON-Schlüssel:", Object.keys(result));
-  console.log("Formulare:", Array.isArray(result.forms?.items) ? result.forms.items.length : 0);
-  console.log("Online-Services:", Array.isArray(result.onlineServices?.items) ? result.onlineServices.items.length : 0);
-  console.log("Downloads:", Array.isArray(result.downloads?.items) ? result.downloads.items.length : 0);
-  console.log("Footer-Links:", Array.isArray(result.footer) ? result.footer.length : 0);
+  console.log("JSON-Schlüssel:", Object.keys(config));
+  console.log("Formulare:", Array.isArray(config.forms?.items) ? config.forms.items.length : 0);
+  console.log("Online-Services:", Array.isArray(config.onlineServices?.items) ? config.onlineServices.items.length : 0);
+  console.log("Downloads:", Array.isArray(config.downloads?.items) ? config.downloads.items.length : 0);
+  console.log("Footer-Links:", Array.isArray(config.footer) ? config.footer.length : 0);
   console.log("Konfiguration erfolgreich verarbeitet.");
   console.groupEnd();
 
-  return result;
+  return config;
 }
 
 export async function holeMemberStatus(url) {
