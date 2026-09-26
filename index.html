@@ -157,28 +157,27 @@
       </section>
     </section>
 
-    <section v-else-if="view === 'login'" id="member-login-container" class="form-modal">
-      <div class="form-modal-backdrop" aria-hidden="true"></div>
-      <div class="form-modal-dialog member-login-dialog" role="dialog" aria-modal="true" aria-labelledby="member-login-title">
-        <div class="form-modal-header">
-          <button id="back-button" class="btn btn-outline-secondary" type="button" @click="zurueck()">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i>
-            Zurück
-          </button>
-        </div>
+    <section v-else-if="view === 'login'" id="member-login-container" class="member-login-page" aria-labelledby="member-login-title">
+      <div class="member-login-page-header">
+        <button id="back-button" class="btn btn-outline-secondary" type="button" @click="zurueck()">
+          <i class="bi bi-arrow-left" aria-hidden="true"></i>
+          Zurück zur Auswahl
+        </button>
+        <p class="section-kicker">Mitgliederbereich</p>
         <h1 id="member-login-title" class="member-login-title">Mitglieder Login</h1>
-        <div class="member-login-info">
-          <h2>Anmeldung zum Mitgliederbereich</h2>
-          <p>Über den Mitgliederbereich kannst Du auf persönliche Online-Services des Tanzsportclub Dortmund zugreifen und beispielsweise Deine hinterlegten Daten einsehen oder Änderungen beantragen. Für die Anmeldung benötigst Du kein dauerhaftes Passwort.</p>
-          <h3>So funktioniert die Anmeldung</h3>
-          <ol>
-            <li>Wähle Deine Statusgruppe und gib die zugehörige Nummer ein.</li>
-            <li>Fordere ein Einmalpasswort an. Wir senden es an die E-Mail-Adresse, die zu Deiner Mitgliedschaft hinterlegt ist.</li>
-            <li>Gib das erhaltene Einmalpasswort ein und melde Dich an.</li>
-            <li>Danach kannst Du die für Dich verfügbaren Online-Services nutzen.</li>
-          </ol>
-          <p class="member-login-note">Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.</p>
-        </div>
+      </div>
+      <div class="member-login-info">
+        <h2>Anmeldung zum Mitgliederbereich</h2>
+        <p>Über den Mitgliederbereich kannst Du auf persönliche Online-Services des Tanzsportclub Dortmund zugreifen und beispielsweise Deine hinterlegten Daten einsehen oder Änderungen beantragen. Für die Anmeldung benötigst Du kein dauerhaftes Passwort.</p>
+        <h3>So funktioniert die Anmeldung</h3>
+        <ol>
+          <li>Wähle Deine Statusgruppe und gib die zugehörige Nummer ein.</li>
+          <li>Fordere ein Einmalpasswort an. Wir senden es an die E-Mail-Adresse, die zu Deiner Mitgliedschaft hinterlegt ist.</li>
+          <li>Gib das erhaltene Einmalpasswort ein und melde Dich an.</li>
+          <li>Danach kannst Du die für Dich verfügbaren Online-Services nutzen.</li>
+        </ol>
+        <p class="member-login-note">Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.</p>
+      </div>
 
         <fieldset class="member-login-status-group" :disabled="memberLoginBusy">
           <legend>Wähle deine Statusgruppe aus</legend>
@@ -207,7 +206,6 @@
             Anmelden
           </button>
         </div>
-      </div>
     </section>
 
     <section v-else id="form-container" class="form-modal">
@@ -254,6 +252,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=20260926-native-member-login-1"></script>
+  <script type="module" src="js/main.js?v=20260926-native-member-login-2"></script>
 </body>
 </html>
