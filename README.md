@@ -45,7 +45,7 @@ Das Frontend filtert diese Listen nicht nach `active` oder `sichtbarkeit`; es ze
 
 `main.js` veröffentlicht die globalen Funktionen, mountet Petite Vue und ruft `state.init()` auf. Nach dem Laden der Konfiguration wartet das Portal auf die stille Prüfung von `/webhook/me` und wertet anschließend `?form=...` aus.
 
-Der Loginbutton oben rechts öffnet die native Mitglieder-Loginansicht in der Seite. `memberLogin.statusGroups` steuert Statusgruppen und Kennungsfelder; `memberLogin.requestOtp` und `memberLogin.authenticate` enthalten jeweils `webhookUrl`, `method` und `loadingText`. Die Button- und Hilfetexte sowie Fehlertexte werden ebenfalls aus `memberLogin` geladen. Beide Loginrequests senden `{ request: { data } }`. Nach erfolgreichem Auth-Response prüft das Portal `memberStatusUrl`; nur bei bestätigter Person kehrt es zur Portal-Auswahl zurück. Die kopierbare Beispielkonfiguration liegt in `Downloads/self.json`.
+Der Loginbutton oben rechts öffnet die native Mitglieder-Loginansicht in der Seite. `memberLogin.statusGroups` steuert Statusgruppen und Kennungsfelder; `memberLogin.requestOtp` und `memberLogin.authenticate` enthalten jeweils `webhookUrl`, `method` und `loadingText`. Die Button- und Hilfetexte sowie Fehlertexte werden ebenfalls aus `memberLogin` geladen. Beide Loginrequests senden `{ request: { data } }`. Nach bestätigtem Login und nach erfolgreichem Logout lädt das Portal die Config erneut und prüft anschließend `memberStatusUrl`, bevor es die Auswahl aktualisiert. Die kopierbare Beispielkonfiguration liegt in `Downloads/self.json`.
 
 ```json
 {

@@ -340,6 +340,7 @@ export const state = reactive({
 
       if (result.erfolgreich === true || result.status === "nicht_angemeldet") {
         this.person = null;
+        await this.ladeConfig();
         this.zurueck();
       }
 
@@ -352,6 +353,7 @@ export const state = reactive({
 
       if (result?.erfolgreich === false && result.status === "nicht_angemeldet") {
         this.person = null;
+        await this.ladeConfig();
         this.zurueck();
       }
 
@@ -507,7 +509,8 @@ export const state = reactive({
         return;
       }
 
-      const person = await this.ladeMemberDaten({ silent: true });
+      await this.ladeConfig();
+      const person = this.person;
 
       if (!person) {
         this.zeigeMeldung(

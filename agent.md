@@ -1,6 +1,6 @@
 # Serviceportal – Codepflege
 
-Stand: 26.09.2026, Version `20260926-config-login-1`. Die vollständige Funktionsbeschreibung und JSON-Beispiele stehen in [README.md](README.md).
+Stand: 26.09.2026, Version `20260926-config-login-2`. Die vollständige Funktionsbeschreibung und JSON-Beispiele stehen in [README.md](README.md).
 
 ## Architektur und Stil
 
@@ -20,7 +20,7 @@ Die Member-Prüfung und sonstigen lokalen UI-Meldungen sind separate Abläufe un
 
 ## Mitgliederlogin
 
-Das Mitgliederlogin ist natives HTML in einer Seitenansicht und verwendet kein Form.io. Statusgruppen, Feldnamen, Texte, Methoden und Webhook-URLs kommen aus `memberLogin.statusGroups`, `memberLogin.requestOtp` und `memberLogin.authenticate`; keine Login-Webhook-URL ist im JS fest codiert. Beide Requests senden `{ request: { data } }` und erwarten boolesches `erfolgreich`. Nach Auth-Erfolg prüft `memberStatusUrl` die Sitzung; dann kehrt das Portal zur Auswahl zurück. Form.io bleibt für die übrigen Portalformulare in Verwendung.
+Das Mitgliederlogin ist natives HTML in einer Seitenansicht und verwendet kein Form.io. Statusgruppen, Feldnamen, Texte, Methoden und Webhook-URLs kommen aus `memberLogin.statusGroups`, `memberLogin.requestOtp` und `memberLogin.authenticate`; keine Login-Webhook-URL ist im JS fest codiert. Beide Requests senden `{ request: { data } }` und erwarten boolesches `erfolgreich`. Nach bestätigtem Login und erfolgreichem Logout wird `ladeConfig()` erneut ausgeführt und damit auch `memberStatusUrl` erneut geprüft. Form.io bleibt für die übrigen Portalformulare in Verwendung.
 
 ## Formulare
 
