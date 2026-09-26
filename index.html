@@ -179,10 +179,17 @@
         <p class="member-login-note">Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.</p>
       </div>
 
+      <div class="member-login-controls">
         <fieldset class="member-login-status-group" :disabled="memberLoginBusy">
           <legend>Wähle deine Statusgruppe aus</legend>
-          <label><input type="radio" name="memberStatusGroup" value="mitglied" :checked="memberLoginDaten.statusGruppe === 'mitglied'" @change="waehleMemberStatusgruppe('mitglied')"> Mitglied</label>
-          <label><input type="radio" name="memberStatusGroup" value="trainer" :checked="memberLoginDaten.statusGruppe === 'trainer'" @change="waehleMemberStatusgruppe('trainer')"> Trainer*in</label>
+          <label class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === 'mitglied' }">
+            <input type="radio" name="memberStatusGroup" value="mitglied" :checked="memberLoginDaten.statusGruppe === 'mitglied'" @change="waehleMemberStatusgruppe('mitglied')">
+            Mitglied
+          </label>
+          <label class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === 'trainer' }">
+            <input type="radio" name="memberStatusGroup" value="trainer" :checked="memberLoginDaten.statusGruppe === 'trainer'" @change="waehleMemberStatusgruppe('trainer')">
+            Trainer*in
+          </label>
         </fieldset>
 
         <div v-if="memberLoginDaten.statusGruppe === 'mitglied'" class="member-login-field">
@@ -198,14 +205,17 @@
           {{ memberLoginOtpAngefordert ? 'Einmalpasswort erneut anfordern' : 'Einmalpasswort anfordern' }}
         </button>
 
-        <div v-if="memberLoginOtpAngefordert" class="member-login-field">
+        <div v-if="memberLoginOtpAngefordert" class="member-login-field member-login-otp-step">
+          <p class="member-login-step-label">Schritt 2</p>
           <label class="form-label" for="member-otp">Einmalpasswort</label>
+          <p class="member-login-field-hint">Gib den Code ein, den wir an Deine hinterlegte E-Mail-Adresse gesendet haben.</p>
           <input id="member-otp" v-model="memberLoginDaten.passwort" class="form-control" type="password" autocomplete="one-time-code" :disabled="memberLoginBusy">
           <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginDaten.passwort.trim() || memberLoginBusy" @click="meldeMitEinmalpasswortAn()">
             <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
             Anmelden
           </button>
         </div>
+      </div>
     </section>
 
     <section v-else id="form-container" class="form-modal">
@@ -252,6 +262,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=20260926-native-member-login-2"></script>
+  <script type="module" src="js/main.js?v=20260926-native-member-login-3"></script>
 </body>
 </html>
