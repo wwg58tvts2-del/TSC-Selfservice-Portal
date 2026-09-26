@@ -166,56 +166,64 @@
         <p class="section-kicker">Mitgliederbereich</p>
         <h1 id="member-login-title" class="member-login-title">Mitglieder Login</h1>
       </div>
-      <div class="member-login-info">
-        <h2>Anmeldung zum Mitgliederbereich</h2>
-        <p>Über den Mitgliederbereich kannst Du auf persönliche Online-Services des Tanzsportclub Dortmund zugreifen und beispielsweise Deine hinterlegten Daten einsehen oder Änderungen beantragen. Für die Anmeldung benötigst Du kein dauerhaftes Passwort.</p>
-        <h3>So funktioniert die Anmeldung</h3>
-        <ol>
-          <li>Wähle Deine Statusgruppe und gib die zugehörige Nummer ein.</li>
-          <li>Fordere ein Einmalpasswort an. Wir senden es an die E-Mail-Adresse, die zu Deiner Mitgliedschaft hinterlegt ist.</li>
-          <li>Gib das erhaltene Einmalpasswort ein und melde Dich an.</li>
-          <li>Danach kannst Du die für Dich verfügbaren Online-Services nutzen.</li>
-        </ol>
-        <p class="member-login-note">Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.</p>
-      </div>
+      <p class="member-login-intro">Melde Dich mit einem Einmalpasswort an. Ein dauerhaftes Passwort benötigst Du nicht.</p>
 
       <div class="member-login-controls">
-        <fieldset class="member-login-status-group" :disabled="memberLoginBusy">
-          <legend>Wähle deine Statusgruppe aus</legend>
-          <label class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === 'mitglied' }">
-            <input type="radio" name="memberStatusGroup" value="mitglied" :checked="memberLoginDaten.statusGruppe === 'mitglied'" @change="waehleMemberStatusgruppe('mitglied')">
-            Mitglied
-          </label>
-          <label class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === 'trainer' }">
-            <input type="radio" name="memberStatusGroup" value="trainer" :checked="memberLoginDaten.statusGruppe === 'trainer'" @change="waehleMemberStatusgruppe('trainer')">
-            Trainer*in
-          </label>
-        </fieldset>
+        <section class="member-login-step-card">
+          <div class="member-login-step-heading">
+            <span class="member-login-step-number">Schritt 1</span>
+            <h2>Statusgruppe und Kennung</h2>
+          </div>
+          <fieldset class="member-login-status-group" :disabled="memberLoginBusy">
+            <legend>Wähle deine Statusgruppe aus</legend>
+            <label class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === 'mitglied' }">
+              <input type="radio" name="memberStatusGroup" value="mitglied" :checked="memberLoginDaten.statusGruppe === 'mitglied'" @change="waehleMemberStatusgruppe('mitglied')">
+              Mitglied
+            </label>
+            <label class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === 'trainer' }">
+              <input type="radio" name="memberStatusGroup" value="trainer" :checked="memberLoginDaten.statusGruppe === 'trainer'" @change="waehleMemberStatusgruppe('trainer')">
+              Trainer*in
+            </label>
+          </fieldset>
+          <div v-if="memberLoginDaten.statusGruppe === 'mitglied'" class="member-login-field">
+            <label class="form-label" for="member-number">Mitgliedsnummer</label>
+            <input id="member-number" v-model="memberLoginDaten.mgnr" class="form-control" type="text" inputmode="numeric" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
+          </div>
+          <div v-else-if="memberLoginDaten.statusGruppe === 'trainer'" class="member-login-field">
+            <label class="form-label" for="trainer-id">Trainer-ID</label>
+            <input id="trainer-id" v-model="memberLoginDaten.trainerId" class="form-control" type="text" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
+          </div>
+        </section>
 
-        <div v-if="memberLoginDaten.statusGruppe === 'mitglied'" class="member-login-field">
-          <label class="form-label" for="member-number">Mitgliedsnummer</label>
-          <input id="member-number" v-model="memberLoginDaten.mgnr" class="form-control" type="text" inputmode="numeric" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
-        </div>
-        <div v-else-if="memberLoginDaten.statusGruppe === 'trainer'" class="member-login-field">
-          <label class="form-label" for="trainer-id">Trainer-ID</label>
-          <input id="trainer-id" v-model="memberLoginDaten.trainerId" class="form-control" type="text" autocomplete="username" :disabled="memberLoginBusy" @input="aendereMemberLoginKennung()">
-        </div>
-        <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginKennungGueltig || memberLoginBusy" @click="fordereEinmalpasswortAn()">
-          <i class="bi bi-envelope-fill" aria-hidden="true"></i>
-          {{ memberLoginOtpAngefordert ? 'Einmalpasswort erneut anfordern' : 'Einmalpasswort anfordern' }}
-        </button>
+        <section class="member-login-step-card">
+          <div class="member-login-step-heading">
+            <span class="member-login-step-number">Schritt 2</span>
+            <h2>Einmalpasswort anfordern</h2>
+          </div>
+          <p class="member-login-step-copy">Wir senden den Code an die E-Mail-Adresse, die zu Deiner Mitgliedschaft hinterlegt ist.</p>
+          <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginKennungGueltig || memberLoginBusy" @click="fordereEinmalpasswortAn()">
+            <i class="bi bi-envelope-fill" aria-hidden="true"></i>
+            {{ memberLoginOtpAngefordert ? 'Einmalpasswort erneut anfordern' : 'Einmalpasswort anfordern' }}
+          </button>
+        </section>
 
-        <div v-if="memberLoginOtpAngefordert" class="member-login-field member-login-otp-step">
-          <p class="member-login-step-label">Schritt 2</p>
-          <label class="form-label" for="member-otp">Einmalpasswort</label>
-          <p class="member-login-field-hint">Gib den Code ein, den wir an Deine hinterlegte E-Mail-Adresse gesendet haben.</p>
-          <input id="member-otp" v-model="memberLoginDaten.passwort" class="form-control" type="password" autocomplete="one-time-code" :disabled="memberLoginBusy">
-          <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginDaten.passwort.trim() || memberLoginBusy" @click="meldeMitEinmalpasswortAn()">
+        <section class="member-login-step-card" :class="{ 'is-pending': !memberLoginOtpAngefordert }" :aria-disabled="!memberLoginOtpAngefordert">
+          <div class="member-login-step-heading">
+            <span class="member-login-step-number">Schritt 3</span>
+            <h2>Anmelden</h2>
+          </div>
+          <p v-if="!memberLoginOtpAngefordert" class="member-login-step-copy">Fordere zuerst ein Einmalpasswort an.</p>
+          <div class="member-login-field">
+            <label class="form-label" for="member-otp">Einmalpasswort</label>
+            <input id="member-otp" v-model="memberLoginDaten.passwort" class="form-control" type="password" autocomplete="one-time-code" :disabled="!memberLoginOtpAngefordert || memberLoginBusy">
+          </div>
+          <button class="form-button-label member-login-action" type="button" :disabled="!memberLoginOtpAngefordert || !memberLoginDaten.passwort.trim() || memberLoginBusy" @click="meldeMitEinmalpasswortAn()">
             <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
             Anmelden
           </button>
-        </div>
+        </section>
       </div>
+      <p class="member-login-note">Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.</p>
     </section>
 
     <section v-else id="form-container" class="form-modal">
@@ -262,6 +270,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=20260926-native-member-login-3"></script>
+  <script type="module" src="js/main.js?v=20260926-native-member-login-4"></script>
 </body>
 </html>
