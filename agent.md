@@ -1,6 +1,6 @@
 # Serviceportal – Codepflege
 
-Stand: 26.09.2026, Version `20260926-member-login-guide-1`. Die vollständige Funktionsbeschreibung und JSON-Beispiele stehen in [README.md](README.md).
+Stand: 26.09.2026, Version `20260926-member-login-guide-2`. Die vollständige Funktionsbeschreibung und JSON-Beispiele stehen in [README.md](README.md).
 
 ## Architektur und Stil
 

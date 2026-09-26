@@ -67,9 +67,19 @@
     <div
       class="header-actions"
       aria-label="Mitgliederbereich"
-      v-if="person && config?.memberLogin"
+      v-if="config?.memberLogin"
     >
       <button
+        v-if="!person"
+        class="header-login-button"
+        type="button"
+        @click="oeffneFormular(config.memberLogin)"
+      >
+        <i class="bi bi-person-circle" aria-hidden="true"></i>
+        <span>{{ config.memberLogin.titel }}</span>
+      </button>
+      <button
+        v-else
         class="header-login-button member-logout-button"
         type="button"
         @click="logout()"
@@ -105,10 +115,6 @@
             <li>Danach werden Dir die für Dich verfügbaren Online-Services angezeigt.</li>
           </ol>
           <p class="member-login-guide-note">Deine Anmeldung ist aus Sicherheitsgründen nur für eine begrenzte Zeit gültig. Danach ist eine erneute Anmeldung erforderlich.</p>
-          <button class="form-button-label" type="button" @click="oeffneFormular(config.memberLogin)">
-            Jetzt anmelden
-            <i class="bi bi-arrow-right" aria-hidden="true"></i>
-          </button>
         </div>
       </section>
 
@@ -213,6 +219,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=20260926-member-login-guide-1"></script>
+  <script type="module" src="js/main.js?v=20260926-member-login-guide-2"></script>
 </body>
 </html>
