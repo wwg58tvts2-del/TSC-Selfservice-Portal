@@ -1,54 +1,40 @@
-# Serviceportal – Codepflege
+# Agent Guide: Serviceportal
 
-Stand: 26.09.2026, Version `20260926-config-login-2`. Die vollständige Funktionsbeschreibung und JSON-Beispiele stehen in [README.md](README.md).
+## Projektgrenzen
 
-## Architektur und Stil
+Das Serviceportal ist ein statisches Petite-Vue-Frontend. n8n und Form.io sind externe Laufzeitdienste; dieses Repository enthält weder deren Workflows noch die produktive Portal-Konfiguration. `config.json` enthält nur den Konfigurationsendpunkt.
 
-`main.js` veröffentlicht globale Funktionen und startet Petite Vue. `state.js` steuert Zustand und Oberfläche; `api.js` enthält Netzwerkaufrufe und Logging ohne Zugriff auf den State. `formio.js` erstellt und zerstört Formularinstanzen. `navigation.js` steuert URL und History. Die Konfiguration wird über `/webhook/portal-config` geladen; CSS wird über `css/main.css` eingebunden, `responsive.css` zuletzt.
+Keine Abhängigkeiten oder Buildschritte ergänzen, solange die Aufgabe das nicht verlangt. Bibliotheken werden in den HTML-Seiten per CDN geladen. Änderungen an Laufzeitverhalten gegen die Codebasis prüfen; echte n8n-/Form.io-Aufrufe nicht als lokal getestet ausgeben.
 
-Deutsche Namen und Modulgrenzen erhalten. Neue Aufrufe kompakt schreiben, keine unnötigen Zeilenumbrüche oder beiläufigen Umformatierungen. Formularspezifische Resets bleiben im Form.io-Button.
+## Zuständigkeiten
 
-## JSON und Meldungen
+- `index.html`: Hauptauswahl, OTP-Mitgliederlogin, Form.io-Ansicht und Footer.
+- `js/state.js`: reaktiver Zustand und Benutzerabläufe.
+- `js/api.js`: Fetch-Aufrufe; kein Zugriff auf den State.
+- `js/formio.js`: Erstellen und Zerstören von Form.io-Instanzen.
+- `js/navigation.js`: Formular-ID im `?form=`-Parameter und History.
+- `js/main.js`: Mount, globale Funktionen für Form.io-Custom-JavaScript.
+- `js/kalender.js`, `js/trainingsplan.js`: eigenständige Unterseiten, jeweils mit eigenem Petite-Vue-State.
 
-n8n soll JSON-Objekte liefern: boolesches `erfolgreich`, optionaler `status`, Strings `titel` und `nachricht`, optional `datei`. Bei Datei: reines Base64, Dateiname und MIME-Type. Keine HTML-Entities oder Markdown-Escapes im JSON. Mehrere Dateien pro Antwort sind nicht implementiert.
+Vorhandene Modulgrenzen beibehalten. Portalbereiche und Unterseiten nicht unnötig zusammenführen.
 
-Für Formularversand und Logout ausschließlich Servertexte anzeigen. Keine lokalen Erfolg-/Fehler-Ersatztexte in diese Abläufe einführen. `zeigeServerMeldung()` zeigt vorhandene String-Felder an; ohne verwendbare Texte protokolliert es die Antwort und öffnet keine Meldung. Ohne Meldung findet keine Rücknavigation durch deren Schließen statt.
+## Verträge und Invarianten
 
-HTTP-Fehler behalten das JSON als `error.result`. Dadurch werden Servertexte auch bei 4xx/5xx angezeigt. Netzwerkfehler, ungültiges JSON und Callback-/Download-Ausnahmen ohne Serverantwort werden nur protokolliert. HTTP-Fehler lösen nie den Erfolgsweg aus. Ein ungültiges `erfolgreich` wird bei HTTP-Erfolg als Schemafehler behandelt und kann trotzdem mitgelieferte Servertexte anzeigen.
+- Die Hauptkonfiguration wird über die URL in `config.json` geladen; `memberStatusUrl`, `memberLogin`, `memberLogout`, `calendarUrl` und Bereichslisten kommen aus dieser Konfiguration.
+- Die Hauptauswahl zeigt `forms.items`, `onlineServices.items`, `downloads.items` und `footer`.
+- Die Kopfzeilensuche filtert nur Formulare, Online-Services und Downloads. Sie durchsucht Titel, Beschreibung und die unterstützten Suchbegriffs-Felder; Footer und Login bleiben unberührt.
+- `active` und `sichtbarkeit` sind keine Frontend-Berechtigungsprüfung. Autorisierung geschützter Daten und Requests gehört ins Backend/Form.io.
+- Mitgliederlogin: Statusgruppen und Kennungsfelder stammen aus `memberLogin.steps.chooseStatus.statusGroups`; OTP-Anforderung und Authentifizierung verwenden die konfigurierten Webhooks. Keine Login-URL oder Kennungsfelder fest codieren.
+- Form.io-Requests laufen über `window.sendeFormular(instance, config)`. Payload, `erfolgreich`, optionale Datei und Callback-Reihenfolge erhalten.
+- Servermeldungen bei Formularversand und Logout nicht durch lokale Ersatztexte ersetzen. HTTP-Fehler dürfen keinen Erfolgsweg auslösen.
+- `calendarUrl` versorgt Kalender und Trainingsplan; diese Seiten haben eigene Normalisierung und Filter.
 
-Die Member-Prüfung und sonstigen lokalen UI-Meldungen sind separate Abläufe und wurden nicht auf diese Regel umgestellt. `/webhook/me` erwartet `person` und `gefunden: true` oder `erfolgreich: true`; Arrays werden weiterhin akzeptiert. Eine spätere fehlgeschlagene Prüfung löscht eine vorhandene Person nicht automatisch.
+## Vorgehen und Prüfung
 
-## Mitgliederlogin
+1. Änderungen eng auf das zuständige Modul begrenzen.
+2. Bei Änderung eines ES-Moduls dessen Cachekennung in den importierenden HTML-/JS-URLs konsistent aktualisieren.
+3. JavaScript mit `node --check <datei>` prüfen; JSON mit `python3 -m json.tool <datei>` validieren.
+4. Für Portalansichten das vorgesehene Testsystem verwenden. Keine lokale Portalwebsite im integrierten Browser öffnen.
+5. Bei Änderungen an Requests zusätzlich Erfolg, fachlichen Fehler, HTTP-Fehler und Cleanup prüfen. Keine Live-Webhook-Aufrufe ohne ausdrückliche Freigabe.
 
-Das Mitgliederlogin ist natives HTML in einer Seitenansicht und verwendet kein Form.io. Statusgruppen, Feldnamen, Texte, Methoden und Webhook-URLs kommen aus `memberLogin.statusGroups`, `memberLogin.requestOtp` und `memberLogin.authenticate`; keine Login-Webhook-URL ist im JS fest codiert. Beide Requests senden `{ request: { data } }` und erwarten boolesches `erfolgreich`. Nach bestätigtem Login und erfolgreichem Logout wird `ladeConfig()` erneut ausgeführt und damit auch `memberStatusUrl` erneut geprüft. Form.io bleibt für die übrigen Portalformulare in Verwendung.
-
-## Formulare
-
-`window.sendeFormular(instance, config)` reicht beide Argumente unverändert weiter. Optionen: `webhookUrl`, `method` (Standard POST), `ladeText`, `zurueckNachErfolg` (Standard true), `onSuccess`. `fehlerTitel` und `fehlerNachricht` werden nicht mehr verwendet.
-
-Request: `{ request: { data: instance.root.data } }`, JSON-Header, Cookies einschließen, `cache: "no-store"`. Keine zusätzliche Form.io-Validierung. Bei Erfolg: Download → `await config.onSuccess(result)` → Servermeldung. `finally` schließt den Loader und entsperrt den Button. Bei Fehlern kein Download oder Callback. Ein Callback-Fehler kann nach erfolgreicher Backend-Verarbeitung auftreten und wird protokolliert.
-
-Das Reservierungs-Panel wird über `panel.resetValue()` zurückgesetzt, danach `bis._von` mit `von.dataValue` synchronisiert und nur das Panel neu gezeichnet. Kein globaler Formularreset.
-
-## Logout
-
-`memberLogout` enthält nur `webhookUrl`, `method` und `ladeText`. Defaults für Pfad und Methode bleiben `/webhook/logout` und GET. Kein Request-Body. Bei HTTP-Erfolg und `erfolgreich: true` lokale Person entfernen; ebenso bei `erfolgreich: false` und `status: "nicht_angemeldet"`, auch im HTTP-Fehlerfall. Andere Fehler behalten die Person. Keine Dateiverarbeitung oder automatische Rücknavigation. Die Sitzung beendet das Backend.
-`memberLogout` enthält nur `webhookUrl`, `method` und `ladeText`. Defaults für Pfad und Methode bleiben `/webhook/logout` und GET. Kein Request-Body. Bei HTTP-Erfolg und `erfolgreich: true` lokale Person entfernen; ebenso bei `erfolgreich: false` und `status: "nicht_angemeldet"`, auch im HTTP-Fehlerfall. In beiden Fällen Form.io-Instanz zerstören und zur Auswahl zurückkehren; `sichtbareFormulare` berechnet die für den Gaststatus passenden Einträge reaktiv neu. Andere Fehler behalten Person und Ansicht. Keine Dateiverarbeitung. Die Sitzung beendet das Backend.
-
-## Bestehende Grenzen und Prüfung
-
-Das Frontend zeigt alle gelieferten Einträge; `active` und `sichtbarkeit` filtern die Listen nicht. n8n/Form.io muss Zugriffsrechte serverseitig sowohl beim Laden als auch beim Absenden geschützter Formulare prüfen. Die Start-URL sucht nur in `forms.items`.
-
-Die Versionskennung in HTML, lokalen Modulimporten und Konfigurationsabruf konsistent halten. Syntax, JSON, Erfolgs-/Fehlerfälle, Callback-Reihenfolge, Zustand und Cleanup prüfen. Simulierte Tests nicht als Live-Tests ausgeben. Response-Logging kann personenbezogene Inhalte enthalten.
-
-## Stornierung einzelner Reservierungen
-
-`config.data` ist optional. Ist es nicht `undefined`, sendet die zentrale Funktion diesen Wert unter `request.data`; andernfalls weiterhin `instance.root.data`. Der Stornobutton verwendet `data: row` und `method: 'DELETE'`. Damit wird ausschließlich die angeklickte Data-Grid-Zeile gesendet.
-
-Der fertige Custom-JavaScript-Code liegt in `formio/Stornobutton.js` und wird in den Form.io-Stornobutton eingefügt. Vor dem Request werden Reservierungs-ID und Data Grid geprüft. Erst bei erfolgreicher Antwort entfernt `onSuccess` den Eintrag anhand der zuvor gemerkten ID aus den aktuellen Grid-Daten. Bei Fehlern bleibt die Liste erhalten. Das Formular bleibt geöffnet. Servertexte, optionale Downloads und technische Fehler laufen über die zentrale Verarbeitung. Der optionale Download erfolgt dabei vor dem Callback.
-
-Die neue `state.js` muss vor Verwendung dieses Buttons auf dem Server liegen; ältere Versionen ignorieren `config.data` und würden das gesamte Formular senden. Andere Buttons ohne `data` behalten ihr bisheriges Verhalten.
-
-## Trainingsgruppen-Darstellung
-
-`formio/Trainingsgruppen.json` enthält das Austausch-Data-Grid. Die Klasse `gruppen-tabelle-kompakt` trennt die Darstellung von älteren Tabellenregeln. `css/trainingsgruppen.css` wird in `index.html` nach `main.css` eingebunden. Drei sichtbare Spalten: Gruppe/Trainingszeiten, gesperrte Status-Checkbox und Änderung. Bei schmalen Displays ist die Tabelle horizontal scrollbar. Gruppenabgleich und Aktionwerte bleiben unverändert.
+Es gibt im Repository kein npm-Projekt und keinen automatischen Frontend-Testlauf. Simulierte Prüfungen klar von Live-Tests unterscheiden.
