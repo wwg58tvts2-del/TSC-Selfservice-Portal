@@ -40,7 +40,7 @@
     href="https://cdn.form.io/js/formio.form.min.css"
   >
 
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/main.css?v=20260927-service-search-1">
   <link rel="stylesheet" href="css/trainingsgruppen.css?v=20260920-layout-1">
 
   <script
@@ -52,41 +52,55 @@
 
 <body v-cloak v-scope>
   <header class="site-header">
-    <img
-      id="header-logo"
-      class="site-logo"
-      src="img/Logo_ohne_Noten_transparenter_Hintergrund-1.png"
-      :src="config?.header?.logo || 'img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'"
-      alt="Tanzsportclub Dortmund"
-      :alt="config?.header?.logoAlt || 'Tanzsportclub Dortmund'"
-    >
-    <div class="header-copy">
-      <span class="header-kicker">{{ config?.header?.kicker }}</span>
-      <span class="header-caption">{{ config?.header?.caption }}</span>
-    </div>
-    <div
-      class="header-actions"
-      aria-label="Mitgliederbereich"
-      v-if="config?.memberLogin"
-    >
-      <button
-        v-if="!person"
-        class="header-login-button"
-        type="button"
-        @click="oeffneLogin()"
+    <div class="site-header-inner">
+      <img
+        id="header-logo"
+        class="site-logo"
+        src="img/Logo_ohne_Noten_transparenter_Hintergrund-1.png"
+        :src="config?.header?.logo || 'img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'"
+        alt="Tanzsportclub Dortmund"
+        :alt="config?.header?.logoAlt || 'Tanzsportclub Dortmund'"
       >
-        <i class="bi bi-person-circle" aria-hidden="true"></i>
-        <span>{{ config.memberLogin.title }}</span>
-      </button>
-      <button
-        v-else
-        class="header-login-button member-logout-button"
-        type="button"
-        @click="logout()"
-      >
-        <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
-        <span>{{ (person.vorname || 'Mitglied') + ' abmelden' }}</span>
-      </button>
+      <div v-if="view === 'auswahl' && hatDurchsuchbareEintraege" class="header-search">
+        <label class="visually-hidden" for="serviceportal-search">Suche</label>
+        <div class="header-search-field">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <input id="serviceportal-search" :value="suchtext" @input="setzeSuchtext($event.target.value)" type="search" placeholder="Suche" autocomplete="off">
+          <button v-if="suchtext" class="header-search-clear" type="button" aria-label="Suche löschen" title="Suche löschen" @mousedown.prevent @click="leereSuche()">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-copy">
+          <span class="header-kicker">{{ config?.header?.kicker }}</span>
+          <span class="header-caption">{{ config?.header?.caption }}</span>
+        </div>
+        <div
+          class="header-actions"
+          aria-label="Mitgliederbereich"
+          v-if="config?.memberLogin"
+        >
+          <button
+            v-if="!person"
+            class="header-login-button"
+            type="button"
+            @click="oeffneLogin()"
+          >
+            <i class="bi bi-person-circle" aria-hidden="true"></i>
+            <span>{{ config.memberLogin.title }}</span>
+          </button>
+          <button
+            v-else
+            class="header-login-button member-logout-button"
+            type="button"
+            @click="logout()"
+          >
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+            <span>{{ (person.vorname || 'Mitglied') + ' abmelden' }}</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -99,6 +113,7 @@
       </section>
 
       <p v-if="warnung" class="alert alert-warning" role="alert">{{ warnung }}</p>
+      <p v-if="keineSuchergebnisse" class="portal-search-empty" role="status">Keine Ergebnisse gefunden</p>
 
       <section v-if="sichtbareFormulare.length" id="forms-section">
         <div class="section-divider" aria-hidden="true"></div>
@@ -263,6 +278,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=20260926-config-login-3"></script>
+  <script type="module" src="js/main.js?v=20260927-service-search-1"></script>
 </body>
 </html>

@@ -51,6 +51,7 @@ export const state = reactive({
   selectedForm: null,
   activeFormInstance: null,
   warnung: "",
+  suchtext: "",
 
   msgbox: {
     visible: false,
@@ -122,6 +123,7 @@ export const state = reactive({
         await ladeConfigDaten(
           configUrl
         );
+      this.aktualisiereSichtbarkeit();
 
       console.log("[Serviceportal] Konfiguration im State übernommen");
 
@@ -282,7 +284,7 @@ export const state = reactive({
         ? this.config.forms.items
         : [];
 
-    return forms;
+    return forms.filter((form) => form.visible);
   },
 
 
@@ -294,7 +296,7 @@ export const state = reactive({
         ? this.config.onlineServices.items
         : [];
 
-    return services;
+    return services.filter((service) => service.visible);
   },
 
 
@@ -306,7 +308,64 @@ export const state = reactive({
         ? this.config.downloads.items
         : [];
 
-    return downloads;
+    return downloads.filter((download) => download.visible);
+  },
+
+
+  get durchsuchbareEintraege() {
+    return [
+      ...(Array.isArray(this.config?.forms?.items) ? this.config.forms.items : []),
+      ...(Array.isArray(this.config?.onlineServices?.items) ? this.config.onlineServices.items : []),
+      ...(Array.isArray(this.config?.downloads?.items) ? this.config.downloads.items : [])
+    ];
+  },
+
+
+  get hatDurchsuchbareEintraege() {
+    return this.durchsuchbareEintraege.length > 0;
+  },
+
+
+  get keineSuchergebnisse() {
+    return Boolean(this.suchtext.trim()) &&
+      this.durchsuchbareEintraege.length > 0 &&
+      !this.durchsuchbareEintraege.some((eintrag) => eintrag.visible);
+  },
+
+
+  aktualisiereSichtbarkeit() {
+    this.durchsuchbareEintraege.forEach((eintrag) => {
+      eintrag.visible = this.passtZurKachelsuche(eintrag);
+    });
+  },
+
+
+  passtZurKachelsuche(eintrag) {
+    const suchtext = this.suchtext.trim().toLocaleLowerCase("de-DE");
+    if (!suchtext) return true;
+
+    const suchbegriffe = [
+      eintrag.searchTerms,
+      eintrag.searchKeywords,
+      eintrag.keywords,
+      eintrag.suchbegriffe,
+      eintrag.suchwoerter,
+      eintrag.tags
+    ].flatMap((begriff) => Array.isArray(begriff) ? begriff : [begriff]);
+    const texte = [eintrag.title, eintrag.titel, eintrag.description, eintrag.beschreibung, ...suchbegriffe];
+    return texte.some((text) => String(text ?? "").toLocaleLowerCase("de-DE").includes(suchtext));
+  },
+
+
+  setzeSuchtext(wert) {
+    this.suchtext = String(wert ?? "");
+    this.aktualisiereSichtbarkeit();
+  },
+
+
+  leereSuche() {
+    this.setzeSuchtext("");
+    document.getElementById("serviceportal-search")?.focus();
   },
 
 

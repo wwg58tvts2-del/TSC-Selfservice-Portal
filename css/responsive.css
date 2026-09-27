@@ -13,8 +13,6 @@
 
   .site-header {
     align-items: flex-start;
-    flex-direction: column;
-    gap: 18px;
     min-height: 0;
     margin: 0 0 42px;
     padding: 22px 20px;
