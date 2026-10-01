@@ -2,9 +2,13 @@
 
 Statisches Webportal für Mitglieder des Tanzsportclub Dortmund. Es zeigt Form.io-Formulare, Online-Services und Downloads; Konfiguration, Mitgliedsstatus und Fachprozesse werden über n8n bereitgestellt. Kalender und Trainingsplan sind eigene Seiten im selben Verzeichnis.
 
+## Struktur
+
+`public/` ist das Document Root des Webservers und enthält alles, was der Browser laedt (`index.html`, `kalender.html`, `trainingsplan.html`, `css/`, `js/`, `img/`, `vendor/`, `config.json`). `config/` enthaelt die Apache-Serverkonfiguration (`selfservices-httpd.conf`) und wird nicht ausgeliefert. Alles ausserhalb von `public/` ist ueber den Webserver nicht erreichbar (`Require all denied`).
+
 ## Start
 
-`config.json` enthält die URL für die Portal-Konfiguration. Aktuell verweist sie auf `/webhook/config/selfservice`. Das Portal benötigt einen HTTPS-Webserver, Zugriff auf die konfigurierten n8n-Endpunkte und die in `index.html` eingebundenen CDN-Bibliotheken (Petite Vue, Bootstrap, Bootstrap Icons, Form.io). Ein Paketmanager oder Build-Schritt ist im Repository nicht eingerichtet.
+`public/config.json` enthält die URL für die Portal-Konfiguration. Aktuell verweist sie auf `/webhook/config/selfservice`. Das Portal benötigt einen HTTPS-Webserver, Zugriff auf die konfigurierten n8n-Endpunkte und die unter `public/vendor/` mitgelieferten Bibliotheken (Petite Vue, Bootstrap, Bootstrap Icons, FullCalendar, Form.io; siehe `public/vendor/VERSIONS.txt`). Ein Paketmanager oder Build-Schritt ist im Repository nicht eingerichtet.
 
 Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache: "no-store"`. Reverse Proxy und n8n müssen zum jeweiligen Endpunkt passen. Die lokale `config.json` ist nur der Einstiegspunkt; die eigentliche Portal-Konfiguration kommt vom Backend.
 
@@ -22,6 +26,8 @@ Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache
 
 ## Dateien
 
+Alle Pfade sind relativ zu `public/`.
+
 | Pfad | Verantwortung |
 | --- | --- |
 | `index.html` | Hauptportal, Loginansicht, Suchfeld und Kategorien |
@@ -34,7 +40,9 @@ Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache
 | `js/kalender.js` | Kalenderseite und FullCalendar-Integration |
 | `js/trainingsplan.js` | Trainingsgruppen und Filter |
 | `css/main.css` | Importiert die aufgeteilten Stylesheets |
+| `vendor/` | Lokal eingebundene Bibliotheken (siehe `vendor/VERSIONS.txt`) |
 | `.github/workflows/deploy-prod.yml` | Manueller Produktions-Webhook |
+| `config/selfservices-httpd.conf` | Apache-Vhost-Konfiguration (ausserhalb von `public/`) |
 
 ## Anmeldung und Formulare
 

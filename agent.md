@@ -2,9 +2,9 @@
 
 ## Projektgrenzen
 
-Das Serviceportal ist ein statisches Petite-Vue-Frontend. n8n und Form.io sind externe Laufzeitdienste; dieses Repository enthält weder deren Workflows noch die produktive Portal-Konfiguration. `config.json` enthält nur den Konfigurationsendpunkt.
+Das Serviceportal ist ein statisches Petite-Vue-Frontend. n8n und Form.io sind externe Laufzeitdienste; dieses Repository enthält weder deren Workflows noch die produktive Portal-Konfiguration. `public/config.json` enthält nur den Konfigurationsendpunkt.
 
-Keine Abhängigkeiten oder Buildschritte ergänzen, solange die Aufgabe das nicht verlangt. Bibliotheken werden in den HTML-Seiten per CDN geladen. Änderungen an Laufzeitverhalten gegen die Codebasis prüfen; echte n8n-/Form.io-Aufrufe nicht als lokal getestet ausgeben.
+`public/` ist das Document Root des Webservers (alles darunter ist oeffentlich erreichbar). `config/` enthaelt die Apache-Serverkonfiguration und darf niemals in `public/` verschoben werden. Keine Abhängigkeiten oder Buildschritte ergänzen, solange die Aufgabe das nicht verlangt. Bibliotheken liegen lokal unter `public/vendor/` (siehe `public/vendor/VERSIONS.txt`), keine CDN-Referenzen wieder einführen. Änderungen an Laufzeitverhalten gegen die Codebasis prüfen; echte n8n-/Form.io-Aufrufe nicht als lokal getestet ausgeben.
 
 ## Zuständigkeiten
 
