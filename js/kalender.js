@@ -38,7 +38,19 @@
             });
 
             console.log("[Kalender] fetch status:", response.status, response.statusText);
-            const result = await response.json();
+            const responseText = await response.text();
+            let result = {};
+
+            if (responseText.trim()) {
+              try {
+                result = JSON.parse(responseText);
+              } catch (error) {
+                throw new Error(`Ungültige Kalenderantwort: ${error.message}`);
+              }
+            } else {
+              console.warn("[Kalender] Der Endpunkt hat eine leere Antwort geliefert.");
+            }
+
             console.log("[Kalender] Response-Body:", result);
 
             if (!response.ok) {

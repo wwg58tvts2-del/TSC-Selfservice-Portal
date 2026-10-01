@@ -1,5 +1,5 @@
 /* Reihenfolge ist relevant: responsive.css muss zuletzt kommen, um Medienabfragen zu überschreiben */
-@import url("base.css");
+@import url("base.css?v=20261001-footer-layout-1");
 @import url("header.css?v=20260927-service-search-1");
 @import url("sections.css");
 @import url("cards.css");
