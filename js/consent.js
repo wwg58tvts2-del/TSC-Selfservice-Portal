@@ -280,7 +280,6 @@ function fuelleOptionenMitEntscheidung(overlay) {
 }
 
 function initialisiereBannerVerhalten(overlay) {
-  const backdrop = overlay.querySelector("[data-consent-backdrop]");
   const options = overlay.querySelector("[data-consent-options]");
   const saveActions = overlay.querySelector("[data-consent-save-actions]");
 
@@ -297,14 +296,8 @@ function initialisiereBannerVerhalten(overlay) {
   };
 
   overlay.addEventListener("click", (event) => {
+    // Banner schließt ausschließlich über eine der Aktionen, nicht per Klick auf Backdrop/Overlay.
     const aktion = event.target.closest("[data-consent-action]")?.dataset.consentAction;
-
-    if (event.target === backdrop) {
-      // Schließen ohne Entscheidung: Banner bleibt beim nächsten Besuch sichtbar,
-      // solange keine Entscheidung gespeichert ist.
-      verstecke();
-      return;
-    }
 
     if (!aktion) {
       return;

@@ -22,7 +22,7 @@ import {
   CONSENT_CHANGE_EVENT,
   leseLoginKennung as leseGespeicherteLoginIdentitaet,
   schreibeLoginKennung
-} from "./consent.js?v=20261001-consent-1";
+} from "./consent.js?v=20261001-consent-2";
 
 
 export const state = reactive({

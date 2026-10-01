@@ -1,5 +1,5 @@
     import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
-    import { leseKalenderAnsicht, schreibeKalenderAnsicht } from "./consent.js?v=20261001-consent-1";
+    import { leseKalenderAnsicht, schreibeKalenderAnsicht } from "./consent.js?v=20261001-consent-2";
 
     function CalendarApp() {
       return reactive({
