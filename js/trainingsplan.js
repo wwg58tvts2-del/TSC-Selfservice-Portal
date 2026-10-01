@@ -1,4 +1,4 @@
-import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
+import { createApp, reactive } from "../vendor/petite-vue/0.4.1/petite-vue.es.js";
 import "./consent.js?v=20261001-consent-2";
 
 function TrainingPlanApp() {

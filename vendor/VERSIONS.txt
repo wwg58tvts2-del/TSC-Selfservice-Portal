@@ -1,0 +1,117 @@
+Lokal eingebundene Frontend-Bibliotheken (Serviceportal)
+=========================================================
+Heruntergeladen am: 2026-10-01
+Zweck: Vollstaendige lokale Auslieferung statt externer CDN-Einbindung.
+
+Jede Bibliothek liegt unter vendor/<name>/<version>/ zusammen mit ihrer
+Originallizenz (LICENSE.txt bzw. LICENSE.md). Versionsnummern entsprechen
+exakt den zuvor ueber die jeweiligen CDNs eingebundenen Versionen; es wurden
+keine Versionsupdates vorgenommen.
+
+petite-vue 0.4.1
+  Quelle:  https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.es.js
+  Hinweis: Bisher ohne Versionsangabe ueber https://unpkg.com/petite-vue?module
+           eingebunden; unpkg loeste zum Pruefzeitpunkt auf Version 0.4.1 auf
+           (HTTP-Redirect geprueft). Jetzt fest auf 0.4.1 gepinnt.
+  Datei:   vendor/petite-vue/0.4.1/petite-vue.es.js
+  Lizenz:  vendor/petite-vue/0.4.1/LICENSE.txt (MIT)
+
+Bootstrap 5.3.8
+  Quelle:  https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css
+  Hinweis: Bisher ueber die Versionsangabe "@5" eingebunden (automatische
+           Aufloesung auf die jeweils neueste 5.x-Version); ueber die
+           jsDelivr-API auf 5.3.8 aufgeloest und jetzt fest gepinnt.
+  Datei:   vendor/bootstrap/5.3.8/bootstrap.min.css
+  Lizenz:  vendor/bootstrap/5.3.8/LICENSE.txt (MIT)
+
+Bootstrap Icons 1.13.1
+  Quelle:  https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css
+           https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/fonts/bootstrap-icons.woff2
+           https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/fonts/bootstrap-icons.woff
+  Hinweis: Bisher ganz ohne Versionsangabe eingebunden (automatische
+           Aufloesung auf die jeweils neueste Version); ueber die
+           jsDelivr-API auf 1.13.1 aufgeloest und jetzt fest gepinnt.
+  Dateien: vendor/bootstrap-icons/1.13.1/bootstrap-icons.min.css
+           vendor/bootstrap-icons/1.13.1/fonts/bootstrap-icons.woff2
+           vendor/bootstrap-icons/1.13.1/fonts/bootstrap-icons.woff
+  Lizenz:  vendor/bootstrap-icons/1.13.1/LICENSE.txt (MIT)
+
+Form.io (@formio/js, veroeffentlicht als "formiojs") 5.6.1
+  Quelle:  https://cdn.form.io/js/formio.form.min.css
+           https://cdn.form.io/js/formio.form.min.js
+  Hinweis: cdn.form.io liefert unter diesem Pfad immer den jeweils aktuellen
+           Stand ohne Versionsangabe in der URL. Die tatsaechlich
+           ausgelieferte Version wurde aus dem Datei-Banner
+           "formiojs v5.6.1" im mitgelieferten LICENSE-Kommentar der
+           JS-Datei abgelesen und entspricht npm-Paket @formio/js@5.6.1.
+  Dateien: vendor/formio/5.6.1/formio.form.min.css
+           vendor/formio/5.6.1/formio.form.min.js
+           vendor/formio/5.6.1/formio.form.min.js.LICENSE.txt
+             (von Form.io mitgelieferte Sammel-Lizenzhinweise der im Bundle
+             enthaltenen Teilbibliotheken: Signature Pad, Inputmask,
+             JSON-Patch, DOMPurify, Choices.js, regenerator-runtime,
+             Lodash, moment/moment-timezone)
+  Lizenz:  vendor/formio/5.6.1/LICENSE.txt (MIT, @formio/js@5.6.1)
+
+  WICHTIGER HINWEIS zu dynamisch nachgeladenen Form.io-Ressourcen:
+  Das Form.io-Bundle enthaelt eine interne CDN-Konfiguration (Klasse "CDN"),
+  ueber die einzelne Formularkomponenten bei Bedarf zusaetzliche
+  Bibliotheken zur Laufzeit von https://cdn.form.io/<lib>/<version>/...
+  nachladen koennen, z. B.:
+    - flatpickr (Datum/Zeit-Komponente)
+    - quill (Rich-Text/WYSIWYG-Komponente)
+    - ace (Code-Editor-Komponente)
+    - ckeditor, font-awesome, Bootswatch-Themes
+  sowie Adress- und Verifizierungs-Komponenten, die externe Drittanbieter-APIs
+  aufrufen (Google Maps, OpenStreetMap Nominatim, Azure Maps, Google
+  reCAPTCHA). Diese Nachladungen werden nur ausgeloest, wenn ein konkretes
+  Formular eine entsprechende Komponente tatsaechlich verwendet. Die
+  Formulare selbst werden extern ueber forms.baseUrl + Formular-ID geladen
+  und sind nicht Teil dieses Repositories; welche Komponenten dort verwendet
+  werden, kann von hier aus nicht abschliessend geprueft werden, ohne
+  Formular-/Mitgliederdaten abzurufen (was ausdruecklich nicht gewollt ist).
+  Separat wurde geprueft: Eine im selben Bundle hart codierte Bootstrap-Icons-
+  CDN-Referenz (jsDelivr) gehoert zu Form.io's optionalem Web-Component-/
+  Shadow-DOM-Einbettungspfad ("embedForm"/"includeLibs"). Dieser Portalcode
+  verwendet ausschliesslich "Formio.createForm()" und durchlaeuft diesen
+  Embed-Pfad nicht; die betroffene Referenz bleibt daher inaktiv.
+
+FullCalendar 6.1.15 (Kernbundle inkl. Tages-/Wochen-/Monatsansicht)
+  Quelle:  https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js
+  Hinweis: Version war bereits zuvor fest in der URL gepinnt; unveraendert
+           uebernommen.
+  Datei:   vendor/fullcalendar/6.1.15/index.global.min.js
+  Lizenz:  vendor/fullcalendar/6.1.15/LICENSE.md (MIT)
+
+@fullcalendar/common 5.11.5 (Basis-CSS fuer aeltere Fullcalendar-Themes)
+  Quelle:  https://cdn.jsdelivr.net/npm/@fullcalendar/common@5.11.5/main.min.css
+  Hinweis: Version war bereits zuvor fest in der URL gepinnt; unveraendert
+           uebernommen.
+  Datei:   vendor/fullcalendar-common/5.11.5/main.min.css
+  Lizenz:  vendor/fullcalendar-common/5.11.5/LICENSE.txt (MIT)
+
+@fullcalendar/core 6.1.21 (deutsche und weitere Sprachdateien)
+  Quelle:  https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.21/locales-all.global.min.js
+  Hinweis: Version war bereits zuvor fest in der URL gepinnt; unveraendert
+           uebernommen.
+  Datei:   vendor/fullcalendar-core/6.1.21/locales-all.global.min.js
+  Lizenz:  vendor/fullcalendar-core/6.1.21/LICENSE.txt (MIT)
+
+Gepruefte CSS-Dateien auf externe @import/url()-Referenzen
+------------------------------------------------------------
+bootstrap.min.css, formio.form.min.css und main.min.css (FullCalendar)
+enthalten ausschliesslich eingebettete data:-URIs (Inline-SVGs), keine
+externen Nachladungen. bootstrap-icons.min.css referenziert relativ die
+mitgelieferten Schriftdateien im Unterordner "fonts/", die ebenfalls lokal
+vorliegen.
+
+Logos/Favicon
+------------------------------------------------------------
+Die produktiv ausgelieferte Portal-Konfiguration (/webhook/config/selfservice)
+verweist bereits auf lokale, im Repository vorhandene Pfade
+("img/Logo_ohne_Noten_transparenter_Hintergrund-1.png" bzw.
+"img/Logo_ohne_Noten_quadratisch_transparenter_Hintergrund-1.png"), keine
+externen Logo-URLs. Da Logo/Favicon ueber die Backend-Konfiguration zur
+Laufzeit gesetzt werden, kann ein zukuenftig dort hinterlegter externer Pfad
+nicht im Vorfeld lokalisiert werden; dies ist eine Eigenschaft der
+dynamischen Konfiguration, kein Code-Defekt.

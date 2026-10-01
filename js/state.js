@@ -1,4 +1,4 @@
-import { reactive } from "https://unpkg.com/petite-vue?module";
+import { reactive } from "../vendor/petite-vue/0.4.1/petite-vue.es.js";
 
 import {
   hatSichtbarenCookie,
