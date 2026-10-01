@@ -1,6 +1,6 @@
 # Agent Guide: Serviceportal
 
-## Projektgrenzen
+## Projektgrenzenﬁ
 
 Das Serviceportal ist ein statisches Petite-Vue-Frontend. n8n und Form.io sind externe Laufzeitdienste; dieses Repository enthält weder deren Workflows noch die produktive Portal-Konfiguration. `config.json` enthält nur den Konfigurationsendpunkt.
 
