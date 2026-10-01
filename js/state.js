@@ -18,30 +18,11 @@ import {
   zerstoereFormular
 } from "./formio.js?v=20260920-storno-3";
 
-
-const MEMBER_LOGIN_STORAGE_KEY = "tsc-serviceportal.member-login";
-
-function leseGespeicherteLoginIdentitaet() {
-  try {
-    const gespeicherteDaten = JSON.parse(
-      window.localStorage.getItem(MEMBER_LOGIN_STORAGE_KEY) || "null"
-    );
-
-    if (
-      !gespeicherteDaten ||
-      typeof gespeicherteDaten.statusGruppe !== "string" ||
-      typeof gespeicherteDaten.identifierField !== "string" ||
-      typeof gespeicherteDaten.identifierValue !== "string"
-    ) {
-      return null;
-    }
-
-    return gespeicherteDaten;
-  } catch (error) {
-    console.warn("Gespeicherte Login-Kennung konnte nicht gelesen werden:", error);
-    return null;
-  }
-}
+import {
+  CONSENT_CHANGE_EVENT,
+  leseLoginKennung as leseGespeicherteLoginIdentitaet,
+  schreibeLoginKennung
+} from "./consent.js?v=20261001-consent-1";
 
 
 export const state = reactive({
@@ -79,6 +60,12 @@ export const state = reactive({
 
   async init() {
     this.memberLoginIdentitaet = leseGespeicherteLoginIdentitaet();
+
+    window.addEventListener(CONSENT_CHANGE_EVENT, (event) => {
+      if (!event.detail?.loginKennung) {
+        this.memberLoginIdentitaet = null;
+      }
+    });
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && this.msgbox.visible) {
@@ -262,15 +249,7 @@ export const state = reactive({
     };
 
     this.memberLoginIdentitaet = identitaet;
-
-    try {
-      window.localStorage.setItem(
-        MEMBER_LOGIN_STORAGE_KEY,
-        JSON.stringify(identitaet)
-      );
-    } catch (error) {
-      console.warn("Login-Kennung konnte nicht gespeichert werden:", error);
-    }
+    schreibeLoginKennung(identitaet);
 
     return identitaet;
   },

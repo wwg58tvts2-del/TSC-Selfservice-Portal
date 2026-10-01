@@ -1,4 +1,5 @@
     import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
+    import { leseKalenderAnsicht, schreibeKalenderAnsicht } from "./consent.js?v=20261001-consent-1";
 
     function CalendarApp() {
       return reactive({
@@ -26,7 +27,7 @@
           console.log("[Kalender] load() gestartet");
           try {
             this.config = await this.ladeKonfiguration();
-            this.kalenderAnsicht = this.leseGespeicherteAnsicht();
+            this.kalenderAnsicht = leseKalenderAnsicht();
             this.selectedHalls = this.halls.map((hall) => hall.id);
             const kalenderEndpoint = this.config?.calendarUrl;
             console.log("[Kalender] fetch() an", kalenderEndpoint);
@@ -104,27 +105,6 @@
           return Array.isArray(this.config?.footer)
             ? this.config.footer
             : [];
-        },
-
-        leseGespeicherteAnsicht() {
-          const cookie = document.cookie
-            .split("; ")
-            .find((eintrag) => eintrag.startsWith("tsc-serviceportal-calendar-view="));
-          const ansicht = cookie
-            ? decodeURIComponent(cookie.split("=").slice(1).join("="))
-            : "";
-          const erlaubteAnsichten = ["dayGridMonth", "timeGridWeek", "timeGridDay"];
-          return erlaubteAnsichten.includes(ansicht) ? ansicht : "";
-        },
-
-        speichereAnsicht(ansicht) {
-          const erlaubteAnsichten = ["dayGridMonth", "timeGridWeek", "timeGridDay"];
-          if (!erlaubteAnsichten.includes(ansicht)) {
-            return;
-          }
-
-          this.kalenderAnsicht = ansicht;
-          document.cookie = `tsc-serviceportal-calendar-view=${encodeURIComponent(ansicht)}; Max-Age=31536000; Path=/; SameSite=Lax`;
         },
 
         normalisiereKalender(result) {
@@ -246,7 +226,8 @@
           }
 
           if (this.calendarInstance) {
-            this.speichereAnsicht(this.calendarInstance.view.type);
+            this.kalenderAnsicht = this.calendarInstance.view.type;
+            schreibeKalenderAnsicht(this.kalenderAnsicht);
             console.log("[Kalender] bestehende Instance zerstört");
             this.calendarInstance.destroy();
           }
@@ -279,7 +260,8 @@
               hour12: false
             },
             datesSet: (info) => {
-              this.speichereAnsicht(info.view.type);
+              this.kalenderAnsicht = info.view.type;
+              schreibeKalenderAnsicht(info.view.type);
             },
             events: (fetchInfo, successCallback) => {
               successCallback(this.erstelleSichtbareKalenderEvents(fetchInfo));

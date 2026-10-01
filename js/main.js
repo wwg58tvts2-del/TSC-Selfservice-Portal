@@ -1,5 +1,5 @@
 import {createApp} from "https://unpkg.com/petite-vue?module";
-import {state} from "./state.js?v=20260927-service-search-1";
+import {state} from "./state.js?v=20261001-consent-1";
 
 
 // Bestehende Form.io-Skripte rufen
