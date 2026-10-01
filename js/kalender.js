@@ -123,8 +123,8 @@
                 beschreibung: freieBeschreibung,
                 notiz: String(gruppe.notiz || "").trim(),
                 saal: { name: termin.ortbez || termin.ortkb || "" },
-                trainer: gruppe.trnameall
-                  ? [{ name: gruppe.trnameall }]
+                trainer: gruppe.trainer_vorname
+                  ? [{ name: gruppe.trainer_vorname }]
                   : [],
                 wochentagId: wochentag,
                 startzeit: termin.startzeit,
