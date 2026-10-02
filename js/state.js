@@ -659,7 +659,7 @@ export const state = reactive({
 
       this.memberLoginOtpAngefordert = false;
       this.memberLoginDaten.passwort = "";
-      this.zeigeServerMeldung(result, false);
+      //this.zeigeServerMeldung(result, false);
       this.zurueck();
     } catch (error) {
       console.error("Fehler bei der Mitgliederanmeldung:", error);
