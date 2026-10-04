@@ -24,6 +24,9 @@ import {
   schreibeLoginKennung
 } from "./consent.js?v=20261001-consent-2";
 
+let formioLoadVersion = 0;
+let pendingFormioLoad = null;
+
 
 export const state = reactive({
   config: null,
@@ -469,6 +472,7 @@ export const state = reactive({
 
 
   oeffneFormular(form) {
+    this.zerstoereFormio();
     this.warnung = "";
     this.selectedForm = form;
     this.view = "formular";
@@ -682,6 +686,7 @@ export const state = reactive({
 
 
   zerstoereFormio() {
+    formioLoadVersion += 1;
     zerstoereFormular(
       this.activeFormInstance
     );
@@ -713,22 +718,64 @@ export const state = reactive({
       return;
     }
 
+    const loadVersion = ++formioLoadVersion;
+
+    if (pendingFormioLoad) {
+      try {
+        await pendingFormioLoad;
+      } catch {
+        // The active load handles and reports its own error.
+      }
+      if (loadVersion !== formioLoadVersion) {
+        return;
+      }
+    }
+
+    if (
+      loadVersion !== formioLoadVersion ||
+      this.view !== "formular" ||
+      this.selectedForm?.id !== form.id
+    ) {
+      return;
+    }
+
+    this.zerstoereFormio();
+    const currentLoadVersion = formioLoadVersion;
+    container.replaceChildren();
+    const formioLoad = ladeFormular(
+      container,
+      formUrl,
+      {
+        onSubmitDone: () => {
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+        }
+      }
+    );
+    pendingFormioLoad = formioLoad;
+
     try {
-      this.activeFormInstance =
-        await ladeFormular(
-          container,
-          formUrl,
-          {
-            onSubmitDone: () => {
-              window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-              });
-            }
-          }
-        );
+      const instance = await formioLoad;
+      if (
+        currentLoadVersion !== formioLoadVersion ||
+        this.view !== "formular" ||
+        this.selectedForm?.id !== form.id
+      ) {
+        zerstoereFormular(instance);
+        return;
+      }
+      this.activeFormInstance = instance;
 
     } catch (error) {
+      if (
+        currentLoadVersion !== formioLoadVersion ||
+        this.view !== "formular" ||
+        this.selectedForm?.id !== form.id
+      ) {
+        return;
+      }
       console.error(
         "Das Formular konnte nicht geladen werden:",
         error
@@ -743,6 +790,10 @@ export const state = reactive({
           Bitte versuche es später erneut.
         </div>
       `;
+    } finally {
+      if (pendingFormioLoad === formioLoad) {
+        pendingFormioLoad = null;
+      }
     }
   },
 
