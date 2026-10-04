@@ -59,7 +59,7 @@ Formularrequests verwenden `{ request: { data } }`. Eine gültige Antwort enthä
 
 ## Produktion
 
-Der Push auf `main` baut und veröffentlicht das Docker-Image über `.github/workflows/docker-image.yml`. Portainer zieht das veröffentlichte Image beim Stack-Update; Details stehen in [DOCKER.md](DOCKER.md).
+Der Push auf `main` baut und veröffentlicht das Docker-Image über `.github/workflows/docker-image.yml` und aktualisiert anschließend ausschließlich den Portainer-Test-Stack. Dafür muss `PORTAINER_WEBHOOK_URL` als GitHub-Secret auf den Test-Stack-Webhook zeigen. Details stehen in [DOCKER.md](DOCKER.md).
 
 Der alte serverseitige Git-Push-Webhook liegt außerhalb dieses Repositories und muss separat deaktiviert werden. Die nicht mehr benötigten GitHub-Secrets `PROD_WEBHOOK_URL` und `PROD_WEBHOOK_SECRET` können anschließend in den Repository-Einstellungen entfernt werden.
 

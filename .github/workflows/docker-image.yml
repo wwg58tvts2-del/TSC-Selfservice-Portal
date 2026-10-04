@@ -49,3 +49,22 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Portainer-Test-Stack aktualisieren
+        env:
+          PORTAINER_WEBHOOK_URL: ${{ secrets.PORTAINER_WEBHOOK_URL }}
+        shell: bash
+        run: |
+          if [[ -z "$PORTAINER_WEBHOOK_URL" ]]; then
+            echo "::error::PORTAINER_WEBHOOK_URL fehlt. Das Secret muss auf den Portainer-Test-Stack zeigen."
+            exit 1
+          fi
+          case "$PORTAINER_WEBHOOK_URL" in
+            https://*) ;;
+            *)
+              echo "::error::PORTAINER_WEBHOOK_URL muss eine HTTPS-Webhook-URL für den Test-Stack sein."
+              exit 1
+              ;;
+          esac
+          curl --fail-with-body --silent --show-error \
+            --connect-timeout 10 --max-time 120 \
+            --request POST "$PORTAINER_WEBHOOK_URL"

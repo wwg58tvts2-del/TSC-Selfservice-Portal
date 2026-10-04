@@ -15,6 +15,9 @@ Das Image heißt `ghcr.io/wwg58tvts2-del/tsc-selfservice-portal:latest`.
 Jeder Build erhält außerdem `sha-<vollständige Commit-ID>` für Versionswechsel.
 Der Workflow verwendet den automatisch bereitgestellten GITHUB_TOKEN; ein eigenes
 Registry-Passwort als Repository-Secret ist normalerweise nicht nötig.
+Nach erfolgreichem Push ruft er `PORTAINER_WEBHOOK_URL` auf. Dieses GitHub-Secret
+muss ausschließlich den Webhook des Portainer-Test-Stacks enthalten. Der
+Produktiv-Stack darf nicht auf dieses Secret zeigen.
 
 ## Registry-Zugriff
 
@@ -56,4 +59,6 @@ Die GitHub-Secrets `PROD_WEBHOOK_URL` und `PROD_WEBHOOK_SECRET` können danach
 aus den Repository-Einstellungen entfernt werden. Der alte manuelle Workflow
 `deploy-prod.yml` wurde aus diesem Repository entfernt.
 
-Der neue Workflow baut und veröffentlicht nur. Er ändert keinen Server automatisch.
+Der Workflow aktualisiert nach dem Image-Push automatisch den Test-Stack über
+dessen Portainer-Webhook. Das Image wird dadurch nicht automatisch in Produktion
+ausgerollt; der Prod-Stack bleibt separat und wird weiterhin manuell aktualisiert.

@@ -4,6 +4,9 @@ import App from "../src/App.vue";
 import router from "../src/router.js";
 import { usePortalStore } from "./state.js";
 import "../css/main.css";
+import "../css/subpage.css";
+import "../css/calendar.css";
+import "../css/trainingsplan.css";
 import "../css/trainingsgruppen.css";
 
 const pinia = createPinia();
