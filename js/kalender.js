@@ -1,8 +1,10 @@
-    import { createApp, reactive } from "../vendor/petite-vue/0.4.1/petite-vue.es.js";
-    import { leseKalenderAnsicht, schreibeKalenderAnsicht } from "./consent.js?v=20261001-consent-2";
+import { reactive } from "vue";
+import { defineStore } from "pinia";
+import { leseKalenderAnsicht, schreibeKalenderAnsicht } from "./consent.js";
+import { exposeReactiveState } from "../src/stores/exposeReactiveState.js";
 
-    function CalendarApp() {
-      return reactive({
+export const useCalendarStore = defineStore("calendar", () => {
+  const state = reactive({
         loading: true,
         error: "",
         config: null,
@@ -24,6 +26,10 @@
         ],
 
         async load() {
+          this.loading = true;
+          this.error = "";
+          this.calendarInstance?.destroy();
+          this.calendarInstance = null;
           console.log("[Kalender] load() gestartet");
           try {
             this.config = await this.ladeKonfiguration();
@@ -444,7 +450,8 @@
           const hall = this.halls.find((item) => item.id === this.getHallId(event));
           return hall?.color || "#8e0000";
         }
-      });
-    }
+  });
 
-    createApp({ CalendarApp }).mount("body");
+  return exposeReactiveState(state);
+});
+

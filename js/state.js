@@ -1,4 +1,6 @@
-import { reactive } from "../vendor/petite-vue/0.4.1/petite-vue.es.js";
+import { reactive } from "vue";
+import { defineStore } from "pinia";
+import { exposeReactiveState } from "../src/stores/exposeReactiveState.js";
 
 import {
   hatSichtbarenCookie,
@@ -6,29 +8,30 @@ import {
   holeMemberStatus,
   sendeLogout,
   sendeFormularRequest
-} from "./api.js?v=20260926-config-login-1";
+} from "./api.js";
 
 import {
   leseFormIdAusUrl,
   aktualisiereUrl
-} from "./navigation.js?v=20260920-storno-3";
+} from "./navigation.js";
 
 import {
   ladeFormular,
   zerstoereFormular
-} from "./formio.js?v=20260920-storno-3";
+} from "./formio.js";
 
 import {
   CONSENT_CHANGE_EVENT,
   leseLoginKennung as leseGespeicherteLoginIdentitaet,
   schreibeLoginKennung
-} from "./consent.js?v=20261001-consent-2";
+} from "./consent.js";
 
 let formioLoadVersion = 0;
 let pendingFormioLoad = null;
 
 
-export const state = reactive({
+export const usePortalStore = defineStore("portal", () => {
+  const state = reactive({
   config: null,
   person: null,
   view: "auswahl",
@@ -52,6 +55,7 @@ export const state = reactive({
   },
 
   memberCheckTimer: null,
+  initStarted: false,
   memberLoginIdentitaet: null,
   memberLoginDaten: {
     statusGruppe: "",
@@ -62,6 +66,11 @@ export const state = reactive({
 
 
   async init() {
+    if (this.initStarted) {
+      return;
+    }
+    this.initStarted = true;
+
     this.memberLoginIdentitaet = leseGespeicherteLoginIdentitaet();
 
     window.addEventListener(CONSENT_CHANGE_EVENT, (event) => {
@@ -1141,4 +1150,7 @@ export const state = reactive({
   versteckeLadenIntern() {
     this.loading.visible = false;
   }
+  });
+
+  return exposeReactiveState(state);
 });

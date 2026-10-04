@@ -2,16 +2,16 @@
 
 ## Voraussetzungen
 
-Das Repository ist eine statische Website ohne npm-/Buildprozess. Der Webserver muss HTML, CSS und ES-Module ausliefern; die Seiten benötigen HTTPS für die produktive Cookie-/Webhook-Kommunikation sowie Zugriff auf die eingebundenen CDNs. Die `configUrl`, `memberStatusUrl`, Login-/Logout- und Kalenderendpunkte müssen zur jeweiligen Umgebung passen.
+Das Projekt benötigt Node.js 20.19 oder neuer sowie npm. Lokal: `npm ci`, `npm run dev`; für Produktion: `npm ci`, `npm run build`. Der Build liegt unter `dist/`. Der Webserver muss diesen Ordner als Dokumentenstamm ausliefern und HTTPS für die Cookie-/Webhook-Kommunikation bereitstellen. `configUrl`, `memberStatusUrl`, Login-/Logout- und Kalenderendpunkte müssen zur jeweiligen Umgebung passen.
 
-Änderungen an JavaScript und CSS erhalten Cachekennungen in den HTML-Script-/Stylesheet-URLs und in den lokalen ES-Modulimporten. Bei CSS-Imports sind auch die betroffenen Import-URLs zu aktualisieren.
+Vite versieht gebündelte JavaScript- und CSS-Dateien mit Inhalts-Hashes. Die lokal gepinnten Laufzeitbibliotheken, Bilder und `config.json` werden aus `public/` nach `dist/` kopiert.
 
 ## Produktion
 
-`.github/workflows/deploy-prod.yml` ist ein manuell startbarer `workflow_dispatch`-Workflow und läuft nur für `refs/heads/main`. Er erwartet die GitHub-Secrets `PROD_WEBHOOK_URL` und `PROD_WEBHOOK_SECRET`. Die URL muss HTTPS verwenden und auf `/hooks/TSC-Selfservice-Portal-prod` enden.
+`.github/workflows/docker-image.yml` baut bei Pushes auf `main` das Docker-Image und veröffentlicht `latest` sowie einen unveränderlichen Commit-SHA-Tag in GHCR. Das Deployment erfolgt durch Aktualisieren des Portainer-Stacks; siehe [Docker und Portainer](../DOCKER.md).
 
-GitHub Actions signiert die festen JSON-Bytes mit HMAC-SHA256 im Header `X-Hub-Signature-256`. Der Workflow akzeptiert ausschließlich HTTP 200 mit dem Body `Deployment triggered`. Danach führt der Server `git pull origin main` aus. Die Workflow-Antwort bestätigt nur den angenommenen Auftrag, nicht den erfolgreichen Pull oder das vollständige Live-Deployment.
+Der frühere Git-Push-Webhook und sein serverseitiges `git pull`-Deploy-Skript liegen außerhalb dieses Repositories und müssen separat deaktiviert bzw. entfernt werden. Die nicht mehr verwendeten Secrets `PROD_WEBHOOK_URL` und `PROD_WEBHOOK_SECRET` können danach aus den GitHub-Repository-Secrets gelöscht werden.
 
 ## Prüfung
 
-Es gibt keinen eingebauten Test-Runner. Für geänderte Module `node --check <datei>` und für JSON `python3 -m json.tool <datei>` verwenden. Form.io-/n8n-Verträge zusätzlich über das vorgesehene Testsystem prüfen. Keine lokalen Portalansichten im integrierten Browser testen und keine Produktions-Webhook-Requests als Syntaxprüfung verwenden.
+Es gibt keinen eingebauten Unit-Test-Runner. `npm run build` prüft Vue-SFCs, Imports und alle drei Seiteneinstiege. Form.io-/n8n-Verträge zusätzlich über das vorgesehene Testsystem prüfen. Keine lokalen Portalansichten im integrierten Browser testen und keine Produktions-Webhook-Requests als Buildprüfung verwenden.

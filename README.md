@@ -1,10 +1,18 @@
 # Serviceportal
 
-Statisches Webportal für Mitglieder des Tanzsportclub Dortmund. Es zeigt Form.io-Formulare, Online-Services und Downloads; Konfiguration, Mitgliedsstatus und Fachprozesse werden über n8n bereitgestellt. Kalender und Trainingsplan sind eigene Seiten im selben Verzeichnis.
+Vue-3-SPA für Mitglieder des Tanzsportclub Dortmund. Sie zeigt Form.io-Formulare, Online-Services und Downloads; Konfiguration, Mitgliedsstatus und Fachprozesse werden über n8n bereitgestellt. Portal, Kalender und Trainingsplan laufen als Vue-Routen unter einer `index.html`.
 
 ## Start
 
-`config.json` enthält die URL für die Portal-Konfiguration. Aktuell verweist sie auf `/webhook/config/selfservice`. Das Portal benötigt einen HTTPS-Webserver, Zugriff auf die konfigurierten n8n-Endpunkte und die in `index.html` eingebundenen CDN-Bibliotheken (Petite Vue, Bootstrap, Bootstrap Icons, Form.io). Ein Paketmanager oder Build-Schritt ist im Repository nicht eingerichtet.
+`public/config.json` enthält die URL für die Portal-Konfiguration. Aktuell verweist sie auf `/webhook/config/selfservice`. Das Portal benötigt Node.js 20.19 oder neuer.
+
+```sh
+npm ci
+npm run dev
+npm run build
+```
+
+Vite baut eine `index.html` nach `dist/`. Vue Router verwaltet die Ansichten unter `/#/`, `/#/kalender` und `/#/trainingsplan`; Hash-Routing benötigt keine Server-Rewrite-Regel. Vue wird gebündelt; Bootstrap, Bootstrap Icons, Form.io und FullCalendar bleiben in ihren lokal gepinnten Versionen unter `public/vendor/`.
 
 Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache: "no-store"`. Reverse Proxy und n8n müssen zum jeweiligen Endpunkt passen. Die lokale `config.json` ist nur der Einstiegspunkt; die eigentliche Portal-Konfiguration kommt vom Backend.
 
@@ -15,8 +23,8 @@ Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache
 - **Downloads:** Dateien aus `downloads.items`.
 - **Suche:** Kopfzeilensuche über Titel, Beschreibung und Suchbegriffe dieser drei Kategorien.
 - **Mitgliederlogin:** konfigurierbarer Statusgruppen-/Kennungs- und Einmalpasswort-Ablauf.
-- **Trainingskalender:** `kalender.html`, gespeiste über `calendarUrl`.
-- **Trainingsplan:** `trainingsplan.html`, ebenfalls gespeist über `calendarUrl`, mit Text-, Tag- und Trainerfilter.
+- **Trainingskalender:** Vue-Route `/#/kalender`, gespeist über `calendarUrl`.
+- **Trainingsplan:** Vue-Route `/#/trainingsplan`, ebenfalls gespeist über `calendarUrl`, mit Text-, Tag- und Trainerfilter.
 
 `active` und `sichtbarkeit` werden bei den Hauptlisten nicht als Berechtigungsprüfung verwendet. Die Anzeige ist keine Autorisierung: n8n und Form.io müssen geschützte Daten und Requests serverseitig absichern.
 
@@ -25,16 +33,23 @@ Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache
 | Pfad | Verantwortung |
 | --- | --- |
 | `index.html` | Hauptportal, Loginansicht, Suchfeld und Kategorien |
-| `config.json` | URL zur Laufzeitkonfiguration |
-| `js/main.js` | Petite-Vue-Mount und globale Schnittstellen für Form.io |
+| `public/config.json` | URL zur Laufzeitkonfiguration |
+| `src/App.vue` | Hauptportal und Mitgliederlogin |
+| `src/router.js` | Hash-Routen für Portal, Kalender und Trainingsplan |
+| `src/CalendarPage.vue` | Trainingskalender |
+| `src/TrainingPlanPage.vue` | Trainingsplan |
+| `src/stores/exposeReactiveState.js` | Pinia-Bindings für reaktive State-Module |
+| `js/main.js` | Vue-Mount und globale Schnittstellen für Form.io |
 | `js/state.js` | State, Login, Suche, Navigation, Formularabläufe |
 | `js/api.js` | HTTP-Aufrufe und Response-Logging |
 | `js/formio.js` | Erzeugen und Zerstören von Form.io-Instanzen |
 | `js/navigation.js` | `?form=` und Browser-History |
-| `js/kalender.js` | Kalenderseite und FullCalendar-Integration |
-| `js/trainingsplan.js` | Trainingsgruppen und Filter |
+| `js/kalender.js` | Kalender-Pinia-Store und FullCalendar-Integration |
+| `js/trainingsplan.js` | Trainingsplan-Pinia-Store und Filter |
 | `css/main.css` | Importiert die aufgeteilten Stylesheets |
-| `.github/workflows/deploy-prod.yml` | Manueller Produktions-Webhook |
+| `.github/workflows/docker-image.yml` | Baut und veröffentlicht das Docker-Image |
+
+`public/kalender.html` und `public/trainingsplan.html` leiten ältere Direktlinks auf die entsprechenden SPA-Routen um.
 
 ## Anmeldung und Formulare
 
@@ -44,6 +59,8 @@ Formularrequests verwenden `{ request: { data } }`. Eine gültige Antwort enthä
 
 ## Produktion
 
-Der Workflow `deploy-prod.yml` kann in GitHub Actions manuell von `main` gestartet werden. Er verlangt die Secrets `PROD_WEBHOOK_URL` und `PROD_WEBHOOK_SECRET`, signiert einen HTTPS-Request an den festgelegten Produktionspfad und erwartet `Deployment triggered`. Das bestätigt nur die Annahme des Auftrags, nicht den erfolgreichen Abschluss des serverseitigen `git pull`.
+Der Push auf `main` baut und veröffentlicht das Docker-Image über `.github/workflows/docker-image.yml`. Portainer zieht das veröffentlichte Image beim Stack-Update; Details stehen in [DOCKER.md](DOCKER.md).
+
+Der alte serverseitige Git-Push-Webhook liegt außerhalb dieses Repositories und muss separat deaktiviert werden. Die nicht mehr benötigten GitHub-Secrets `PROD_WEBHOOK_URL` und `PROD_WEBHOOK_SECRET` können anschließend in den Repository-Einstellungen entfernt werden.
 
 Die technische Übersicht, Konfigurationsreferenz und Betriebsnotizen beginnen im [Wiki](wiki/README.md). Hinweise für Codeänderungen stehen in [agent.md](agent.md).

@@ -8,14 +8,6 @@ Originallizenz (LICENSE.txt bzw. LICENSE.md). Versionsnummern entsprechen
 exakt den zuvor ueber die jeweiligen CDNs eingebundenen Versionen; es wurden
 keine Versionsupdates vorgenommen.
 
-petite-vue 0.4.1
-  Quelle:  https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/dist/petite-vue.es.js
-  Hinweis: Bisher ohne Versionsangabe ueber https://unpkg.com/petite-vue?module
-           eingebunden; unpkg loeste zum Pruefzeitpunkt auf Version 0.4.1 auf
-           (HTTP-Redirect geprueft). Jetzt fest auf 0.4.1 gepinnt.
-  Datei:   vendor/petite-vue/0.4.1/petite-vue.es.js
-  Lizenz:  vendor/petite-vue/0.4.1/LICENSE.txt (MIT)
-
 Bootstrap 5.3.8
   Quelle:  https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css
   Hinweis: Bisher ueber die Versionsangabe "@5" eingebunden (automatische

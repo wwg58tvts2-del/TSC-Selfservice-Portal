@@ -2,7 +2,7 @@
 
 ## Einstiegspunkt
 
-Die lokale `config.json` enthält derzeit nur den Endpunkt:
+Die in `public/config.json` abgelegte und unter `/config.json` ausgelieferte Datei enthält derzeit nur den Endpunkt:
 
 ```json
 {

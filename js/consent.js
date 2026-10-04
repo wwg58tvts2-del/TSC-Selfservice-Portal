@@ -1,6 +1,5 @@
 // Einwilligungsverwaltung für optionale Browserspeicherungen (Login-Kennung, Kalenderansicht).
-// Framework-unabhängig, damit das Modul auf index.html, kalender.html und trainingsplan.html
-// gleichermaßen funktioniert. Technisch notwendige Session-Cookies des Backends sind hiervon
+// Framework-unabhängig für alle Vue-Routen. Technisch notwendige Session-Cookies des Backends sind hiervon
 // nicht betroffen und werden nicht verändert.
 
 const CONSENT_STORAGE_KEY = "tsc-serviceportal.consent";

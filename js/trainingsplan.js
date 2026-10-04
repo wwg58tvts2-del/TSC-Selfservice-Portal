@@ -1,8 +1,10 @@
-import { createApp, reactive } from "../vendor/petite-vue/0.4.1/petite-vue.es.js";
-import "./consent.js?v=20261001-consent-2";
+import { reactive } from "vue";
+import { defineStore } from "pinia";
+import { exposeReactiveState } from "../src/stores/exposeReactiveState.js";
+import "./consent.js";
 
-function TrainingPlanApp() {
-  return reactive({
+export const useTrainingPlanStore = defineStore("training-plan", () => {
+  const state = reactive({
     loading: true,
     error: "",
     config: null,
@@ -12,6 +14,8 @@ function TrainingPlanApp() {
     trainerFilter: "alle",
 
     async load() {
+      this.loading = true;
+      this.error = "";
       const start = performance.now();
       console.group("[Trainingsplan] Daten laden");
       console.log("Ladevorgang gestartet");
@@ -186,6 +190,6 @@ function TrainingPlanApp() {
       });
     }
   });
-}
 
-createApp({ TrainingPlanApp }).mount("body");
+  return exposeReactiveState(state);
+});

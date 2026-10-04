@@ -1,28 +1,28 @@
-<!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>Kalender | Tanzsportclub Dortmund</title>
-  <link id="favicon" rel="icon" type="image/png" href="img/Logo_ohne_Noten_quadratisch_transparenter_Hintergrund-1.png">
-  <link rel="stylesheet" href="vendor/bootstrap/5.3.8/bootstrap.min.css">
-  <link rel="stylesheet" href="css/main.css?v=20261001-vendor-1">
-  <link rel="stylesheet" href="css/subpage.css?v=20260922-1">
-  <link rel="stylesheet" href="css/calendar.css">
-  <link rel="stylesheet" href="vendor/bootstrap-icons/1.13.1/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="vendor/fullcalendar-common/5.11.5/main.min.css">
-  <script src="vendor/fullcalendar/6.1.15/index.global.min.js"></script>
-  <script src="vendor/fullcalendar-core/6.1.21/locales-all.global.min.js"></script>
-</head>
-<body v-scope="CalendarApp()">
+<script>
+import { onBeforeUnmount, onMounted } from "vue";
+import { useCalendarStore } from "../js/kalender.js";
+
+export default {
+  setup() {
+    const state = useCalendarStore();
+    onMounted(() => {
+      void state.load();
+    });
+    onBeforeUnmount(() => {
+      state.calendarInstance?.destroy();
+      state.calendarInstance = null;
+    });
+    return state;
+  }
+};
+</script>
+
+<template>
   <header class="site-header">
     <img
       class="site-logo"
-      src="img/Logo_ohne_Noten_transparenter_Hintergrund-1.png"
-      :src="config?.header?.logo || 'img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'"
+      src="/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png"
+      :src="config?.header?.logo || '/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'"
       :alt="config?.header?.logoAlt || 'Tanzsportclub Dortmund'"
     >
     <div class="header-copy">
@@ -31,11 +31,11 @@
     </div>
   </header>
 
-  <main id="calendar-app" @vue:mounted="load">
-    <a id="back-button" class="btn btn-outline-secondary subpage-back" href="index.html">
+  <main id="calendar-app">
+    <RouterLink id="back-button" class="btn btn-outline-secondary subpage-back" to="/">
       <i class="bi bi-arrow-left" aria-hidden="true"></i>
       Zurück
-    </a>
+    </RouterLink>
 
     <section id="body-section">
       <p class="section-kicker">Wochenplan</p>
@@ -98,7 +98,4 @@
       <a v-for="link in sichtbareFooterLinks" :key="link.url" class="footer-link" :href="link.url" target="_blank" rel="noopener noreferrer">{{ link.titel }}</a>
     </nav>
   </footer>
-
-  <script type="module" src="js/kalender.js?v=20261001-vendor-1"></script>
-</body>
-</html>
+</template>

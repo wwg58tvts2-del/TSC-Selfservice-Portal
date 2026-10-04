@@ -1,33 +1,32 @@
-<!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>Trainingsplan | Tanzsportclub Dortmund</title>
-  <link id="favicon" rel="icon" type="image/png" href="img/Logo_ohne_Noten_quadratisch_transparenter_Hintergrund-1.png">
-  <link rel="stylesheet" href="vendor/bootstrap/5.3.8/bootstrap.min.css">
-  <link rel="stylesheet" href="css/main.css?v=20261001-vendor-1">
-  <link rel="stylesheet" href="css/subpage.css?v=20260922-1">
-  <link rel="stylesheet" href="css/trainingsplan.css?v=20260922-filters-3">
-  <link rel="stylesheet" href="vendor/bootstrap-icons/1.13.1/bootstrap-icons.min.css">
-</head>
-<body v-scope="TrainingPlanApp()">
+<script>
+import { onMounted } from "vue";
+import { useTrainingPlanStore } from "../js/trainingsplan.js";
+
+export default {
+  setup() {
+    const state = useTrainingPlanStore();
+    onMounted(() => {
+      void state.load();
+    });
+    return state;
+  }
+};
+</script>
+
+<template>
   <header class="site-header">
-    <img class="site-logo" src="img/Logo_ohne_Noten_transparenter_Hintergrund-1.png" :src="config?.header?.logo || 'img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'" :alt="config?.header?.logoAlt || 'Tanzsportclub Dortmund'">
+    <img class="site-logo" src="/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png" :src="config?.header?.logo || '/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'" :alt="config?.header?.logoAlt || 'Tanzsportclub Dortmund'">
     <div class="header-copy">
       <span class="header-kicker">{{ config?.header?.kicker }}</span>
       <span class="header-caption">{{ config?.header?.caption }}</span>
     </div>
   </header>
 
-  <main id="training-app" @vue:mounted="load">
-    <a id="back-button" class="btn btn-outline-secondary subpage-back" href="index.html">
+  <main id="training-app">
+    <RouterLink id="back-button" class="btn btn-outline-secondary subpage-back" to="/">
       <i class="bi bi-arrow-left" aria-hidden="true"></i>
       Zurück
-    </a>
+    </RouterLink>
 
     <section id="body-section">
       <p class="section-kicker">Trainingsangebot</p>
@@ -102,7 +101,4 @@
       <a v-for="link in sichtbareFooterLinks" :key="link.url" class="footer-link" :href="link.url" target="_blank" rel="noopener noreferrer">{{ link.titel }}</a>
     </nav>
   </footer>
-
-  <script type="module" src="js/trainingsplan.js?v=20261001-vendor-1"></script>
-</body>
-</html>
+</template>
