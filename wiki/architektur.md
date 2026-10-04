@@ -29,8 +29,8 @@ Die Routen `/`, `/login`, `/<form-id>`, `/kalender` und `/trainingsplan` zeigen 
 
 1. `config.json` liefert die URL der Laufzeitkonfiguration.
 2. `state.js` lädt die Konfiguration ohne Cache und fragt anschließend `memberStatusUrl` ab.
-3. Die Hauptauswahl rendert die drei Listen aus `forms.items`, `onlineServices.items` und `downloads.items`.
-4. Formularauswahl öffnet `/<form-id>`; Form.io lädt `forms.baseUrl/<id>`.
+3. Die Hauptauswahl rendert `config.areas[]` in der im System-JSON definierten Reihenfolge; die Items kommen aus `portal_item` mit passender `area`-ID.
+4. Eine Area vom Typ `form` öffnet `/<form-id>`; Form.io lädt `formBaseUrl/<id>`.
 5. Formularversand und Logout laufen über `api.js`; der State steuert Loader, Meldungen und Cleanup.
 
 Kalender und Trainingsplan laden `config.json` und anschließend separat `calendarUrl`. Die drei Ansichten besitzen jeweils einen Pinia-Store; Endpunktadresse und fachliche Normalisierung bleiben wie bisher konfigurationsgesteuert.

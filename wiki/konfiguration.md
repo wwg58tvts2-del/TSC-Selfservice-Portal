@@ -6,7 +6,7 @@ Die in `public/config.json` abgelegte und unter `/config.json` ausgelieferte Dat
 
 ```json
 {
-  "configUrl": "/webhook/config/selfservice"
+  "configUrl": "/webhook/portal-config"
 }
 ```
 
@@ -30,7 +30,9 @@ Die Laufzeitkonfiguration verwendet diese Bereiche:
 | `footer` | Rechtliche und weitere Footer-Links |
 | `calendarUrl` | Datenendpunkt für Kalender und Trainingsplan |
 
-Jeder Bereich mit Listen verwendet `section` für `kicker`, `title` und `intro`. `forms.baseUrl` wird mit `forms.items[].id` kombiniert.
+`areas` ist eine geordnete Liste im System-JSON. Jede Area enthält `id`, `type`, `section` und `items`; die Items kommen beim Lesen aus `portal_item`, gefiltert nach `system_id` und `area == id`.
+
+`area.type` ist der Standardtyp für Items ohne eigenen Typ. Jedes Item kann `type` auf `form`, `page`, `link`, `app`, `service` oder `download` setzen. Formulare verwenden die Item-`id` und das systemweite `formBaseUrl`; `width: 1` ist die Standardbreite, `width: 2` belegt zwei Kartenraster-Spalten. Link-Items verwenden `url` und `openInNewWindow: true` für ein neues Fenster (`false` öffnet im selben Fenster). `section` enthält `kicker`, `title` und `intro`.
 
 ## Einträge und Suche
 

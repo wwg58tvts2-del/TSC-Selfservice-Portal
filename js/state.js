@@ -35,6 +35,7 @@ export const usePortalStore = defineStore("portal", () => {
   person: null,
   view: "auswahl",
   selectedForm: null,
+  selectedPage: null,
   activeFormInstance: null,
   warnung: "",
   suchtext: "",
@@ -110,12 +111,17 @@ export const usePortalStore = defineStore("portal", () => {
           "config.json"
         );
 
-      const configUrl =
-        konfigurationsQuelle.configUrl;
+      const configEndpoint = new URL(
+        konfigurationsQuelle.configUrl,
+        window.location.origin
+      );
+      if (konfigurationsQuelle.systemId) {
+        configEndpoint.searchParams.set("systemId", konfigurationsQuelle.systemId);
+      }
 
       this.config =
         await ladeConfigDaten(
-          configUrl
+          configEndpoint.toString()
         );
       this.aktualisiereSichtbarkeit();
 
@@ -262,48 +268,63 @@ export const usePortalStore = defineStore("portal", () => {
   },
 
 
+  get portalAreas() {
+    if (Array.isArray(this.config?.areas)) {
+      return this.config.areas.map((area) => ({
+        ...area,
+        type: area.type || area.renderer || area.id,
+        section: area.section || {},
+        items: Array.isArray(area.items)
+          ? area.items.map((item) => ({
+              ...item,
+              type: item.type || item.typ || area.type || area.renderer || area.id
+            }))
+          : []
+      }));
+    }
+
+    return [
+      { id: "forms", type: "form", ...this.config?.forms },
+      { id: "onlineservices", type: "link", ...this.config?.onlineServices },
+      { id: "downloads", type: "download", ...this.config?.downloads }
+    ]
+      .filter((area) => Array.isArray(area.items))
+      .map((area) => ({
+        ...area,
+        items: area.items.map((item) => ({
+          ...item,
+          type: item.type || item.typ || area.type
+        }))
+      }));
+  },
+
+
+  get sichtbarePortalAreas() {
+    return this.portalAreas
+      .map((area) => ({
+        ...area,
+        items: area.items.filter((item) => item.visible !== false)
+      }))
+      .filter((area) => area.items.length > 0);
+  },
+
+
   get sichtbareFormulare() {
-    const forms =
-      Array.isArray(
-        this.config?.forms?.items
-      )
-        ? this.config.forms.items
-        : [];
-
-    return forms.filter((form) => form.visible);
+    return this.sichtbarePortalAreas
+      .flatMap((area) => area.items)
+      .filter((item) => item.type === "form" || item.type === "formular");
   },
 
 
-  get sichtbareServices() {
-    const services =
-      Array.isArray(
-        this.config?.onlineServices?.items
-      )
-        ? this.config.onlineServices.items
-        : [];
-
-    return services.filter((service) => service.visible);
-  },
-
-
-  get sichtbareDownloads() {
-    const downloads =
-      Array.isArray(
-        this.config?.downloads?.items
-      )
-        ? this.config.downloads.items
-        : [];
-
-    return downloads.filter((download) => download.visible);
+  get sichtbareSeiten() {
+    return this.sichtbarePortalAreas
+      .flatMap((area) => area.items)
+      .filter((item) => item.type === "page" || item.type === "seite");
   },
 
 
   get durchsuchbareEintraege() {
-    return [
-      ...(Array.isArray(this.config?.forms?.items) ? this.config.forms.items : []),
-      ...(Array.isArray(this.config?.onlineServices?.items) ? this.config.onlineServices.items : []),
-      ...(Array.isArray(this.config?.downloads?.items) ? this.config.downloads.items : [])
-    ];
+    return this.portalAreas.flatMap((area) => area.items);
   },
 
 
@@ -479,8 +500,18 @@ export const usePortalStore = defineStore("portal", () => {
   oeffneFormular(form) {
     this.zerstoereFormio();
     this.warnung = "";
+    this.selectedPage = null;
     this.selectedForm = form;
     this.view = "formular";
+  },
+
+
+  oeffneSeite(page) {
+    this.zerstoereFormio();
+    this.warnung = "";
+    this.selectedForm = null;
+    this.selectedPage = page;
+    this.view = "seite";
   },
 
 
@@ -679,6 +710,7 @@ export const usePortalStore = defineStore("portal", () => {
 
     this.view = "auswahl";
     this.selectedForm = null;
+    this.selectedPage = null;
     this.memberLoginOtpAngefordert = false;
     this.memberLoginDaten = this.leereMemberLoginDaten();
 
@@ -701,7 +733,9 @@ export const usePortalStore = defineStore("portal", () => {
       this.selectedForm;
 
     const baseUrl =
-      this.config?.forms?.baseUrl;
+      this.config?.formBaseUrl ||
+      this.config?.forms?.baseUrl ||
+      this.config?.areas?.find((area) => area.type === "form")?.formBaseUrl;
 
     if (!form || !baseUrl) {
       return;

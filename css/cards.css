@@ -25,6 +25,10 @@
   transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+.form-option--wide {
+  grid-column: span 2;
+}
+
 .form-option:hover,
 .form-option:focus-within {
   border-color: var(--club-red);

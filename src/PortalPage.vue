@@ -2,7 +2,9 @@
 import { onBeforeUnmount, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { usePortalStore } from "../js/state.js";
+import AreaModal from "./components/AreaModal.vue";
 import PortalCard from "./components/PortalCard.vue";
+import PortalAreaSection from "./components/PortalAreaSection.vue";
 import PortalSection from "./components/PortalSection.vue";
 import MemberLoginStep from "./components/MemberLoginStep.vue";
 import SiteFooter from "./components/SiteFooter.vue";
@@ -10,7 +12,9 @@ import SiteHeader from "./components/SiteHeader.vue";
 
 export default {
   components: {
+    AreaModal,
     MemberLoginStep,
+    PortalAreaSection,
     PortalCard,
     PortalSection,
     SiteFooter,
@@ -22,8 +26,8 @@ export default {
     const router = useRouter();
 
     watch(
-      () => [state.view, state.selectedForm?.id],
-      ([view, formId]) => {
+      () => [state.view, state.selectedForm?.id, state.selectedPage?.id],
+      ([view, formId, pageId]) => {
         if (view === "login" && route.name !== "login") {
           void router.replace({ name: "login" });
         } else if (
@@ -32,6 +36,12 @@ export default {
           (route.name !== "formular" || route.params.formId !== formId)
         ) {
           void router.replace({ name: "formular", params: { formId } });
+        } else if (
+          view === "seite" &&
+          pageId &&
+          (route.name !== "seite" || route.params.pageId !== pageId)
+        ) {
+          void router.replace({ name: "seite", params: { pageId } });
         } else if (view === "auswahl" && route.name !== "portal") {
           void router.replace({ name: "portal" });
         }
@@ -40,8 +50,8 @@ export default {
     );
 
     watch(
-      () => [route.name, route.params.formId, state.config, state.person, state.memberStatusChecked],
-      ([routeName, routeFormId, config, person]) => {
+      () => [route.name, route.params.formId, route.params.pageId, state.config, state.person, state.memberStatusChecked],
+      ([routeName, routeFormId, routePageId, config, person]) => {
         if (!config || !state.memberStatusChecked) {
           return;
         }
@@ -72,9 +82,25 @@ export default {
           return;
         }
 
+        if (routeName === "seite") {
+          const page = state.sichtbareSeiten.find(
+            (item) => item.id === String(routePageId)
+          );
+          if (!page) {
+            state.warnung = "Die angeforderte Seite wurde nicht gefunden.";
+            state.zurueck();
+            return;
+          }
+          if (state.selectedPage?.id !== page.id) {
+            state.oeffneSeite(page);
+          }
+          return;
+        }
+
         if (routeName === "portal") {
           state.zerstoereFormio();
           state.selectedForm = null;
+          state.selectedPage = null;
           state.view = "auswahl";
         }
       },
@@ -128,49 +154,13 @@ export default {
       <p v-if="warnung" class="alert alert-warning" role="alert">{{ warnung }}</p>
       <p v-if="keineSuchergebnisse" class="portal-search-empty" role="status">Keine Ergebnisse gefunden</p>
 
-      <PortalSection id="forms-section" :section="config?.forms?.section" :items="sichtbareFormulare">
-        <template #default="{ items }">
-          <PortalCard v-for="form in items" :key="form.id" :title="form.titel" :description="form.beschreibung">
-            <template #action>
-            <button class="form-button-label" type="button" @click="oeffneFormular(form)">
-              Formular öffnen
-              <i class="bi bi-arrow-right" aria-hidden="true"></i>
-            </button>
-            </template>
-          </PortalCard>
-        </template>
-      </PortalSection>
-
-      <PortalSection id="services-section" :section="config?.onlineServices?.section" :items="sichtbareServices" options-class="service-options">
-        <template #default="{ items }">
-          <PortalCard v-for="service in items" :key="service.url" variant="service" :title="service.titel" :description="service.beschreibung">
-            <template #action>
-            <a
-              class="service-button"
-              :href="service.url"
-              :target="service.neuesFenster ? '_blank' : '_self'"
-              :rel="service.neuesFenster ? 'noopener noreferrer' : null"
-            >
-              Öffnen
-              <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
-            </a>
-            </template>
-          </PortalCard>
-        </template>
-      </PortalSection>
-
-      <PortalSection id="downloads-section" :section="config?.downloads?.section" :items="sichtbareDownloads" options-class="download-options">
-        <template #default="{ items }">
-          <PortalCard v-for="download in items" :key="download.url" variant="download" :title="download.titel" :description="download.beschreibung">
-            <template #action>
-            <a class="download-button" :href="download.url" target="_blank" rel="noopener noreferrer">
-              <i class="bi bi-download" aria-hidden="true"></i>
-              Download
-            </a>
-            </template>
-          </PortalCard>
-        </template>
-      </PortalSection>
+      <PortalAreaSection
+        v-for="area in sichtbarePortalAreas"
+        :key="area.id"
+        :area="area"
+        @open-form="oeffneFormular"
+        @open-page="oeffneSeite"
+      />
     </section>
 
     <section v-else-if="view === 'login'" id="member-login-container" class="member-login-page" aria-labelledby="member-login-title">
@@ -223,19 +213,13 @@ export default {
       <p class="member-login-note">{{ config?.memberLogin?.rememberedIdentifierNote }}</p>
     </section>
 
-    <section v-else id="form-container" class="form-modal">
-      <div class="form-modal-backdrop" aria-hidden="true"></div>
-      <div class="form-modal-dialog" role="dialog" aria-modal="true">
-        <div class="form-modal-header">
-          <button id="back-button" class="btn btn-outline-secondary" type="button" @click="zurueck()">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i>
-            Zurück
-          </button>
-        </div>
-        <h1 class="visually-hidden">{{ selectedForm?.titel }}</h1>
+    <AreaModal v-else-if="view === 'seite'" :title="selectedPage?.title || selectedPage?.titel" @back="zurueck">
+      <div class="bereich-inhalt" v-html="selectedPage?.content || selectedPage?.inhalt"></div>
+    </AreaModal>
+
+    <AreaModal v-else :title="selectedForm?.titel || selectedForm?.title" @back="zurueck">
         <div id="formio"></div>
-      </div>
-    </section>
+    </AreaModal>
   </main>
 
   <SiteFooter :links="sichtbareFooterLinks" />

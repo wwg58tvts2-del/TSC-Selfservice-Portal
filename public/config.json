@@ -1,3 +1,4 @@
 {
-  "configUrl": "/webhook/config/selfservice"
+  "configUrl": "/webhook/portal-config",
+  "systemId": "selfservice"
 }

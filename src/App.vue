@@ -5,17 +5,20 @@ import { usePortalStore } from "../js/state.js";
 
 const route = useRoute();
 const portal = usePortalStore();
-const routenTitel = {
-  kalender: "Kalender | Tanzsportclub Dortmund",
-  trainingsplan: "Trainingsplan | Tanzsportclub Dortmund"
-};
 
 watch(
   () => route.name,
   (name) => {
-    document.title = name === "portal"
-      ? portal.config?.page?.title || "Portal"
-      : routenTitel[name] || "Portal";
+    const portalTitel = portal.config?.page?.title || "Portal";
+    document.title = name === "formular"
+      ? `${portal.selectedForm?.titel || portal.selectedForm?.title || "Formular"} | ${portalTitel}`
+      : name === "seite"
+        ? `${portal.selectedPage?.title || portal.selectedPage?.titel || "Seite"} | ${portalTitel}`
+        : name === "kalender"
+          ? "Kalender | Tanzsportclub Dortmund"
+          : name === "trainingsplan"
+            ? "Trainingsplan | Tanzsportclub Dortmund"
+            : portalTitel;
   },
   { immediate: true }
 );

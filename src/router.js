@@ -31,6 +31,7 @@ export default createRouter({
   routes: [
     { path: "/", name: "portal", component: PortalPage },
     { path: "/login", name: "login", component: PortalPage },
+    { path: "/seite/:pageId", name: "seite", component: PortalPage },
     { path: "/kalender", name: "kalender", component: CalendarPage },
     { path: "/trainingsplan", name: "trainingsplan", component: TrainingPlanPage },
     {

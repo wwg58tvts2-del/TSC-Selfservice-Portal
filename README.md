@@ -4,7 +4,7 @@ Vue-3-SPA für Mitglieder des Tanzsportclub Dortmund. Sie zeigt Form.io-Formular
 
 ## Start
 
-`public/config.json` enthält die URL für die Portal-Konfiguration. Aktuell verweist sie auf `/webhook/config/selfservice`. Das Portal benötigt Node.js 20.19 oder neuer.
+`public/config.json` enthält die Basis-URL für die Portal-Konfiguration. Aktuell verweist sie auf `/webhook/portal-config`; das Frontend ergänzt `?systemId=selfservice`. Das Portal benötigt Node.js 20.19 oder neuer.
 
 ```sh
 npm ci
@@ -18,9 +18,8 @@ Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache
 
 ## Bereiche
 
-- **Formulare:** `forms.items[].id` öffnet `/<form-id>`; `forms.baseUrl` plus ID bestimmen die Form.io-Request-URL.
-- **Online-Services:** Links aus `onlineServices.items`.
-- **Downloads:** Dateien aus `downloads.items`.
+- **Portalbereiche:** `areas[]` in `portal_system.config` definiert Reihenfolge, Abschnittstexte und Renderer-Typ (`form`, `page`, `link`, `download`). Die gleichnamige Area-ID gruppiert die Zeilen aus `portal_item`.
+- **Formulare:** Einträge vom Typ `form` öffnen `/<form-id>`; `formBaseUrl` plus ID bestimmen die Form.io-Request-URL.
 - **Suche:** Kopfzeilensuche über Titel, Beschreibung und Suchbegriffe dieser drei Kategorien.
 - **Mitgliederlogin:** konfigurierbarer Statusgruppen-/Kennungs- und Einmalpasswort-Ablauf.
 - **Trainingskalender:** Route `/kalender`, gespeist über `calendarUrl`.

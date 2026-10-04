@@ -93,7 +93,11 @@ export const useTrainingPlanStore = defineStore("training-plan", () => {
 
       const configUrl = lokaleConfig.configUrl;
       if (!configUrl) throw new Error("config.json enthält keine configUrl.");
-      const response = await fetch(configUrl, {
+      const configEndpoint = new URL(configUrl, window.location.origin);
+      if (lokaleConfig.systemId) {
+        configEndpoint.searchParams.set("systemId", lokaleConfig.systemId);
+      }
+      const response = await fetch(configEndpoint, {
         credentials: "include",
         cache: "no-store",
         headers: { Accept: "application/json" }
