@@ -11,8 +11,7 @@ import {
 } from "./api.js";
 
 import {
-  leseFormIdAusUrl,
-  aktualisiereUrl
+  leseFormIdAusUrl
 } from "./navigation.js";
 
 import {
@@ -56,6 +55,7 @@ export const usePortalStore = defineStore("portal", () => {
 
   memberCheckTimer: null,
   initStarted: false,
+  memberStatusChecked: false,
   memberLoginIdentitaet: null,
   memberLoginDaten: {
     statusGruppe: "",
@@ -84,11 +84,6 @@ export const usePortalStore = defineStore("portal", () => {
         this.schliesseMeldung();
       }
     });
-
-    window.addEventListener(
-      "popstate",
-      () => this.behandlePopState()
-    );
 
     await this.ladeConfig();
     this.starteMemberUeberwachung();
@@ -436,6 +431,7 @@ export const usePortalStore = defineStore("portal", () => {
       }
 
     } finally {
+      this.memberStatusChecked = true;
       if (!silent) {
         this.versteckeLadenIntern();
       }
@@ -485,8 +481,6 @@ export const usePortalStore = defineStore("portal", () => {
     this.warnung = "";
     this.selectedForm = form;
     this.view = "formular";
-
-    aktualisiereUrl(form.id);
   },
 
 
@@ -512,7 +506,6 @@ export const usePortalStore = defineStore("portal", () => {
     this.memberLoginBusy = false;
     this.warnung = "";
     this.view = "login";
-    aktualisiereUrl(null);
   },
 
 
@@ -689,7 +682,6 @@ export const usePortalStore = defineStore("portal", () => {
     this.memberLoginOtpAngefordert = false;
     this.memberLoginDaten = this.leereMemberLoginDaten();
 
-    aktualisiereUrl(null);
     window.scrollTo(0, 0);
   },
 
@@ -834,43 +826,6 @@ export const usePortalStore = defineStore("portal", () => {
 
       return;
     }
-
-    this.selectedForm = form;
-    this.view = "formular";
-  },
-
-
-  behandlePopState() {
-    const formId =
-      leseFormIdAusUrl();
-
-    if (!formId) {
-      this.zerstoereFormio();
-
-      this.view = "auswahl";
-      this.selectedForm = null;
-
-      return;
-    }
-
-    const forms =
-      Array.isArray(
-        this.config?.forms?.items
-      )
-        ? this.config.forms.items
-        : [];
-
-    const form =
-      forms.find(
-        (item) =>
-          item.id === formId
-      );
-
-    if (!form) {
-      return;
-    }
-
-    this.zerstoereFormio();
 
     this.selectedForm = form;
     this.view = "formular";

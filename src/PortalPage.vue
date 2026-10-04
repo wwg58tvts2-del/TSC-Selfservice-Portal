@@ -1,11 +1,14 @@
 <script>
 import { onBeforeUnmount, onMounted, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { usePortalStore } from "../js/state.js";
 import PortalCard from "./components/PortalCard.vue";
 import PortalSection from "./components/PortalSection.vue";
 import MemberLoginStep from "./components/MemberLoginStep.vue";
 import SiteFooter from "./components/SiteFooter.vue";
 import SiteHeader from "./components/SiteHeader.vue";
+
+const FORMULAR_RUECKKEHR_KEY = "tsc-serviceportal.form-return-route";
 
 export default {
   components: {
@@ -17,6 +20,79 @@ export default {
   },
   setup() {
     const state = usePortalStore();
+    const route = useRoute();
+    const router = useRouter();
+
+    watch(
+      () => [state.view, state.selectedForm?.id],
+      ([view, formId]) => {
+        if (view === "login" && route.name !== "login") {
+          void router.replace({ name: "login" });
+        } else if (
+          view === "formular" &&
+          formId &&
+          (route.name !== "formular" || route.params.formId !== formId)
+        ) {
+          void router.replace({ name: "formular", params: { formId } });
+        } else if (view === "auswahl" && route.name !== "portal") {
+          void router.replace({ name: "portal" });
+        }
+      },
+      { flush: "post" }
+    );
+
+    watch(
+      () => [route.name, route.params.formId, state.config, state.person, state.memberStatusChecked],
+      ([routeName, routeFormId, config, person]) => {
+        if (!config || !state.memberStatusChecked) {
+          return;
+        }
+
+        if (!person) {
+          if (routeName === "formular") {
+            window.sessionStorage.setItem(FORMULAR_RUECKKEHR_KEY, route.fullPath);
+          }
+          state.oeffneLogin();
+          return;
+        }
+
+        const rueckkehr = window.sessionStorage.getItem(FORMULAR_RUECKKEHR_KEY);
+        if (rueckkehr?.startsWith("/") && !rueckkehr.startsWith("//")) {
+          window.sessionStorage.removeItem(FORMULAR_RUECKKEHR_KEY);
+          void router.replace(rueckkehr);
+          return;
+        }
+
+        if (routeName === "login") {
+          void router.replace({ name: "portal" });
+          return;
+        }
+
+        if (routeName === "formular") {
+          const form = state.sichtbareFormulare.find(
+            (item) => item.id === String(routeFormId)
+          );
+          if (!form) {
+            state.warnung = "Das angeforderte Formular wurde nicht gefunden.";
+            state.zurueck();
+            return;
+          }
+          if (state.selectedForm?.id !== form.id) {
+            state.zerstoereFormio();
+            state.selectedForm = form;
+          }
+          state.view = "formular";
+          return;
+        }
+
+        if (routeName === "portal") {
+          state.zerstoereFormio();
+          state.selectedForm = null;
+          state.view = "auswahl";
+        }
+      },
+      { immediate: true }
+    );
 
     watch(
       () => [state.view, state.selectedForm?.id],

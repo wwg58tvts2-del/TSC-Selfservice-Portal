@@ -12,19 +12,19 @@ npm run dev
 npm run build
 ```
 
-Vite baut eine `index.html` nach `dist/`. Vue Router verwaltet die Ansichten unter `/#/`, `/#/kalender` und `/#/trainingsplan`; Hash-Routing benötigt keine Server-Rewrite-Regel. Vue wird gebündelt; Bootstrap, Bootstrap Icons, Form.io und FullCalendar bleiben in ihren lokal gepinnten Versionen unter `public/vendor/`.
+Vite baut eine `index.html` nach `dist/`. Portal und Login liegen unter `/` und `/login`; Formulare öffnen direkt unter `/<form-id>`. Kalender und Trainingsplan bleiben unter `/kalender` und `/trainingsplan`. Nginx führt unbekannte Pfade auf die SPA zurück. Vue wird gebündelt; Bootstrap, Bootstrap Icons, Form.io und FullCalendar bleiben lokal gepinnt unter `public/vendor/`.
 
 Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache: "no-store"`. Reverse Proxy und n8n müssen zum jeweiligen Endpunkt passen. Die lokale `config.json` ist nur der Einstiegspunkt; die eigentliche Portal-Konfiguration kommt vom Backend.
 
 ## Bereiche
 
-- **Formulare:** `forms.baseUrl` plus `forms.items[].id` bestimmen die Form.io-URL.
+- **Formulare:** `forms.items[].id` öffnet `/<form-id>`; `forms.baseUrl` plus ID bestimmen die Form.io-Request-URL.
 - **Online-Services:** Links aus `onlineServices.items`.
 - **Downloads:** Dateien aus `downloads.items`.
 - **Suche:** Kopfzeilensuche über Titel, Beschreibung und Suchbegriffe dieser drei Kategorien.
 - **Mitgliederlogin:** konfigurierbarer Statusgruppen-/Kennungs- und Einmalpasswort-Ablauf.
-- **Trainingskalender:** Vue-Route `/#/kalender`, gespeist über `calendarUrl`.
-- **Trainingsplan:** Vue-Route `/#/trainingsplan`, ebenfalls gespeist über `calendarUrl`, mit Text-, Tag- und Trainerfilter.
+- **Trainingskalender:** Route `/kalender`, gespeist über `calendarUrl`.
+- **Trainingsplan:** Route `/trainingsplan`, ebenfalls gespeist über `calendarUrl`, mit Text-, Tag- und Trainerfilter.
 
 `active` und `sichtbarkeit` werden bei den Hauptlisten nicht als Berechtigungsprüfung verwendet. Die Anzeige ist keine Autorisierung: n8n und Form.io müssen geschützte Daten und Requests serverseitig absichern.
 
@@ -35,7 +35,7 @@ Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache
 | `index.html` | Hauptportal, Loginansicht, Suchfeld und Kategorien |
 | `public/config.json` | URL zur Laufzeitkonfiguration |
 | `src/App.vue` | Hauptportal und Mitgliederlogin |
-| `src/router.js` | Hash-Routen für Portal, Kalender und Trainingsplan |
+| `src/router.js` | Pfadrouten für Portal, Formulare, Kalender und Trainingsplan |
 | `src/CalendarPage.vue` | Trainingskalender |
 | `src/TrainingPlanPage.vue` | Trainingsplan |
 | `src/stores/exposeReactiveState.js` | Pinia-Bindings für reaktive State-Module |
@@ -43,7 +43,7 @@ Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache
 | `js/state.js` | State, Login, Suche, Navigation, Formularabläufe |
 | `js/api.js` | HTTP-Aufrufe und Response-Logging |
 | `js/formio.js` | Erzeugen und Zerstören von Form.io-Instanzen |
-| `js/navigation.js` | `?form=` und Browser-History |
+| `js/navigation.js` | Lesen alter `?form=`-Direktlinks |
 | `js/kalender.js` | Kalender-Pinia-Store und FullCalendar-Integration |
 | `js/trainingsplan.js` | Trainingsplan-Pinia-Store und Filter |
 | `css/main.css` | Importiert die aufgeteilten Stylesheets |

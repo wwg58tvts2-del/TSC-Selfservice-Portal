@@ -14,7 +14,7 @@ Beide Requests verwenden `{ request: { data } }` und erwarten ein boolesches `er
 
 ## Form.io
 
-Ein Formular wird über `forms.baseUrl` plus URL-kodierte `id` geladen. `formio.js` kapselt `Formio.createForm()` und das Zerstören der Instanz. `navigation.js` speichert die Auswahl als `?form=<id>`; Zurück und Browser-History zerstören beziehungsweise wechseln die Instanz kontrolliert.
+Ein Formular wird unter `/<form-id>` geöffnet und über `forms.baseUrl` plus URL-kodierte `id` geladen. `formio.js` kapselt `Formio.createForm()` und das Zerstören der Instanz. Alte `?form=<id>`- und Hash-Links werden auf den sauberen Formularpfad migriert; Vue Router steuert Zurücknavigation und Browser-History.
 
 Form.io-Custom-JavaScript verwendet `window.sendeFormular(instance, config)`. Unterstützte Optionen sind `webhookUrl`, `method`, `ladeText`, `zurueckNachErfolg`, `onSuccess` und optional `data`. Ohne `data` wird `instance.root.data` gesendet. Der Request-Body lautet:
 

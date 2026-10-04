@@ -8,14 +8,14 @@ Abhängigkeiten sind in `package.json` und `package-lock.json` fixiert. `npm ci`
 
 ## Zuständigkeiten
 
-- `index.html`: einziger Vite-Einstieg; Routen verwenden Hash-History.
+- `index.html`: einziger Vite-Einstieg; Router verwendet saubere Pfade.
 - `src/App.vue`: Router-Shell und Portalinitialisierung.
 - `src/PortalPage.vue`: Hauptauswahl, OTP-Mitgliederlogin, Form.io-Ansicht und Footer.
 - `src/CalendarPage.vue`, `src/TrainingPlanPage.vue`: eigenständige Vue-Unterseiten.
 - `js/state.js`, `js/kalender.js`, `js/trainingsplan.js`: Pinia-Stores und Benutzerabläufe.
 - `js/api.js`: Fetch-Aufrufe; kein Zugriff auf den State.
 - `js/formio.js`: Erstellen und Zerstören von Form.io-Instanzen.
-- `js/navigation.js`: Formular-ID im `?form=`-Parameter und History.
+- `js/navigation.js`: Legacy-`?form=`-Direktlinks lesen.
 - `js/main.js`: Vue-Mount und globale Funktionen für Form.io-Custom-JavaScript.
 - `js/kalender.js`, `js/trainingsplan.js`: State/Normalisierung der eigenständigen Unterseiten.
 - `vite.config.js`: Vue-SFC-Plugin und Build nach `dist/`.

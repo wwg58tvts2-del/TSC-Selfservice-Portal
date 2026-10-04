@@ -2,9 +2,9 @@
 
 ## Laufzeit
 
-Das Portal ist eine Vue-3-SPA mit Vite, Pinia und Vue Router. Es gibt genau einen HTML-Einstieg (`index.html`); `npm run build` erzeugt die Anwendung unter `dist/`. Vue Router verwendet Hash-History, damit der statische Webserver keine Rewrite-Regel benötigt.
+Das Portal ist eine Vue-3-SPA mit Vite, Pinia und Vue Router. Es gibt genau einen HTML-Einstieg (`index.html`); `npm run build` erzeugt die Anwendung unter `dist/`. Nginx führt unbekannte Pfade auf `index.html` zurück, damit saubere Formularpfade funktionieren.
 
-Die Routen `/#/`, `/#/kalender` und `/#/trainingsplan` zeigen Portal, Kalender und Trainingsplan in derselben Vue-App. Alte `.html`-Adressen werden aus `public/` auf die entsprechenden Routen weitergeleitet.
+Die Routen `/`, `/login`, `/<form-id>`, `/kalender` und `/trainingsplan` zeigen alle Ansichten in derselben Vue-App. Alte `?form=<id>`- und Hash-Formularlinks werden auf `/<form-id>` migriert; alte `.html`-Adressen werden aus `public/` weitergeleitet.
 
 ## Hauptmodule
 
@@ -14,12 +14,12 @@ Die Routen `/#/`, `/#/kalender` und `/#/trainingsplan` zeigen Portal, Kalender u
 | `src/PortalPage.vue` | Suche, Login und Form.io-Ansicht |
 | `src/CalendarPage.vue` | Kalenderoberfläche und FullCalendar-Lebenszyklus |
 | `src/TrainingPlanPage.vue` | Trainingsplanoberfläche und Filter |
-| `src/router.js` | Hash-Routen und Ansichtswechsel |
+| `src/router.js` | Pfadrouten und Legacy-URL-Migration |
 | `js/main.js` | Vue-/Pinia-Mount und globale Form.io-Schnittstellen |
 | `js/state.js` | Portal-Pinia-Store: Konfiguration, Mitgliedsstatus, Login, Meldungen und Versand |
 | `js/api.js` | Fetch, Cookies, JSON-Verarbeitung und Response-Logging |
 | `js/formio.js` | Erzeugen und Zerstören der Form.io-Instanz |
-| `js/navigation.js` | `?form=` und Browser-History |
+| `js/navigation.js` | Lesen von `?form=`-Legacy-Links |
 | `js/kalender.js` | Trainings-/Reservierungsevents und FullCalendar |
 | `js/trainingsplan.js` | Gruppen-Normalisierung und Such-/Tag-/Trainerfilter |
 
@@ -30,7 +30,7 @@ Die Routen `/#/`, `/#/kalender` und `/#/trainingsplan` zeigen Portal, Kalender u
 1. `config.json` liefert die URL der Laufzeitkonfiguration.
 2. `state.js` lädt die Konfiguration ohne Cache und fragt anschließend `memberStatusUrl` ab.
 3. Die Hauptauswahl rendert die drei Listen aus `forms.items`, `onlineServices.items` und `downloads.items`.
-4. Formularauswahl setzt `?form=<id>`; Form.io lädt `forms.baseUrl/<id>`.
+4. Formularauswahl öffnet `/<form-id>`; Form.io lädt `forms.baseUrl/<id>`.
 5. Formularversand und Logout laufen über `api.js`; der State steuert Loader, Meldungen und Cleanup.
 
 Kalender und Trainingsplan laden `config.json` und anschließend separat `calendarUrl`. Die drei Ansichten besitzen jeweils einen Pinia-Store; Endpunktadresse und fachliche Normalisierung bleiben wie bisher konfigurationsgesteuert.
