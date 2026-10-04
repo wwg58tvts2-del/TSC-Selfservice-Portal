@@ -1,6 +1,9 @@
 <script>
 import { onBeforeUnmount, onMounted } from "vue";
 import { useCalendarStore } from "../js/kalender.js";
+import CalendarEventDialog from "./components/CalendarEventDialog.vue";
+import SiteFooter from "./components/SiteFooter.vue";
+import SiteHeader from "./components/SiteHeader.vue";
 
 export default {
   setup() {
@@ -18,18 +21,7 @@ export default {
 </script>
 
 <template>
-  <header class="site-header">
-    <img
-      class="site-logo"
-      src="/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png"
-      :src="config?.header?.logo || '/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'"
-      :alt="config?.header?.logoAlt || 'Tanzsportclub Dortmund'"
-    >
-    <div class="header-copy">
-      <span class="header-kicker">{{ config?.header?.kicker }}</span>
-      <span class="header-caption">{{ config?.header?.caption }}</span>
-    </div>
-  </header>
+  <SiteHeader variant="subpage" :config="config" />
 
   <main id="calendar-app">
     <RouterLink id="back-button" class="btn btn-outline-secondary subpage-back" to="/">
@@ -71,31 +63,9 @@ export default {
 
       <div id="calendar" class="calendar-view" v-show="!loading && !error && events.length"></div>
 
-      <div v-if="selectedEvent" class="msgbox-overlay calendar-event-modal" @click="selectedEvent = null">
-        <div class="msgbox-backdrop" aria-hidden="true"></div>
-        <div class="msgbox-dialog calendar-event-dialog" role="dialog" aria-modal="true" aria-labelledby="calendar-event-title" @click.stop>
-          <button type="button" class="calendar-detail-close" @click="selectedEvent = null" aria-label="Details schließen">&times;</button>
-          <p class="section-kicker">Termindetails</p>
-          <h2 id="calendar-event-title">{{ selectedEvent.title }}</h2>
-          <p class="calendar-detail-time">{{ selectedEvent.start }} - {{ selectedEvent.end }}</p>
-          <dl>
-            <div v-if="selectedEvent.beschreibung"><dt>Beschreibung</dt><dd>{{ selectedEvent.beschreibung }}</dd></div>
-            <div v-if="selectedEvent.notiz"><dt>Notiz</dt><dd>{{ selectedEvent.notiz }}</dd></div>
-            <div v-if="selectedEvent.saal"><dt>Saal</dt><dd>{{ selectedEvent.saal }}</dd></div>
-            <div v-if="selectedEvent.trainer"><dt>Trainer*in</dt><dd>{{ selectedEvent.trainer }}</dd></div>
-            <div v-if="selectedEvent.niveau"><dt>Leistungsniveau</dt><dd>{{ selectedEvent.niveau }}</dd></div>
-            <div v-if="selectedEvent.altersstufe"><dt>Altersgruppe</dt><dd>{{ selectedEvent.altersstufe }}</dd></div>
-            <div v-if="selectedEvent.bereich"><dt>Bereich</dt><dd>{{ selectedEvent.bereich }}</dd></div>
-          </dl>
-          <button type="button" class="msgbox-close-btn calendar-detail-button" @click="selectedEvent = null">Schließen</button>
-        </div>
-      </div>
+      <CalendarEventDialog v-if="selectedEvent" :event="selectedEvent" @close="selectedEvent = null" />
     </div>
   </main>
 
-  <footer class="site-footer">
-    <nav class="footer-links" aria-label="Rechtliches">
-      <a v-for="link in sichtbareFooterLinks" :key="link.url" class="footer-link" :href="link.url" target="_blank" rel="noopener noreferrer">{{ link.titel }}</a>
-    </nav>
-  </footer>
+  <SiteFooter :links="sichtbareFooterLinks" />
 </template>

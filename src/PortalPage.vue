@@ -1,6 +1,11 @@
 <script>
 import { onBeforeUnmount, onMounted, watch } from "vue";
 import { usePortalStore } from "../js/state.js";
+import PortalCard from "./components/PortalCard.vue";
+import PortalSection from "./components/PortalSection.vue";
+import MemberLoginStep from "./components/MemberLoginStep.vue";
+import SiteFooter from "./components/SiteFooter.vue";
+import SiteHeader from "./components/SiteHeader.vue";
 
 export default {
   setup() {
@@ -30,44 +35,17 @@ export default {
 </script>
 
 <template>
-  <header class="site-header">
-    <div class="site-header-inner">
-      <img
-        id="header-logo"
-        class="site-logo"
-        src="/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png"
-        :src="config?.header?.logo || '/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'"
-        alt="Tanzsportclub Dortmund"
-        :alt="config?.header?.logoAlt || 'Tanzsportclub Dortmund'"
-      >
-      <div v-if="view === 'auswahl' && hatDurchsuchbareEintraege" class="header-search">
-        <label class="visually-hidden" for="serviceportal-search">Suche</label>
-        <div class="header-search-field">
-          <i class="bi bi-search" aria-hidden="true"></i>
-          <input id="serviceportal-search" :value="suchtext" @input="setzeSuchtext($event.target.value)" type="search" placeholder="Suche" autocomplete="off">
-          <button v-if="suchtext" class="header-search-clear" type="button" aria-label="Suche löschen" title="Suche löschen" @mousedown.prevent @click="leereSuche()">
-            <i class="bi bi-x-lg" aria-hidden="true"></i>
-          </button>
-        </div>
-      </div>
-      <div class="header-right">
-        <div class="header-copy">
-          <span class="header-kicker">{{ config?.header?.kicker }}</span>
-          <span class="header-caption">{{ config?.header?.caption }}</span>
-        </div>
-        <div class="header-actions" aria-label="Mitgliederbereich" v-if="config?.memberLogin">
-          <button v-if="!person" class="header-login-button" type="button" @click="oeffneLogin()">
-            <i class="bi bi-person-circle" aria-hidden="true"></i>
-            <span>{{ config.memberLogin.title }}</span>
-          </button>
-          <button v-else class="header-login-button member-logout-button" type="button" @click="logout()">
-            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
-            <span>{{ (person.vorname || 'Mitglied') + ' abmelden' }}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </header>
+  <SiteHeader
+    :config="config"
+    :person="person"
+    :view="view"
+    :query="suchtext"
+    :has-search-items="hatDurchsuchbareEintraege"
+    @search="setzeSuchtext"
+    @clear-search="leereSuche"
+    @login="oeffneLogin"
+    @logout="logout"
+  />
 
   <main id="app">
     <section v-if="view === 'auswahl'" id="form-selection">
@@ -80,32 +58,23 @@ export default {
       <p v-if="warnung" class="alert alert-warning" role="alert">{{ warnung }}</p>
       <p v-if="keineSuchergebnisse" class="portal-search-empty" role="status">Keine Ergebnisse gefunden</p>
 
-      <section v-if="sichtbareFormulare.length" id="forms-section">
-        <div class="section-divider" aria-hidden="true"></div>
-        <p class="section-kicker">{{ config?.forms?.section?.kicker }}</p>
-        <h2 class="section-title">{{ config?.forms?.section?.title }}</h2>
-        <p class="section-intro">{{ config?.forms?.section?.intro }}</p>
-        <div class="form-options" aria-live="polite">
-          <article class="form-option" v-for="form in sichtbareFormulare" :key="form.id">
-            <h2>{{ form.titel }}</h2>
-            <p>{{ form.beschreibung }}</p>
+      <PortalSection id="forms-section" :section="config?.forms?.section" :items="sichtbareFormulare">
+        <template #default="{ items }">
+          <PortalCard v-for="form in items" :key="form.id" :title="form.titel" :description="form.beschreibung">
+            <template #action>
             <button class="form-button-label" type="button" @click="oeffneFormular(form)">
               Formular öffnen
               <i class="bi bi-arrow-right" aria-hidden="true"></i>
             </button>
-          </article>
-        </div>
-      </section>
+            </template>
+          </PortalCard>
+        </template>
+      </PortalSection>
 
-      <section v-if="sichtbareServices.length" id="services-section">
-        <div class="section-divider" aria-hidden="true"></div>
-        <p class="section-kicker">{{ config?.onlineServices?.section?.kicker }}</p>
-        <h2 class="section-title">{{ config?.onlineServices?.section?.title }}</h2>
-        <p class="section-intro">{{ config?.onlineServices?.section?.intro }}</p>
-        <div class="form-options service-options" aria-live="polite">
-          <article class="form-option service-option" v-for="service in sichtbareServices" :key="service.url">
-            <h2>{{ service.titel }}</h2>
-            <p>{{ service.beschreibung }}</p>
+      <PortalSection id="services-section" :section="config?.onlineServices?.section" :items="sichtbareServices" options-class="service-options">
+        <template #default="{ items }">
+          <PortalCard v-for="service in items" :key="service.url" variant="service" :title="service.titel" :description="service.beschreibung">
+            <template #action>
             <a
               class="service-button"
               :href="service.url"
@@ -115,26 +84,23 @@ export default {
               Öffnen
               <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
             </a>
-          </article>
-        </div>
-      </section>
+            </template>
+          </PortalCard>
+        </template>
+      </PortalSection>
 
-      <section v-if="sichtbareDownloads.length" id="downloads-section">
-        <div class="section-divider" aria-hidden="true"></div>
-        <p class="section-kicker">{{ config?.downloads?.section?.kicker }}</p>
-        <h2 class="section-title">{{ config?.downloads?.section?.title }}</h2>
-        <p class="section-intro">{{ config?.downloads?.section?.intro }}</p>
-        <div class="form-options download-options" aria-live="polite">
-          <article class="form-option download-option" v-for="download in sichtbareDownloads" :key="download.url">
-            <h2>{{ download.titel }}</h2>
-            <p>{{ download.beschreibung }}</p>
+      <PortalSection id="downloads-section" :section="config?.downloads?.section" :items="sichtbareDownloads" options-class="download-options">
+        <template #default="{ items }">
+          <PortalCard v-for="download in items" :key="download.url" variant="download" :title="download.titel" :description="download.beschreibung">
+            <template #action>
             <a class="download-button" :href="download.url" target="_blank" rel="noopener noreferrer">
               <i class="bi bi-download" aria-hidden="true"></i>
               Download
             </a>
-          </article>
-        </div>
-      </section>
+            </template>
+          </PortalCard>
+        </template>
+      </PortalSection>
     </section>
 
     <section v-else-if="view === 'login'" id="member-login-container" class="member-login-page" aria-labelledby="member-login-title">
@@ -149,11 +115,7 @@ export default {
       <p class="member-login-intro">{{ config?.memberLogin?.intro }}</p>
 
       <div class="member-login-controls">
-        <section class="member-login-step-card">
-          <div class="member-login-step-heading">
-            <span class="member-login-step-number">{{ config?.memberLogin?.steps?.chooseStatus?.label }}</span>
-            <h2>{{ config?.memberLogin?.steps?.chooseStatus?.title }}</h2>
-          </div>
+        <MemberLoginStep :number="config?.memberLogin?.steps?.chooseStatus?.label" :title="config?.memberLogin?.steps?.chooseStatus?.title">
           <fieldset class="member-login-status-group" :disabled="memberLoginBusy">
             <legend class="visually-hidden">{{ config?.memberLogin?.steps?.chooseStatus?.statusGroupsLabel }}</legend>
             <label v-for="gruppe in memberLoginStatusgruppen" :key="gruppe.value" class="member-login-status-option" :class="{ 'is-selected': memberLoginDaten.statusGruppe === gruppe.value }">
@@ -161,13 +123,9 @@ export default {
               {{ gruppe.label }}
             </label>
           </fieldset>
-        </section>
+        </MemberLoginStep>
 
-        <section v-if="memberLoginDaten.statusGruppe" class="member-login-step-card">
-          <div class="member-login-step-heading">
-            <span class="member-login-step-number">{{ config?.memberLogin?.steps?.requestOtp?.label }}</span>
-            <h2>{{ config?.memberLogin?.steps?.requestOtp?.title }}</h2>
-          </div>
+        <MemberLoginStep v-if="memberLoginDaten.statusGruppe" :number="config?.memberLogin?.steps?.requestOtp?.label" :title="config?.memberLogin?.steps?.requestOtp?.title">
           <p class="member-login-step-copy">{{ config?.memberLogin?.steps?.requestOtp?.description }}</p>
           <div v-if="memberLoginKennungFeld" class="member-login-field">
             <label class="form-label" for="member-login-identifier">{{ memberLoginKennungLabel }}</label>
@@ -177,13 +135,9 @@ export default {
             <i class="bi bi-envelope-fill" aria-hidden="true"></i>
             {{ memberLoginOtpAngefordert ? config?.memberLogin?.steps?.requestOtp?.resendLabel : config?.memberLogin?.steps?.requestOtp?.buttonLabel }}
           </button>
-        </section>
+        </MemberLoginStep>
 
-        <section v-if="memberLoginOtpAngefordert" class="member-login-step-card">
-          <div class="member-login-step-heading">
-            <span class="member-login-step-number">{{ config?.memberLogin?.steps?.authenticate?.label }}</span>
-            <h2>{{ config?.memberLogin?.steps?.authenticate?.title }}</h2>
-          </div>
+        <MemberLoginStep v-if="memberLoginOtpAngefordert" :number="config?.memberLogin?.steps?.authenticate?.label" :title="config?.memberLogin?.steps?.authenticate?.title">
           <p class="member-login-step-copy">{{ config?.memberLogin?.steps?.authenticate?.description }}</p>
           <div class="member-login-field">
             <label class="form-label" for="member-otp">{{ config?.memberLogin?.steps?.authenticate?.passwordLabel }}</label>
@@ -193,7 +147,7 @@ export default {
             <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i>
             {{ config?.memberLogin?.steps?.authenticate?.buttonLabel }}
           </button>
-        </section>
+        </MemberLoginStep>
       </div>
       <p class="member-login-note">{{ config?.memberLogin?.securityNote }}</p>
       <p class="member-login-note">{{ config?.memberLogin?.rememberedIdentifierNote }}</p>
@@ -214,11 +168,7 @@ export default {
     </section>
   </main>
 
-  <footer class="site-footer">
-    <nav class="footer-links" aria-label="Rechtliches">
-      <a v-for="link in sichtbareFooterLinks" :key="link.url" class="footer-link" :href="link.url" target="_blank" rel="noopener noreferrer">{{ link.titel }}</a>
-    </nav>
-  </footer>
+  <SiteFooter :links="sichtbareFooterLinks" />
 
   <div class="msgbox-overlay" v-if="msgbox.visible">
     <div class="msgbox-backdrop" aria-hidden="true" @click="schliesseMeldung()"></div>

@@ -1,6 +1,9 @@
 <script>
 import { onMounted } from "vue";
 import { useTrainingPlanStore } from "../js/trainingsplan.js";
+import SiteFooter from "./components/SiteFooter.vue";
+import SiteHeader from "./components/SiteHeader.vue";
+import TrainingGroupCard from "./components/TrainingGroupCard.vue";
 
 export default {
   setup() {
@@ -14,13 +17,7 @@ export default {
 </script>
 
 <template>
-  <header class="site-header">
-    <img class="site-logo" src="/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png" :src="config?.header?.logo || '/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'" :alt="config?.header?.logoAlt || 'Tanzsportclub Dortmund'">
-    <div class="header-copy">
-      <span class="header-kicker">{{ config?.header?.kicker }}</span>
-      <span class="header-caption">{{ config?.header?.caption }}</span>
-    </div>
-  </header>
+  <SiteHeader variant="subpage" :config="config" />
 
   <main id="training-app">
     <RouterLink id="back-button" class="btn btn-outline-secondary subpage-back" to="/">
@@ -67,38 +64,10 @@ export default {
 
       <p v-if="!gefilterteGruppen.length" class="calendar-state">Keine passenden Gruppen gefunden.</p>
       <section v-else class="training-list" aria-label="Trainingsgruppen">
-        <article v-for="gruppe in gefilterteGruppen" :key="gruppe.id" class="training-card">
-          <div class="training-card-heading">
-            <div>
-              <p v-if="gruppe.bereich" class="training-card-eyebrow">{{ gruppe.bereich }}</p>
-              <h2>{{ gruppe.name }}</h2>
-            </div>
-          </div>
-          <p v-if="gruppe.beschreibung" class="training-description">{{ gruppe.beschreibung }}</p>
-          <p v-if="gruppe.notiz" class="training-note"><i class="bi bi-info-circle" aria-hidden="true"></i>{{ gruppe.notiz }}</p>
-          <dl class="training-details">
-            <div v-if="gruppe.stufe"><dt>Leistungsstufe</dt><dd>{{ gruppe.stufe }}</dd></div>
-            <div v-if="gruppe.alter"><dt>Alter</dt><dd>{{ gruppe.alter }}</dd></div>
-            <div><dt>Beitrag</dt><dd>{{ gruppe.beitrag }}</dd></div>
-            <div v-if="gruppe.trainer"><dt>Trainer*in</dt><dd>{{ gruppe.trainer }}</dd></div>
-            <div v-if="gruppe.termine.length">
-              <dt>Trainingszeit</dt>
-              <dd class="training-time-values">
-                <span v-for="termin in gruppe.termine" :key="termin.id">
-                  <strong>{{ termin.tag }}</strong>
-                  {{ termin.start }} - {{ termin.ende }}
-                </span>
-              </dd>
-            </div>
-          </dl>
-        </article>
+        <TrainingGroupCard v-for="gruppe in gefilterteGruppen" :key="gruppe.id" :gruppe="gruppe" />
       </section>
     </div>
   </main>
 
-  <footer class="site-footer">
-    <nav class="footer-links" aria-label="Rechtliches">
-      <a v-for="link in sichtbareFooterLinks" :key="link.url" class="footer-link" :href="link.url" target="_blank" rel="noopener noreferrer">{{ link.titel }}</a>
-    </nav>
-  </footer>
+  <SiteFooter :links="sichtbareFooterLinks" />
 </template>
