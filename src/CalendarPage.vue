@@ -6,11 +6,6 @@ import SiteFooter from "./components/SiteFooter.vue";
 import SiteHeader from "./components/SiteHeader.vue";
 
 export default {
-  components: {
-    CalendarEventDialog,
-    SiteFooter,
-    SiteHeader
-  },
   setup() {
     const state = useCalendarStore();
     onMounted(() => {

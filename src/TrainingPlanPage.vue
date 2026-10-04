@@ -6,11 +6,6 @@ import SiteHeader from "./components/SiteHeader.vue";
 import TrainingGroupCard from "./components/TrainingGroupCard.vue";
 
 export default {
-  components: {
-    SiteFooter,
-    SiteHeader,
-    TrainingGroupCard
-  },
   setup() {
     const state = useTrainingPlanStore();
     onMounted(() => {

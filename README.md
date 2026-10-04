@@ -53,7 +53,7 @@ Die API-Aufrufe senden Cookies mit `credentials: "include"` und verwenden `cache
 
 ## Anmeldung und Formulare
 
-`memberStatusUrl` liefert den angemeldeten Datensatz. `memberLogin.steps.chooseStatus.statusGroups` definiert Statusgruppen und Kennungsfelder; `requestOtp` und `authenticate` enthalten jeweils Webhook-URL und Methode. Die Kennung kann im Browser lokal gespeichert werden; das Einmalpasswort wird nicht dort abgelegt. Formulare werden getrennt vom Login über Form.io geladen.
+Das Portal und seine Formularpfade erzwingen keinen Login. Mitglieder können den Login-Button freiwillig verwenden; `memberStatusUrl` prüft die vorhandene Sitzung und steuert die Anzeige des Logout-Buttons. `memberLogin.steps.chooseStatus.statusGroups` definiert Statusgruppen und Kennungsfelder; `requestOtp` und `authenticate` enthalten jeweils Webhook-URL und Methode. Die Kennung kann im Browser lokal gespeichert und beim nächsten Öffnen vorbelegt werden; das Einmalpasswort wird nicht dort abgelegt. Geschützte Formulardaten und Requests müssen n8n/Form.io serverseitig absichern.
 
 Formularrequests verwenden `{ request: { data } }`. Eine gültige Antwort enthält ein boolesches `erfolgreich`; erfolgreiche Antworten können eine Base64-Datei enthalten. Formular- und Logoutmeldungen stammen vom Server. Weitere Ablaufdetails stehen im [Wiki: Anmeldung und Formulare](wiki/login-und-formulare.md).
 

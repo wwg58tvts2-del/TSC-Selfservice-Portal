@@ -27,6 +27,7 @@ Vorhandene Modulgrenzen beibehalten. Portalbereiche und Unterseiten nicht unnöt
 - Die Hauptkonfiguration wird über die URL in `config.json` geladen; `memberStatusUrl`, `memberLogin`, `memberLogout`, `calendarUrl` und Bereichslisten kommen aus dieser Konfiguration.
 - Die Hauptauswahl zeigt `forms.items`, `onlineServices.items`, `downloads.items` und `footer`.
 - Die Kopfzeilensuche filtert nur Formulare, Online-Services und Downloads. Sie durchsucht Titel, Beschreibung und die unterstützten Suchbegriffs-Felder; Footer und Login bleiben unberührt.
+- Portal und Formularpfade erzwingen keinen Mitgliederlogin; Anmeldung ist freiwillig. Geschützte Daten und Requests müssen Backend/Form.io serverseitig autorisieren.
 - `active` und `sichtbarkeit` sind keine Frontend-Berechtigungsprüfung. Autorisierung geschützter Daten und Requests gehört ins Backend/Form.io.
 - Mitgliederlogin: Statusgruppen und Kennungsfelder stammen aus `memberLogin.steps.chooseStatus.statusGroups`; OTP-Anforderung und Authentifizierung verwenden die konfigurierten Webhooks. Keine Login-URL oder Kennungsfelder fest codieren.
 - Form.io-Requests laufen über `window.sendeFormular(instance, config)`. Payload, `erfolgreich`, optionale Datei und Callback-Reihenfolge erhalten.

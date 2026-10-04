@@ -8,8 +8,6 @@ import MemberLoginStep from "./components/MemberLoginStep.vue";
 import SiteFooter from "./components/SiteFooter.vue";
 import SiteHeader from "./components/SiteHeader.vue";
 
-const FORMULAR_RUECKKEHR_KEY = "tsc-serviceportal.form-return-route";
-
 export default {
   components: {
     MemberLoginStep,
@@ -48,23 +46,12 @@ export default {
           return;
         }
 
-        if (!person) {
-          if (routeName === "formular") {
-            window.sessionStorage.setItem(FORMULAR_RUECKKEHR_KEY, route.fullPath);
-          }
-          state.oeffneLogin();
-          return;
-        }
-
-        const rueckkehr = window.sessionStorage.getItem(FORMULAR_RUECKKEHR_KEY);
-        if (rueckkehr?.startsWith("/") && !rueckkehr.startsWith("//")) {
-          window.sessionStorage.removeItem(FORMULAR_RUECKKEHR_KEY);
-          void router.replace(rueckkehr);
-          return;
-        }
-
         if (routeName === "login") {
-          void router.replace({ name: "portal" });
+          if (person) {
+            void router.replace({ name: "portal" });
+          } else {
+            state.oeffneLogin();
+          }
           return;
         }
 
