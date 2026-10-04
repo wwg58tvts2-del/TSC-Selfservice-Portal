@@ -95,9 +95,12 @@ export async function holeMemberStatus(url) {
   });
 
   const contentType = response.headers.get("content-type") || "";
-  const result = contentType.includes("application/json")
-    ? await response.json()
-    : await response.text();
+  const responseText = await response.text();
+  const result = responseText.trim()
+    ? contentType.includes("application/json")
+      ? JSON.parse(responseText)
+      : responseText
+    : null;
 
   loggeResponse(url, response, result);
 
