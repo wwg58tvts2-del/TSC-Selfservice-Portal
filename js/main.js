@@ -1,5 +1,5 @@
 import {createApp} from "../vendor/petite-vue/0.4.1/petite-vue.es.js";
-import {state} from "./state.js?v=20261001-vendor-1";
+import {state} from "./state.js?v=20261004-no-login-success-box";
 
 
 // Bestehende Form.io-Skripte rufen

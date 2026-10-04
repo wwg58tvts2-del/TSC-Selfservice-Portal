@@ -402,17 +402,6 @@ export const state = reactive({
         this.statusgruppen
       );
 
-      if (!silent) {
-        this.zeigeMeldung(
-          "Angemeldet",
-          [
-            `Willkommen ${person.vorname || ""} ${person.nachname || ""}`.trim(),
-            `Statusgruppe: ${this.statusgruppen.join(", ")}`
-          ].join("\n"),
-          false
-        );
-      }
-
       return person;
 
     } catch (error) {
