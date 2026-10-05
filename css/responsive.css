@@ -43,10 +43,6 @@
     grid-template-columns: 1fr;
   }
 
-  .form-option--wide {
-    grid-column: auto;
-  }
-
   .section-divider {
     margin-top: 48px;
   }

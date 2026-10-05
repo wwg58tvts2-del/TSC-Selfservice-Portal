@@ -28,7 +28,6 @@ const itemType = (item, area) => {
       <PortalCard
         v-for="(item, index) in items"
         :key="item.id || item.url || `${area.id}-${index}`"
-        :class="{ 'form-option--wide': itemType(item, area) === 'form' && Number(item.width) === 2 }"
         :variant="itemType(item, area) === 'download' ? 'download' : ['link', 'app', 'service'].includes(itemType(item, area)) ? 'service' : ''"
         :title="item.title || item.titel"
         :description="item.description || item.beschreibung"

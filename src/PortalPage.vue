@@ -217,7 +217,7 @@ export default {
       <div class="bereich-inhalt" v-html="selectedPage?.content || selectedPage?.inhalt"></div>
     </AreaModal>
 
-    <AreaModal v-else :title="selectedForm?.titel || selectedForm?.title" @back="zurueck">
+    <AreaModal v-else :title="selectedForm?.titel || selectedForm?.title" :wide="Number(selectedForm?.width) === 2" @back="zurueck">
         <div id="formio"></div>
     </AreaModal>
   </main>
