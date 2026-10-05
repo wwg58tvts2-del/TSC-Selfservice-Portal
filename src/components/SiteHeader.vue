@@ -51,15 +51,19 @@ defineEmits(["search", "clear-search", "login", "logout"]);
     </div>
 
     <template v-else>
-      <img
-        class="site-logo"
-        src="/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png"
-        :src="config?.header?.logo || '/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'"
-        :alt="config?.header?.logoAlt || 'Tanzsportclub Dortmund'"
-      >
-      <div class="header-copy">
-        <span class="header-kicker">{{ config?.header?.kicker }}</span>
-        <span class="header-caption">{{ config?.header?.caption }}</span>
+      <div class="site-header-inner site-header-inner--subpage">
+        <img
+          class="site-logo"
+          src="/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png"
+          :src="config?.header?.logo || '/img/Logo_ohne_Noten_transparenter_Hintergrund-1.png'"
+          :alt="config?.header?.logoAlt || 'Tanzsportclub Dortmund'"
+        >
+        <div class="header-right header-right--subpage">
+          <div class="header-copy">
+            <span class="header-kicker">{{ config?.header?.kicker }}</span>
+            <span class="header-caption">{{ config?.header?.caption }}</span>
+          </div>
+        </div>
       </div>
     </template>
   </header>
