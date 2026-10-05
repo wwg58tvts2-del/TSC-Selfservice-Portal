@@ -217,9 +217,17 @@ export default {
       <div class="bereich-inhalt" v-html="selectedPage?.content || selectedPage?.inhalt"></div>
     </AreaModal>
 
-    <AreaModal v-else :title="selectedForm?.titel || selectedForm?.title" :wide="Number(selectedForm?.width) === 2" @back="zurueck">
-        <div id="formio"></div>
-    </AreaModal>
+    <section v-else class="form-page" :class="{ 'form-page--wide': Number(selectedForm?.width) === 2 }" aria-labelledby="form-page-title">
+      <div class="form-page-header">
+        <button id="back-button" class="btn btn-outline-secondary subpage-back" type="button" @click="zurueck()">
+          <i class="bi bi-arrow-left" aria-hidden="true"></i>
+          Zurück
+        </button>
+        <p class="section-kicker">Formular</p>
+        <h1 id="form-page-title">{{ selectedForm?.titel || selectedForm?.title }}</h1>
+      </div>
+      <div id="formio" class="form-page-content"></div>
+    </section>
   </main>
 
   <SiteFooter :links="sichtbareFooterLinks" />
