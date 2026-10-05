@@ -5,20 +5,12 @@
 
 .form-page {
   width: 100%;
-  max-width: 520px;
+  max-width: none;
   margin: 0 auto 56px;
-}
-
-.form-page--wide {
-  max-width: 1040px;
 }
 
 .form-page-header {
   margin-bottom: 24px;
-}
-
-.form-page-header h1 {
-  margin-top: 9px;
 }
 
 .form-page-content {
