@@ -217,7 +217,7 @@ export default {
       <div class="bereich-inhalt" v-html="selectedPage?.content || selectedPage?.inhalt"></div>
     </AreaModal>
 
-    <section v-else class="form-page" aria-label="Formular">
+    <section v-else class="form-page" :class="{ 'form-page--wide': Number(selectedForm?.width) === 2 }" aria-label="Formular">
       <div class="form-page-header">
         <button id="back-button" class="btn btn-outline-secondary subpage-back" type="button" @click="zurueck()">
           <i class="bi bi-arrow-left" aria-hidden="true"></i>
