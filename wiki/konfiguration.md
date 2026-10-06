@@ -36,7 +36,7 @@ Die Laufzeitkonfiguration verwendet diese Bereiche:
 
 ## Einträge und Suche
 
-Formulare verwenden mindestens `id`, `titel` und `beschreibung`. Online-Services verwenden `url`, `titel`, `beschreibung` und optional `neuesFenster`. Downloads verwenden `url`, `titel` und `beschreibung`. Footer-Links verwenden `url` und `titel`.
+Formulare verwenden mindestens `id`, `titel` und `beschreibung`. Titel und Beschreibung werden oberhalb des eingebetteten Formulars angezeigt; alternativ werden `title` und `description` unterstützt. Online-Services verwenden `url`, `titel`, `beschreibung` und optional `neuesFenster`. Downloads verwenden `url`, `titel` und `beschreibung`. Footer-Links verwenden `url` und `titel`.
 
 Die Kopfzeilensuche durchsucht nur Formulare, Online-Services und Downloads. Sie berücksichtigt `title`/`titel`, `description`/`beschreibung` und optionale Suchbegriffe in `searchTerms`, `searchKeywords`, `keywords`, `suchbegriffe`, `suchwoerter` oder `tags`. Der Vergleich ignoriert Groß-/Kleinschreibung. Jedes Item erhält beim Laden ein Laufzeitfeld `visible`, das beim Tippen neu berechnet wird; es ist keine Berechtigungsinformation.
 

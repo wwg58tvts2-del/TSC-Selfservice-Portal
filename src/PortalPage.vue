@@ -223,6 +223,12 @@ export default {
           <i class="bi bi-arrow-left" aria-hidden="true"></i>
           Zurück
         </button>
+        <header class="form-page-heading">
+          <h1>{{ selectedForm?.titel || selectedForm?.title || "Formular" }}</h1>
+          <p v-if="selectedForm?.beschreibung || selectedForm?.description">
+            {{ selectedForm.beschreibung || selectedForm.description }}
+          </p>
+        </header>
       </div>
       <div id="formio" class="form-page-content"></div>
     </section>
