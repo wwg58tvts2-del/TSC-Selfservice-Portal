@@ -3,7 +3,21 @@
 export async function ladeFormular(container, formUrl, { onSubmitDone } = {}) {
   const instance = await Formio.createForm(container, formUrl, {
     noAlerts: false,
-    readOnly: false
+    readOnly: false,
+
+    sanitizeConfig: {
+      addTags: [
+        "iframe"
+      ],
+      addAttr: [
+        "src",
+        "title",
+        "style",
+        "frameborder",
+        "allow",
+        "allowfullscreen"
+      ]
+    }
   });
 
   instance.on("submitDone", () => {
