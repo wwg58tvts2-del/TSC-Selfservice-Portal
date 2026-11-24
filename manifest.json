@@ -1,0 +1,32 @@
+{
+  "name": "Selfservice",
+  "short_name": "Selfservice",
+  "description": "Service Portal",
+  "start_url": "/",
+  "display": "standalone",
+  "scope": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#8e0000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/img/Logo_ohne_Noten_quadratisch_transparenter_Hintergrund-1.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/Logo_ohne_Noten_quadratisch_transparenter_Hintergrund-1.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/Logo_ohne_Noten_quadratisch_transparenter_Hintergrund-1.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["productivity"]
+}
