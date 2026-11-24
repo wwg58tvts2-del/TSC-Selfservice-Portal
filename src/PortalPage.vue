@@ -155,7 +155,7 @@ export default {
       <p v-if="keineSuchergebnisse" class="portal-search-empty" role="status">Keine Ergebnisse gefunden</p>
 
       <PortalAreaSection
-        v-for="area in sichtbarePortalAreas"
+        v-for="area in gefiltertePortalAreas"
         :key="area.id"
         :area="area"
         @open-form="oeffneFormular"

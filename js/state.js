@@ -123,7 +123,6 @@ export const usePortalStore = defineStore("portal", () => {
         await ladeConfigDaten(
           configEndpoint.toString()
         );
-      this.aktualisiereSichtbarkeit();
 
       console.log("[Serviceportal] Konfiguration im State übernommen");
 
@@ -309,6 +308,19 @@ export const usePortalStore = defineStore("portal", () => {
   },
 
 
+  get gefiltertePortalAreas() {
+    const suchtext = this.suchtext.trim().toLocaleLowerCase("de-DE");
+    if (!suchtext) return this.sichtbarePortalAreas;
+
+    return this.sichtbarePortalAreas
+      .map((area) => ({
+        ...area,
+        items: area.items.filter((item) => this.passtZurKachelsuche(item, suchtext))
+      }))
+      .filter((area) => area.items.length > 0);
+  },
+
+
   get sichtbareFormulare() {
     return this.sichtbarePortalAreas
       .flatMap((area) => area.items)
@@ -323,34 +335,19 @@ export const usePortalStore = defineStore("portal", () => {
   },
 
 
-  get durchsuchbareEintraege() {
-    return this.portalAreas.flatMap((area) => area.items);
-  },
-
-
   get hatDurchsuchbareEintraege() {
-    return this.durchsuchbareEintraege.length > 0;
+    return this.sichtbarePortalAreas.length > 0;
   },
 
 
   get keineSuchergebnisse() {
     return Boolean(this.suchtext.trim()) &&
-      this.durchsuchbareEintraege.length > 0 &&
-      !this.durchsuchbareEintraege.some((eintrag) => eintrag.visible);
+      this.hatDurchsuchbareEintraege &&
+      this.gefiltertePortalAreas.length === 0;
   },
 
 
-  aktualisiereSichtbarkeit() {
-    this.durchsuchbareEintraege.forEach((eintrag) => {
-      eintrag.visible = this.passtZurKachelsuche(eintrag);
-    });
-  },
-
-
-  passtZurKachelsuche(eintrag) {
-    const suchtext = this.suchtext.trim().toLocaleLowerCase("de-DE");
-    if (!suchtext) return true;
-
+  passtZurKachelsuche(eintrag, suchtext) {
     const suchbegriffe = [
       eintrag.searchTerms,
       eintrag.searchKeywords,
@@ -366,7 +363,6 @@ export const usePortalStore = defineStore("portal", () => {
 
   setzeSuchtext(wert) {
     this.suchtext = String(wert ?? "");
-    this.aktualisiereSichtbarkeit();
   },
 
 
